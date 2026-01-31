@@ -988,7 +988,7 @@ function displayResults(results) {
   // Display per-person effective rates
   if (results.perPersonRates) {
     // Need to get form data for this
-    const formData = getFormData();
+    const formData = collectFormData();
     displayPerPersonRates(results.perPersonRates, formData);
   }
   
