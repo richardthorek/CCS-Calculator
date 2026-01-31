@@ -1151,6 +1151,21 @@ input.typing {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+
+/* Chart.js canvas sizing */
+.chart-container canvas {
+  max-width: 100%;
+  height: auto !important;
+}
+
+#bar-chart-container {
+  min-height: 400px;
+}
+
+#pie-chart-container {
+  min-height: 350px;
 }
 
 .chart-title {

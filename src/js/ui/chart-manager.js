@@ -1,10 +1,14 @@
 /**
  * Chart Manager Module
- * Manages chart display and updates for scenario comparison
+ * Manages chart display and updates using Chart.js for compelling visualizations
  */
 
-import { createScenarioBarChart } from './charts/bar-chart.js';
-import { createCostBreakdownChart } from './charts/pie-chart.js';
+// Chart.js will be loaded via script tag in HTML
+// Access it from global window.Chart
+
+// Store chart instances for cleanup
+let barChartInstance = null;
+let pieChartInstance = null;
 
 /**
  * Initialize chart functionality
@@ -103,21 +107,142 @@ function updateBarChart(scenarios) {
     return;
   }
   
-  // Clear existing chart
+  // Clear existing content
   container.innerHTML = '';
   
-  // Limit scenarios for better visibility (show top 10-15)
+  // Limit scenarios for better visibility
   const maxScenarios = window.innerWidth < 768 ? 10 : 15;
   const displayScenarios = scenarios.slice(0, maxScenarios);
   
-  // Create bar chart
-  const chart = createScenarioBarChart(displayScenarios, 'netIncomeAfterChildcare', {
-    width: 800,
-    height: 400,
-    responsive: true
-  });
+  // Create canvas for Chart.js
+  const canvas = document.createElement('canvas');
+  canvas.id = 'bar-chart';
+  canvas.setAttribute('role', 'img');
+  canvas.setAttribute('aria-label', 'Bar chart comparing net income across different work scenarios');
+  container.appendChild(canvas);
   
-  container.appendChild(chart);
+  // Prepare data
+  const labels = displayScenarios.map(s => s.name);
+  const data = displayScenarios.map(s => s.netIncomeAfterChildcare);
+  
+  // Find best scenario (highest net income)
+  const maxValue = Math.max(...data);
+  
+  // Create gradient colors (highlight best scenario)
+  const backgroundColors = data.map(value => 
+    value === maxValue ? 'rgba(16, 185, 129, 0.8)' : 'rgba(37, 99, 235, 0.7)'
+  );
+  const borderColors = data.map(value => 
+    value === maxValue ? 'rgb(16, 185, 129)' : 'rgb(37, 99, 235)'
+  );
+  
+  // Destroy existing chart if it exists
+  if (barChartInstance) {
+    barChartInstance.destroy();
+  }
+  
+  // Create new chart
+  barChartInstance = new window.Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Net Income After Childcare',
+        data: data,
+        backgroundColor: backgroundColors,
+        borderColor: borderColors,
+        borderWidth: 2,
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        title: {
+          display: true,
+          text: 'Net Income Comparison Across Work Scenarios',
+          font: {
+            size: 16,
+            weight: 'bold'
+          },
+          padding: {
+            top: 10,
+            bottom: 20
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              let label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              label += new Intl.NumberFormat('en-AU', {
+                style: 'currency',
+                currency: 'AUD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+              }).format(context.parsed.y);
+              return label;
+            }
+          },
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          cornerRadius: 8,
+          titleFont: {
+            size: 14,
+            weight: 'bold'
+          },
+          bodyFont: {
+            size: 13
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            maxRotation: 45,
+            minRotation: 45,
+            font: {
+              size: 11
+            }
+          },
+          grid: {
+            display: false
+          }
+        },
+        y: {
+          beginAtZero: false,
+          ticks: {
+            callback: function(value) {
+              return new Intl.NumberFormat('en-AU', {
+                style: 'currency',
+                currency: 'AUD',
+                notation: 'compact',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+              }).format(value);
+            },
+            font: {
+              size: 12
+            }
+          },
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)'
+          }
+        }
+      },
+      animation: {
+        duration: 750,
+        easing: 'easeInOutQuart'
+      }
+    }
+  });
   
   // Add note if scenarios were limited
   if (scenarios.length > maxScenarios) {
@@ -140,7 +265,7 @@ function updatePieChart(scenario) {
     return;
   }
   
-  // Clear existing chart
+  // Clear existing content
   container.innerHTML = '';
   
   // Add scenario title
@@ -149,20 +274,102 @@ function updatePieChart(scenario) {
   title.textContent = `Cost Breakdown: ${scenario.name}`;
   container.appendChild(title);
   
-  // Create pie chart
-  const chart = createCostBreakdownChart(scenario, {
-    width: 400,
-    height: 400,
-    responsive: true
-  });
+  // Create canvas for Chart.js
+  const canvas = document.createElement('canvas');
+  canvas.id = 'pie-chart';
+  canvas.setAttribute('role', 'img');
+  canvas.setAttribute('aria-label', `Pie chart showing cost breakdown for ${scenario.name} scenario`);
+  container.appendChild(canvas);
   
-  container.appendChild(chart);
+  // Prepare data
+  const subsidy = scenario.annualSubsidy || 0;
+  const outOfPocket = scenario.annualOutOfPocket || 0;
+  const totalCost = subsidy + outOfPocket;
+  
+  // Destroy existing chart if it exists
+  if (pieChartInstance) {
+    pieChartInstance.destroy();
+  }
+  
+  // Create new chart
+  pieChartInstance = new window.Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels: ['Government Subsidy', 'Out of Pocket'],
+      datasets: [{
+        data: [subsidy, outOfPocket],
+        backgroundColor: [
+          'rgba(16, 185, 129, 0.8)',  // Green for subsidy
+          'rgba(239, 68, 68, 0.8)'     // Red for out of pocket
+        ],
+        borderColor: [
+          'rgb(16, 185, 129)',
+          'rgb(239, 68, 68)'
+        ],
+        borderWidth: 2,
+        hoverOffset: 10
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 15,
+            font: {
+              size: 13,
+              weight: '500'
+            },
+            usePointStyle: true,
+            pointStyle: 'circle'
+          }
+        },
+        title: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.parsed || 0;
+              const percentage = totalCost > 0 ? ((value / totalCost) * 100).toFixed(1) : 0;
+              const formatted = new Intl.NumberFormat('en-AU', {
+                style: 'currency',
+                currency: 'AUD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+              }).format(value);
+              return `${label}: ${formatted} (${percentage}%)`;
+            }
+          },
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          cornerRadius: 8,
+          titleFont: {
+            size: 14,
+            weight: 'bold'
+          },
+          bodyFont: {
+            size: 13
+          }
+        }
+      },
+      animation: {
+        animateRotate: true,
+        animateScale: true,
+        duration: 1000,
+        easing: 'easeInOutQuart'
+      },
+      cutout: '60%'
+    }
+  });
   
   // Add summary text
   const summary = document.createElement('p');
   summary.className = 'chart-summary';
-  const totalCost = scenario.annualSubsidy + scenario.annualOutOfPocket;
-  const subsidyPercentage = ((scenario.annualSubsidy / totalCost) * 100).toFixed(1);
+  const subsidyPercentage = totalCost > 0 ? ((subsidy / totalCost) * 100).toFixed(1) : 0;
   summary.textContent = `The government subsidy covers ${subsidyPercentage}% of total childcare costs for this scenario.`;
   container.appendChild(summary);
 }
@@ -171,6 +378,16 @@ function updatePieChart(scenario) {
  * Clear all charts
  */
 export function clearCharts() {
+  if (barChartInstance) {
+    barChartInstance.destroy();
+    barChartInstance = null;
+  }
+  
+  if (pieChartInstance) {
+    pieChartInstance.destroy();
+    pieChartInstance = null;
+  }
+  
   const barContainer = document.getElementById('bar-chart-container');
   const pieContainer = document.getElementById('pie-chart-container');
   
