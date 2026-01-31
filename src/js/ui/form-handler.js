@@ -328,6 +328,15 @@ function handleRealtimeCalculation() {
 }
 
 /**
+ * Helper function to check if a value is a valid positive number
+ * @param {*} value - Value to check
+ * @returns {boolean} True if value is a valid positive number
+ */
+function isValidPositiveNumber(value) {
+  return value !== null && value !== undefined && !isNaN(value) && value > 0;
+}
+
+/**
  * Check if form data is complete (has all required fields)
  */
 function isFormDataComplete(formData) {
@@ -339,11 +348,25 @@ function isFormDataComplete(formData) {
   // Check if at least one child is added
   if (formData.children.length === 0) return false;
   
-  // Check all children have required fields
+  // Check all children have required fields based on fee type
   for (const child of formData.children) {
     if (child.age === null || child.age === undefined) return false;
-    if (child.hoursPerWeek === null || child.hoursPerWeek === undefined) return false;
-    if (child.providerFee === null || child.providerFee === undefined) return false;
+    
+    // Validate based on fee type (daily or hourly, default to daily)
+    const feeType = child.feeType || 'daily';
+    
+    if (feeType === 'daily') {
+      // For daily fee mode, check dailyFee and hoursPerDay
+      if (!isValidPositiveNumber(child.dailyFee)) return false;
+      if (!isValidPositiveNumber(child.hoursPerDay)) return false;
+    } else if (feeType === 'hourly') {
+      // For hourly fee mode, check hoursPerWeek and providerFee
+      if (!isValidPositiveNumber(child.hoursPerWeek)) return false;
+      if (!isValidPositiveNumber(child.providerFee)) return false;
+    } else {
+      // Unexpected fee type - require both sets of fields to be safe
+      return false;
+    }
   }
   
   return true;
