@@ -155,11 +155,9 @@ function updateParentAdjustedIncome(parentId) {
   // Calculate adjusted income
   const adjustedIncome = calculateAdjustedIncome(income, days, hours);
   
-  // Calculate percentage of full-time
+  // Calculate percentage of full-time based on days only (hours no longer affect income)
   const daysFactor = days / 5;
-  const hoursFactor = hours / 7.6;
-  const totalFactor = daysFactor * hoursFactor;
-  const percentage = Math.round(totalFactor * 100);
+  const percentage = Math.round(daysFactor * 100);
   
   // Format and display
   valueElement.textContent = formatCurrency(adjustedIncome);

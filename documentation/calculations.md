@@ -40,17 +40,28 @@ All CCS rates, thresholds, and constants are centralized in `/src/js/config/ccs-
 
 #### Adjusted Income Calculation
 
+**Updated 2026-01-31:** Income calculation has been simplified to use only work days per week, providing clean income percentages.
+
 Formula:
 ```
-Adjusted Income = Base Annual Income × (Work Days per Week ÷ 5) × (Work Hours per Day ÷ Full-Time Hours)
+Adjusted Income = Base Annual Income × (Work Days per Week ÷ 5)
 ```
 
-**Default Full-Time:** 7.6 hours/day, 5 days/week
+**This provides clean income percentages:**
+- 1 day/week = 20% of full-time income
+- 2 days/week = 40% of full-time income
+- 3 days/week = 60% of full-time income
+- 4 days/week = 80% of full-time income
+- 5 days/week = 100% of full-time income
+
+**Rationale:** The "hours per day" field is still collected for calculating childcare hours needed and activity test requirements, but it no longer affects income calculation. This prevents confusing scenarios where working longer hours on fewer days could result in income exceeding 100% of the base salary.
 
 **Example:**
-- Parent earning $100,000/year
-- Working 3 days/week, 7.6 hours/day
-- Adjusted Income = $100,000 × (3 ÷ 5) × (7.6 ÷ 7.6) = $60,000
+- Parent earning $100,000/year (full-time equivalent)
+- Working 3 days/week
+- Adjusted Income = $100,000 × (3 ÷ 5) = $60,000 (exactly 60%)
+
+**Note:** The `calculateAdjustedIncome()` function still accepts `workHoursPerDay` and `fullTimeHours` parameters for backwards compatibility, but these are no longer used in the calculation.
 
 #### Household Income
 

@@ -26,14 +26,26 @@ describe('Income Calculations', () => {
       expect(result).toBe(60000);
     });
 
-    test('calculates adjusted income for part-time hours (5 days, 5 hours)', () => {
+    test('calculates adjusted income for part-time hours (5 days, 5 hours) - ignores hours', () => {
+      // Hours per day no longer affects income calculation
       const result = calculateAdjustedIncome(100000, 5, 5, 7.6);
-      expect(result).toBeCloseTo(65789.47, 2);
+      expect(result).toBe(100000); // 5 days = 100% regardless of hours
     });
 
-    test('calculates adjusted income for 3 days, 5 hours per day', () => {
+    test('calculates adjusted income for 3 days, 5 hours per day - ignores hours', () => {
+      // Hours per day no longer affects income calculation
       const result = calculateAdjustedIncome(100000, 3, 5, 7.6);
-      expect(result).toBeCloseTo(39473.68, 2);
+      expect(result).toBe(60000); // 3 days = 60% regardless of hours
+    });
+    
+    test('calculates adjusted income for 1 day week (20%)', () => {
+      const result = calculateAdjustedIncome(100000, 1, 7.6, 7.6);
+      expect(result).toBe(20000);
+    });
+    
+    test('calculates adjusted income for 2 day week (40%)', () => {
+      const result = calculateAdjustedIncome(100000, 2, 7.6, 7.6);
+      expect(result).toBe(40000);
     });
 
     test('returns 0 for zero days worked', () => {
@@ -41,9 +53,10 @@ describe('Income Calculations', () => {
       expect(result).toBe(0);
     });
 
-    test('returns 0 for zero hours worked', () => {
+    test('hours per day does not affect income (kept for backwards compatibility)', () => {
+      // Hours per day parameter is kept for API compatibility but doesn't affect income
       const result = calculateAdjustedIncome(100000, 5, 0);
-      expect(result).toBe(0);
+      expect(result).toBe(100000); // Income is based on days only
     });
 
     test('returns 0 for zero income', () => {
