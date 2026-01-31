@@ -6,8 +6,7 @@
 import { calculateAdjustedIncome, calculateHouseholdIncome } from '../calculations/income.js';
 import { calculateStandardRate, calculateHigherRate } from '../calculations/subsidy-rate.js';
 import { calculateSubsidisedHours } from '../calculations/activity-test.js';
-import { calculateWeeklyCosts } from '../calculations/costs.js';
-import { HOURLY_RATE_CAPS } from '../config/ccs-config.js';
+import { calculateEffectiveHourlyRate, calculateSubsidyPerHour, calculateWeeklyCosts } from '../calculations/costs.js';
 
 /**
  * Initialize the calculator form
@@ -72,11 +71,15 @@ function collectFormData() {
   const childCards = document.querySelectorAll('.child-card');
   const children = Array.from(childCards).map((card, index) => {
     const childIndex = card.dataset.childIndex;
+    const ageValue = card.querySelector(`#child-${childIndex}-age`).value;
+    const hoursValue = card.querySelector(`#child-${childIndex}-hours`).value;
+    const feeValue = card.querySelector(`#child-${childIndex}-fee`).value;
+    
     return {
-      age: parseFloat(card.querySelector(`#child-${childIndex}-age`).value) || 0,
+      age: ageValue !== '' ? parseFloat(ageValue) : null,
       careType: card.querySelector(`#child-${childIndex}-care-type`).value,
-      hoursPerWeek: parseFloat(card.querySelector(`#child-${childIndex}-hours`).value) || 0,
-      providerFee: parseFloat(card.querySelector(`#child-${childIndex}-fee`).value) || 0,
+      hoursPerWeek: hoursValue !== '' ? parseFloat(hoursValue) : null,
+      providerFee: feeValue !== '' ? parseFloat(feeValue) : null,
     };
   });
   
@@ -131,17 +134,17 @@ function validateFormData(formData) {
   formData.children.forEach((child, index) => {
     const childIndex = document.querySelectorAll('.child-card')[index].dataset.childIndex;
     
-    if (!child.age || child.age < 0 || child.age > 18) {
+    if (child.age === null || child.age === undefined || isNaN(child.age) || child.age < 0 || child.age > 18) {
       showError(`child-${childIndex}-age`, 'Age must be between 0 and 18');
       isValid = false;
     }
     
-    if (!child.hoursPerWeek || child.hoursPerWeek <= 0 || child.hoursPerWeek > 100) {
+    if (child.hoursPerWeek === null || child.hoursPerWeek === undefined || isNaN(child.hoursPerWeek) || child.hoursPerWeek <= 0 || child.hoursPerWeek > 100) {
       showError(`child-${childIndex}-hours`, 'Hours per week must be between 1 and 100');
       isValid = false;
     }
     
-    if (!child.providerFee || child.providerFee <= 0) {
+    if (child.providerFee === null || child.providerFee === undefined || isNaN(child.providerFee) || child.providerFee <= 0) {
       showError(`child-${childIndex}-fee`, 'Provider fee must be greater than 0');
       isValid = false;
     }
@@ -175,10 +178,11 @@ function calculateCCS(formData) {
   const parent1HoursPerFortnight = formData.parent1.days * formData.parent1.hours * 2;
   const parent2HoursPerFortnight = formData.parent2.days * formData.parent2.hours * 2;
   
-  const subsidisedHoursPerWeek = calculateSubsidisedHours(
+  const subsidisedHoursResult = calculateSubsidisedHours(
     parent1HoursPerFortnight,
     parent2HoursPerFortnight
   );
+  const subsidisedHoursPerWeek = subsidisedHoursResult.hoursPerWeek;
   
   // Calculate costs for each child
   const childrenResults = formData.children.map((child, index) => {
@@ -196,18 +200,23 @@ function calculateCCS(formData) {
       subsidyRate = calculateStandardRate(householdIncome);
     }
     
-    // Determine if school age
-    const isSchoolAge = child.age >= 6;
+    // Calculate effective hourly rate (capped)
+    const effectiveHourlyRate = calculateEffectiveHourlyRate(
+      child.providerFee,
+      child.careType,
+      child.age
+    );
+    
+    // Calculate subsidy per hour
+    const subsidyPerHour = calculateSubsidyPerHour(subsidyRate, effectiveHourlyRate);
     
     // Calculate weekly costs
-    const costs = calculateWeeklyCosts(
-      child.providerFee,
-      subsidyRate,
-      child.hoursPerWeek,
-      subsidisedHoursPerWeek,
-      child.careType,
-      isSchoolAge
-    );
+    const costs = calculateWeeklyCosts({
+      subsidyPerHour,
+      providerFee: child.providerFee,
+      subsidisedHours: subsidisedHoursPerWeek,
+      actualHours: child.hoursPerWeek
+    });
     
     return {
       childNumber: index + 1,
