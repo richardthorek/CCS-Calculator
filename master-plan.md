@@ -218,10 +218,72 @@ All four core calculation modules have been implemented with full test coverage:
 - [ ] Test performance with multiple children/scenarios
 - [ ] Document optimization strategies
 
-### Phase 6: Enhanced Features
+### Phase 6: Persist User Inputs & Scenarios Using Local Storage
+**Goal:** Automatically save and restore user data locally in the browser
+
+**User Problem**
+- Users shouldn't have to re-enter income, children details/ages, or scenario inputs after refresh, closing the tab, or returning later.
+
+**Goals**
+- Automatically save all relevant inputs locally in the browser.
+- Automatically restore saved inputs on page load.
+- Provide a clear privacy notice: data is stored only on the user's device.
+
+#### 6.1 Local Storage Schema & Module Design
+- [ ] Define a localStorage schema + version (e.g. `ccsCalculator:v1`) for:
+  - income inputs
+  - child details (DOB/age, care type, sessions, etc.)
+  - scenario list + currently selected scenario
+  - any UI settings needed to restore state
+- [ ] Implement a small pure JS persistence module (`src/js/storage/persistence.js`):
+  - `loadState()` - Load saved state from localStorage
+  - `saveState(state)` - Save current state to localStorage
+  - `clearState()` - Clear all saved data
+  - `migrateState(oldState)` - Handle future version migrations
+- [ ] Add versioning support for future schema changes
+- [ ] Document storage schema in code comments
+
+#### 6.2 UI Integration
+- [ ] Wire up persistence to form handler module
+- [ ] Load state on startup/page load
+- [ ] Save state on every input/scenario change (with debouncing)
+- [ ] Handle edge cases (localStorage unavailable, quota exceeded, private browsing)
+- [ ] Test persistence across page refreshes and browser sessions
+
+#### 6.3 Privacy & User Controls
+- [ ] Add UI notice (near inputs, footer, or help section):
+  - "Your data is only stored on this device in your browser (Local Storage). Nothing is uploaded or shared."
+- [ ] Add a "Clear saved data" / "Reset" control with confirmation dialog
+- [ ] Ensure privacy notice is always visible and clear
+- [ ] Test clear data functionality
+
+#### 6.4 Testing & Documentation
+- [ ] Write unit tests for persistence module
+- [ ] Write integration tests for save/load flows
+- [ ] Test manual scenarios (refresh, close/reopen, clear data)
+- [ ] Create `documentation/local-storage.md` documenting:
+  - Data structure and schema
+  - Component API and usage
+  - Browser compatibility and limitations
+  - Privacy considerations
+  - Migration strategy for future versions
+
+**Acceptance Criteria**
+- Refreshing or reopening browser restores last-entered inputs and scenarios
+- "Clear saved data" control resets storage and UI
+- Privacy notice is always visible
+- No data is sent to server or external services
+- Graceful handling of private browsing mode and quota limits
+
+**Risks/Notes**
+- Data may be lost if the user clears browser data, uses private mode, or moves devices
+- localStorage quota is generous (~5-10MB) for our use case, but document known limits
+- Private browsing mode may disable localStorage in some browsers
+
+### Phase 7: Enhanced Features
 **Goal:** Add optional but valuable features
 
-#### 6.1 Data Visualization
+#### 7.1 Data Visualization
 - [ ] Evaluate lightweight charting options (Chart.js as minimal option, or vanilla JS SVG/Canvas)
 - [ ] Create bar chart comparing net income across scenarios
 - [ ] Create pie chart showing cost breakdown
@@ -230,7 +292,7 @@ All four core calculation modules have been implemented with full test coverage:
 - [ ] Test accessibility of visualizations
 - [ ] **Note:** Only add charting library if native SVG/Canvas is too complex
 
-#### 6.2 Export & Sharing
+#### 7.2 Export & Sharing
 - [ ] Implement PDF export (consider browser print API or minimal library like jsPDF)
 - [ ] Add CSV export using vanilla JS (Blob and URL.createObjectURL)
 - [ ] Create shareable URL with URLSearchParams for encoding parameters
@@ -238,7 +300,7 @@ All four core calculation modules have been implemented with full test coverage:
 - [ ] Test export features across browsers
 - [ ] **Note:** Prefer native browser APIs over libraries where possible
 
-#### 6.3 Advanced UI Features
+#### 7.3 Advanced UI Features
 - [ ] Add weekly/annual view toggle
 - [ ] Implement "what-if" sliders for quick adjustments
 - [ ] Add preset scenarios (common work arrangements)
@@ -246,105 +308,105 @@ All four core calculation modules have been implemented with full test coverage:
 - [ ] Add calculator tour/onboarding
 - [ ] Implement dark mode (optional)
 
-#### 6.4 Multi-child Support Enhancement
+#### 7.4 Multi-child Support Enhancement
 - [ ] Improve UI for managing multiple children
 - [ ] Add/remove children dynamically
 - [ ] Handle different care types per child
 - [ ] Show per-child cost breakdown
 - [ ] Test with 1-5 children scenarios
 
-### Phase 7: Backend Integration (Optional)
+### Phase 8: Backend Integration (Optional)
 **Goal:** Add server-side features if needed
 
-#### 7.1 Azure Functions Setup
+#### 8.1 Azure Functions Setup
 - [ ] Create Azure Function for calculation validation
 - [ ] Set up API endpoints in `api/` folder
 - [ ] Implement error handling and logging
 - [ ] Add CORS configuration
 - [ ] Test locally with Azure Functions Core Tools
 
-#### 7.2 Data Persistence (Optional)
+#### 8.2 Data Persistence (Optional)
 - [ ] Set up Azure Storage or Database (if needed)
 - [ ] Implement save/load scenarios functionality
 - [ ] Add user session management
 - [ ] Test data persistence
 
-#### 7.3 Rate Updates API (Future)
+#### 8.3 Rate Updates API (Future)
 - [ ] Create endpoint to fetch current year's rates
 - [ ] Allow admin updates to thresholds
 - [ ] Version control for different financial years
 - [ ] Document API endpoints
 
-### Phase 8: Testing & Quality Assurance
+### Phase 9: Testing & Quality Assurance
 **Goal:** Comprehensive testing and validation
 
-#### 8.1 Unit Testing
+#### 9.1 Unit Testing
 - [ ] Achieve >80% code coverage for calculation modules
 - [ ] Test all edge cases
 - [ ] Add regression tests for bug fixes
 - [ ] Document test cases
 
-#### 8.2 Integration Testing
+#### 9.2 Integration Testing
 - [ ] Test form submission to calculation flow
 - [ ] Test scenario generation to comparison flow
 - [ ] Test export functionality end-to-end
 - [ ] Validate against official CCS calculator results
 
-#### 8.3 Browser & Device Testing
+#### 9.3 Browser & Device Testing
 - [ ] Test on Chrome, Firefox, Safari, Edge
 - [ ] Test on iOS and Android devices
 - [ ] Test various screen sizes
 - [ ] Verify accessibility with screen readers
 - [ ] Fix any compatibility issues
 
-#### 8.4 User Acceptance Testing
+#### 9.4 User Acceptance Testing
 - [ ] Create test scenarios based on real use cases
 - [ ] Gather feedback from potential users
 - [ ] Address usability issues
 - [ ] Document known limitations
 
-### Phase 9: Documentation & Deployment
+### Phase 10: Documentation & Deployment
 **Goal:** Prepare for production deployment
 
-#### 9.1 User Documentation
+#### 10.1 User Documentation
 - [ ] Create user guide in `documentation/user-guide.md`
 - [ ] Add FAQ section
 - [ ] Document known limitations
 - [ ] Create screenshots/demo video
 - [ ] Add disclaimer about official CCS rates
 
-#### 9.2 Technical Documentation
+#### 10.2 Technical Documentation
 - [ ] Document all calculation formulas in `documentation/calculations.md`
 - [ ] Create API documentation (if applicable)
 - [ ] Document architecture in `documentation/architecture.md`
 - [ ] Add code comments and JSDoc
 - [ ] Create developer setup guide
 
-#### 9.3 Azure Deployment Setup
+#### 10.3 Azure Deployment Setup
 - [ ] Create Azure Static Web App resource
 - [ ] Configure GitHub Actions for CI/CD
 - [ ] Set up environment variables
 - [ ] Configure custom domain (if applicable)
 - [ ] Test deployment pipeline
 
-#### 9.4 Production Deployment
+#### 10.4 Production Deployment
 - [ ] Deploy to staging environment
 - [ ] Perform final testing on staging
 - [ ] Deploy to production
 - [ ] Set up monitoring and analytics
 - [ ] Document deployment process
 
-### Phase 10: Maintenance & Updates
+### Phase 11: Maintenance & Updates
 **Goal:** Ongoing maintenance and improvements
 
-#### 10.1 Annual Updates
+#### 11.1 Annual Updates
 - [ ] Monitor for CCS policy changes each financial year
 - [ ] Update thresholds and rates as needed
 - [ ] Test updated calculations
 - [ ] Communicate changes to users
 - [ ] Version the application appropriately
 
-#### 10.2 Bug Fixes & Improvements
+#### 11.2 Bug Fixes & Improvements
 - [ ] Set up issue tracking
 - [ ] Prioritize and fix reported bugs
 - [ ] Implement user-requested features
