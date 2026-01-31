@@ -28,6 +28,9 @@ import { stripCommas, formatWithCommas } from '../utils/format-input.js';
 let lastFormData = null;
 let lastResults = null;
 
+// Default values for child inputs
+const DEFAULT_HOURS_PER_DAY = '10';
+
 /**
  * Initialize the calculator form
  */
@@ -983,7 +986,7 @@ function addChild() {
   // Get values from first child to use as defaults for subsequent children
   const existingChildren = container.querySelectorAll('.child-card');
   let defaultDailyFee = '';
-  let defaultHoursPerDay = '10';
+  let defaultHoursPerDay = DEFAULT_HOURS_PER_DAY;
   
   if (existingChildren.length > 0) {
     // Get values from first child
