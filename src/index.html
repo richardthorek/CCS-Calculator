@@ -232,6 +232,47 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Optimal Scenario Selection Section -->
+            <section id="comparison-section" class="results-section" style="display: none;" aria-live="polite">
+                <div class="section-header">
+                    <h2>Optimal Scenario Selection</h2>
+                    <p class="section-description">Compare all work arrangements to find the optimal balance between income and childcare costs. Each scenario shows the effect of different work day combinations on your family's finances.</p>
+                </div>
+                
+                <div class="comparison-controls">
+                    <div class="controls-group">
+                        <button type="button" id="generate-all-scenarios-btn" class="btn btn-primary">
+                            Generate All Scenarios
+                        </button>
+                        <button type="button" id="generate-common-scenarios-btn" class="btn btn-secondary">
+                            Show Common Scenarios Only
+                        </button>
+                    </div>
+                    
+                    <div class="controls-group">
+                        <label for="scenario-sort">Sort by:</label>
+                        <select id="scenario-sort" class="form-control">
+                            <option value="netIncome">Net Income (Highest)</option>
+                            <option value="outOfPocket">Out-of-Pocket (Lowest)</option>
+                            <option value="subsidy">Subsidy (Highest)</option>
+                            <option value="workDays">Work Days</option>
+                        </select>
+                        
+                        <button type="button" id="export-csv-btn" class="btn btn-secondary">
+                            Export to CSV
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="scenario-info">
+                    <p><strong>Note:</strong> Scenarios consider that when a parent isn't working, they're available for childcare, reducing childcare hours and costs.</p>
+                </div>
+                
+                <div id="comparison-table-container" class="comparison-table-container">
+                    <!-- Comparison table will be inserted here -->
+                </div>
+            </section>
         </div>
     </main>
     

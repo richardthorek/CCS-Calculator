@@ -47,6 +47,11 @@ function handleFormSubmit(event) {
   try {
     const results = calculateCCS(formData);
     displayResults(results);
+    
+    // Dispatch event for scenario generation
+    document.dispatchEvent(new CustomEvent('calculationComplete', {
+      detail: { formData, results }
+    }));
   } catch (error) {
     console.error('Calculation error:', error);
     showGlobalError('An error occurred during calculation. Please check your inputs and try again.');
