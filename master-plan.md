@@ -17,6 +17,21 @@ All four core calculation modules have been implemented with full test coverage:
 
 **Total: 224 tests, all passing** (180 calculation tests + 33 scenario tests + 11 debounce tests)
 
+## Completed Features (Post-Phase 7)
+
+### Per-Person Effective Rate Analysis (2026-01)
+- ✅ Per-person effective childcare rate calculations (daily, weekly, monthly, annual)
+- ✅ Percentage of income comparison per parent
+- ✅ Net income after childcare per parent
+- ✅ Threshold warning system for families near $357k-$368k income range
+- ✅ Risk level indicators (low, medium, high)
+- ✅ Actionable recommendations for threshold management
+
+**Modules Added:**
+- `src/js/calculations/per-person-rates.js` - Per-person rate and threshold calculations
+- HTML sections for threshold warnings and per-person rate display
+- CSS styling for warning banners and rate cards
+
 ## Planned Features
 <!-- Add planned features here -->
 
