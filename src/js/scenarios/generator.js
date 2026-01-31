@@ -1,6 +1,7 @@
 /**
  * Scenario Generator Module
  * Generates and manages childcare scenarios for comparison
+ * Generates all combinations of work days to find optimal work/childcare balance
  */
 
 import { calculateAdjustedIncome, calculateHouseholdIncome } from '../calculations/income.js';
@@ -9,7 +10,44 @@ import { calculateSubsidisedHours } from '../calculations/activity-test.js';
 import { calculateEffectiveHourlyRate, calculateSubsidyPerHour, calculateWeeklyCosts } from '../calculations/costs.js';
 
 /**
- * Generate common work scenario combinations
+ * Generate all possible work scenario combinations (0-5 days for each parent)
+ * This creates a comprehensive comparison to find the optimal work/childcare balance
+ * @param {Object} baseData - Base family and childcare data
+ * @returns {Array} Array of scenario objects
+ */
+export function generateAllScenarios(baseData) {
+  const { parent1BaseIncome, parent2BaseIncome = 0, parent1HoursPerDay, parent2HoursPerDay = 0, children } = baseData;
+  
+  const scenarios = [];
+  
+  // Generate all combinations: each parent working 0-5 days
+  for (let p1Days = 0; p1Days <= 5; p1Days++) {
+    for (let p2Days = 0; p2Days <= 5; p2Days++) {
+      // Skip if both parents not working (no income scenario)
+      if (p1Days === 0 && p2Days === 0) {
+        continue;
+      }
+      
+      const scenarioName = generateScenarioName(p1Days, p2Days, parent2BaseIncome > 0);
+      
+      const scenario = createScenario({
+        ...baseData,
+        parent1Days: p1Days,
+        parent2Days: p2Days,
+        scenarioName,
+      });
+      
+      if (scenario) {
+        scenarios.push(scenario);
+      }
+    }
+  }
+  
+  return scenarios;
+}
+
+/**
+ * Generate common work scenario combinations (subset of most typical arrangements)
  * @param {Object} baseData - Base family and childcare data
  * @returns {Array} Array of scenario objects
  */
@@ -21,14 +59,13 @@ export function generateCommonScenarios(baseData) {
     { parent1Days: 5, parent2Days: 5, name: '5+5 days (Both full-time)' },
     { parent1Days: 5, parent2Days: 4, name: '5+4 days' },
     { parent1Days: 5, parent2Days: 3, name: '5+3 days' },
-    { parent1Days: 5, parent2Days: 2, name: '5+2 days' },
     { parent1Days: 5, parent2Days: 0, name: '5+0 days (One parent working)' },
     { parent1Days: 4, parent2Days: 4, name: '4+4 days' },
     { parent1Days: 4, parent2Days: 3, name: '4+3 days' },
-    { parent1Days: 4, parent2Days: 2, name: '4+2 days' },
     { parent1Days: 3, parent2Days: 3, name: '3+3 days' },
     { parent1Days: 3, parent2Days: 2, name: '3+2 days' },
     { parent1Days: 2, parent2Days: 2, name: '2+2 days' },
+    { parent1Days: 2, parent2Days: 0, name: '2+0 days' },
   ];
   
   // If parent 2 has no income, only generate single-parent scenarios
@@ -48,6 +85,30 @@ export function generateCommonScenarios(baseData) {
   
   // Remove duplicates and invalid scenarios
   return scenarios.filter(scenario => scenario !== null);
+}
+
+/**
+ * Generate scenario name based on work days
+ * @param {number} p1Days - Parent 1 work days
+ * @param {number} p2Days - Parent 2 work days
+ * @param {boolean} isTwoParent - Whether this is a two-parent family
+ * @returns {string} Scenario name
+ */
+function generateScenarioName(p1Days, p2Days, isTwoParent = true) {
+  if (!isTwoParent || p2Days === 0) {
+    // Single parent scenario names
+    if (p1Days === 0) return 'Not working';
+    if (p1Days === 1) return '1 day';
+    if (p1Days === 5) return '5 days (Full-time)';
+    return `${p1Days} days`;
+  }
+  
+  // Two parent scenario names
+  if (p1Days === 5 && p2Days === 5) return '5+5 days (Both full-time)';
+  if (p1Days === 0 && p2Days > 0) return `0+${p2Days} days (One parent home)`;
+  if (p2Days === 0 && p1Days > 0) return `${p1Days}+0 days (One parent home)`;
+  
+  return `${p1Days}+${p2Days} days`;
 }
 
 /**
@@ -86,6 +147,42 @@ export function createCustomScenario(scenarioData) {
 }
 
 /**
+ * Calculate childcare hours needed based on parent work schedules
+ * Key logic: If a parent isn't working, they're available for childcare
+ * @param {number} p1Days - Parent 1 work days
+ * @param {number} p2Days - Parent 2 work days
+ * @param {number} p1Hours - Parent 1 hours per day
+ * @param {number} p2Hours - Parent 2 hours per day
+ * @param {number} childHoursPerWeek - Child's typical hours per week if both parents working
+ * @returns {number} Actual childcare hours needed per week
+ */
+function calculateChildcareHoursNeeded(p1Days, p2Days, p1Hours, p2Hours, childHoursPerWeek) {
+  // If neither parent is working, no childcare needed
+  if (p1Days === 0 && p2Days === 0) {
+    return 0;
+  }
+  
+  // If one parent isn't working, they're home for childcare
+  if (p1Days === 0 || p2Days === 0) {
+    // Only need childcare when the working parent is at work
+    const workingDays = Math.max(p1Days, p2Days);
+    const workingHours = p1Days > 0 ? p1Hours : p2Hours;
+    return workingDays * workingHours;
+  }
+  
+  // Both parents working - need childcare during overlapping work hours
+  // This is a simplified model - assumes they work same days
+  const overlappingDays = Math.min(p1Days, p2Days);
+  const maxHoursPerDay = Math.max(p1Hours, p2Hours);
+  
+  // For non-overlapping days, still might need some childcare
+  const nonOverlappingDays = Math.abs(p1Days - p2Days);
+  const minHours = Math.min(p1Hours, p2Hours);
+  
+  return (overlappingDays * maxHoursPerDay) + (nonOverlappingDays * minHours);
+}
+
+/**
  * Create a scenario and calculate all results
  * @param {Object} data - Scenario data
  * @returns {Object|null} Calculated scenario or null if invalid
@@ -100,17 +197,17 @@ function createScenario(data) {
       parent1HoursPerDay,
       parent2HoursPerDay = 0,
       children,
-      scenarioName = `${parent1Days}+${parent2Days} days`,
+      scenarioName = generateScenarioName(parent1Days, parent2Days, parent2BaseIncome > 0),
     } = data;
     
-    // Calculate adjusted incomes
-    const parent1Income = calculateAdjustedIncome(
+    // Calculate adjusted incomes (0 if not working)
+    const parent1Income = parent1Days > 0 ? calculateAdjustedIncome(
       parent1BaseIncome,
       parent1Days,
       parent1HoursPerDay
-    );
+    ) : 0;
     
-    const parent2Income = parent2BaseIncome > 0 ? calculateAdjustedIncome(
+    const parent2Income = (parent2BaseIncome > 0 && parent2Days > 0) ? calculateAdjustedIncome(
       parent2BaseIncome,
       parent2Days,
       parent2HoursPerDay
@@ -130,6 +227,30 @@ function createScenario(data) {
     // Calculate costs for each child
     const childResults = children.map((child, index) => {
       const { age, careType, hoursPerWeek, providerFee } = child;
+      
+      // Calculate actual childcare hours needed based on parent availability
+      const actualHoursNeeded = calculateChildcareHoursNeeded(
+        parent1Days,
+        parent2Days,
+        parent1HoursPerDay,
+        parent2HoursPerDay,
+        hoursPerWeek
+      );
+      
+      // If no childcare needed, return zero costs
+      if (actualHoursNeeded === 0) {
+        return {
+          age,
+          careType,
+          subsidyRate: 0,
+          subsidyPerHour: 0,
+          weeklySubsidy: 0,
+          weeklyFullCost: 0,
+          weeklyOutOfPocket: 0,
+          hoursWithSubsidy: 0,
+          hoursWithoutSubsidy: 0,
+        };
+      }
       
       // Determine if this is the eldest child aged ≤5
       const childrenUnder6 = children.filter(c => c.age <= 5);
@@ -151,12 +272,12 @@ function createScenario(data) {
       const effectiveRate = calculateEffectiveHourlyRate(providerFee, careType, age);
       const subsidyPerHour = calculateSubsidyPerHour(subsidyRate, effectiveRate);
       
-      const maxSubsidisedHours = Math.min(hoursPerWeek, subsidisedHours);
+      const maxSubsidisedHours = Math.min(actualHoursNeeded, subsidisedHours);
       const weeklyCosts = calculateWeeklyCosts({
         subsidyPerHour,
         providerFee,
         subsidisedHours: maxSubsidisedHours,
-        actualHours: hoursPerWeek
+        actualHours: actualHoursNeeded
       });
       
       return {

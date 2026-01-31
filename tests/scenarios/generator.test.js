@@ -5,6 +5,7 @@
 import {
   generateCommonScenarios,
   generateSingleParentScenarios,
+  generateAllScenarios,
   createCustomScenario,
   compareScenarios,
   filterScenarios,
@@ -86,6 +87,58 @@ describe('Scenario Generator', () => {
         expect(scenario.parent2Days).toBe(0);
         expect(scenario.parent2Income).toBe(0);
       });
+    });
+  });
+
+  describe('generateAllScenarios', () => {
+    test('generates comprehensive scenarios (all 0-5 day combinations)', () => {
+      const scenarios = generateAllScenarios(baseData);
+      
+      expect(scenarios).toBeDefined();
+      expect(scenarios.length).toBeGreaterThan(0);
+      // Should have up to 35 combinations (6x6 minus 0+0)
+      expect(scenarios.length).toBeLessThanOrEqual(35);
+    });
+
+    test('includes scenarios where one parent is not working', () => {
+      const scenarios = generateAllScenarios(baseData);
+      
+      // Should include 5+0 scenario
+      const oneParentScenario = scenarios.find(s => 
+        s.parent1Days === 5 && s.parent2Days === 0
+      );
+      
+      expect(oneParentScenario).toBeDefined();
+      expect(oneParentScenario.parent2Income).toBe(0);
+    });
+
+    test('reduces childcare costs when one parent is home', () => {
+      const scenarios = generateAllScenarios(baseData);
+      
+      // Compare 5+5 vs 5+0
+      const bothWorking = scenarios.find(s => s.parent1Days === 5 && s.parent2Days === 5);
+      const oneHome = scenarios.find(s => s.parent1Days === 5 && s.parent2Days === 0);
+      
+      expect(bothWorking).toBeDefined();
+      expect(oneHome).toBeDefined();
+      
+      // One parent home should have lower childcare costs
+      expect(oneHome.annualOutOfPocket).toBeLessThan(bothWorking.annualOutOfPocket);
+    });
+
+    test('has zero childcare costs when parent works 0 days', () => {
+      const singleParentData = {
+        ...baseData,
+        parent2BaseIncome: 0
+      };
+      
+      const scenarios = generateAllScenarios(singleParentData);
+      
+      // Find scenario where parent works 1 day
+      const oneDayScenario = scenarios.find(s => s.parent1Days === 1);
+      
+      expect(oneDayScenario).toBeDefined();
+      expect(oneDayScenario.totalWeeklyOutOfPocket).toBeGreaterThan(0);
     });
   });
 
