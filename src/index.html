@@ -152,10 +152,30 @@
                         </div>
                     </section>
 
+                    <!-- CCS Settings Section - Compact -->
+                    <section class="form-section compact-section" id="ccs-settings-section">
+                        <h2 class="section-title compact-title">
+                            <span class="section-number">3</span>
+                            CCS Settings
+                        </h2>
+                        
+                        <div class="form-group">
+                            <label for="withholding-rate">
+                                Withholding Rate
+                                <span class="info-icon" data-tooltip="The government withholds a percentage of your CCS to create a buffer for income changes. This reduces the risk of overpayment debt at tax time. You can adjust this in myGov (0-100%). Default is 5%.">ℹ️</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" id="withholding-rate" name="withholding-rate" min="0" max="100" step="1" value="5" required>
+                                <span class="input-suffix">%</span>
+                            </div>
+                            <span class="help-text">Default: 5% (adjustable in myGov)</span>
+                        </div>
+                    </section>
+
                     <!-- Children Section - Compact -->
                     <section class="form-section compact-section" id="children-section">
                         <h2 class="section-title compact-title">
-                            <span class="section-number">3</span>
+                            <span class="section-number">4</span>
                             Children
                         </h2>
                         
@@ -215,6 +235,27 @@
                         <div class="key-figure">
                             <div class="figure-label">Full Cost <span class="period-suffix" data-period-suffix>/week</span></div>
                             <div class="figure-value" id="result-weekly-cost" data-weekly-value="0">$0</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Subsidy Breakdown -->
+                    <div class="subsidy-breakdown" id="subsidy-breakdown">
+                        <h4 class="breakdown-title">Subsidy Breakdown</h4>
+                        <div class="breakdown-items">
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Gross Subsidy:</span>
+                                <span class="breakdown-value" id="result-gross-subsidy" data-weekly-value="0">$0</span>
+                            </div>
+                            <div class="breakdown-item withholding">
+                                <span class="breakdown-label">
+                                    Withholding (<span id="result-withholding-rate">5</span>%):
+                                </span>
+                                <span class="breakdown-value negative" id="result-withheld-amount" data-weekly-value="0">-$0</span>
+                            </div>
+                            <div class="breakdown-item total">
+                                <span class="breakdown-label">Paid Subsidy:</span>
+                                <span class="breakdown-value highlight" id="result-paid-subsidy" data-weekly-value="0">$0</span>
+                            </div>
                         </div>
                     </div>
                     

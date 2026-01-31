@@ -463,6 +463,13 @@ main {
     flex-shrink: 0;
 }
 
+.input-suffix {
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    flex-shrink: 0;
+}
+
 input[type="number"],
 input[type="text"],
 select {
@@ -904,6 +911,69 @@ select.valid:focus {
     font-size: var(--font-size-sm);
     font-weight: 700;
     color: var(--color-text-primary);
+}
+
+/* ===== Subsidy Breakdown ===== */
+.subsidy-breakdown {
+    margin: var(--spacing-md) var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-primary);
+}
+
+.breakdown-title {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--spacing-sm) 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.breakdown-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xs) 0;
+}
+
+.breakdown-item.withholding {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-top: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+}
+
+.breakdown-item.total {
+    margin-top: var(--spacing-xs);
+    font-weight: 600;
+}
+
+.breakdown-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.breakdown-value {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.breakdown-value.negative {
+    color: #dc2626; /* Red for withholding amount */
+}
+
+.breakdown-value.highlight {
+    color: var(--color-success);
+    font-size: var(--font-size-lg);
 }
 
 /* ===== Period Selector ===== */

@@ -519,6 +519,10 @@ function collectFormData() {
     return childData;
   });
   
+  // CCS Settings
+  const withholdingRateValue = document.getElementById('withholding-rate').value;
+  const withholdingRate = withholdingRateValue !== '' ? parseFloat(withholdingRateValue) : 5;
+  
   return {
     parent1: { 
       income: parent1Income, 
@@ -532,7 +536,8 @@ function collectFormData() {
       hours: parent2Hours,
       workDays: parent2WorkDays 
     },
-    children
+    children,
+    withholdingRate
   };
 }
 
@@ -710,7 +715,8 @@ function calculateCCS(formData) {
         subsidyPerDay,
         providerDailyFee: child.dailyFee,
         subsidisedDays: subsidisedDaysResult.daysPerWeek,
-        actualDays: actualDaysNeeded
+        actualDays: actualDaysNeeded,
+        withholdingRate: formData.withholdingRate
       });
       
       // Calculate cost savings
@@ -745,7 +751,8 @@ function calculateCCS(formData) {
         subsidyPerHour,
         providerFee: child.providerFee,
         subsidisedHours: subsidisedHoursPerWeek,
-        actualHours: child.hoursPerWeek
+        actualHours: child.hoursPerWeek,
+        withholdingRate: formData.withholdingRate
       });
       
       return {
@@ -763,6 +770,8 @@ function calculateCCS(formData) {
   
   // Calculate totals
   const totalWeeklySubsidy = childrenResults.reduce((sum, child) => sum + child.weeklySubsidy, 0);
+  const totalWeeklyGrossSubsidy = childrenResults.reduce((sum, child) => sum + child.weeklyGrossSubsidy, 0);
+  const totalWeeklyWithheld = childrenResults.reduce((sum, child) => sum + child.weeklyWithheld, 0);
   const totalWeeklyCost = childrenResults.reduce((sum, child) => sum + child.weeklyFullCost, 0);
   const totalWeeklyGap = childrenResults.reduce((sum, child) => sum + child.weeklyOutOfPocket, 0);
   
@@ -778,12 +787,15 @@ function calculateCCS(formData) {
     scheduleBreakdown,
     scheduleResult,
     totalWeeklySubsidy,
+    totalWeeklyGrossSubsidy,
+    totalWeeklyWithheld,
     totalWeeklyCost,
     totalWeeklyGap,
     annualOutOfPocket,
     netAnnualIncome,
     costAsPercentageOfIncome,
-    childrenResults
+    childrenResults,
+    withholdingRate: formData.withholdingRate
   };
 }
 
@@ -816,6 +828,30 @@ function displayResults(results) {
   if (weeklyCostEl) {
     weeklyCostEl.textContent = formatCurrency(results.totalWeeklyCost);
     weeklyCostEl.dataset.weeklyValue = results.totalWeeklyCost;
+  }
+  
+  // Subsidy breakdown
+  const grossSubsidyEl = document.getElementById('result-gross-subsidy');
+  if (grossSubsidyEl) {
+    grossSubsidyEl.textContent = formatCurrency(results.totalWeeklyGrossSubsidy);
+    grossSubsidyEl.dataset.weeklyValue = results.totalWeeklyGrossSubsidy;
+  }
+  
+  const withheldAmountEl = document.getElementById('result-withheld-amount');
+  if (withheldAmountEl) {
+    withheldAmountEl.textContent = '-' + formatCurrency(results.totalWeeklyWithheld);
+    withheldAmountEl.dataset.weeklyValue = results.totalWeeklyWithheld;
+  }
+  
+  const paidSubsidyEl = document.getElementById('result-paid-subsidy');
+  if (paidSubsidyEl) {
+    paidSubsidyEl.textContent = formatCurrency(results.totalWeeklySubsidy);
+    paidSubsidyEl.dataset.weeklyValue = results.totalWeeklySubsidy;
+  }
+  
+  const withholdingRateDisplayEl = document.getElementById('result-withholding-rate');
+  if (withholdingRateDisplayEl) {
+    withholdingRateDisplayEl.textContent = results.withholdingRate;
   }
   
   // Net income
@@ -1573,6 +1609,14 @@ function restoreFormData(formData) {
           }
         }
       });
+    }
+    
+    // Restore withholding rate
+    if (formData.withholdingRate !== undefined) {
+      const withholdingRateInput = document.getElementById('withholding-rate');
+      if (withholdingRateInput) {
+        withholdingRateInput.value = formData.withholdingRate;
+      }
     }
     
     console.log('Form data restored from localStorage');
