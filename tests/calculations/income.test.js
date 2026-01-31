@@ -39,12 +39,12 @@ describe('Income Calculations', () => {
     });
     
     test('calculates adjusted income for 1 day week (20%)', () => {
-      const result = calculateAdjustedIncome(100000, 1, 7.6);
+      const result = calculateAdjustedIncome(100000, 1, 7.6, 7.6);
       expect(result).toBe(20000);
     });
     
     test('calculates adjusted income for 2 day week (40%)', () => {
-      const result = calculateAdjustedIncome(100000, 2, 7.6);
+      const result = calculateAdjustedIncome(100000, 2, 7.6, 7.6);
       expect(result).toBe(40000);
     });
 
