@@ -45,10 +45,17 @@ import {
 import {
   initializeAllCollapses
 } from './js/ui/collapsible-sections.js';
+import {
+  initializeTheme,
+  initializeThemeToggle
+} from './js/ui/theme-toggle.js';
 
 // Global state for scenarios
 let currentScenarios = [];
 let currentFormData = null;
+
+// Initialize theme before DOM content loads to prevent flash
+initializeTheme();
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('CCS Calculator initialized');
@@ -100,6 +107,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize collapsible sections for mobile/tablet
     initializeAllCollapses();
+    
+    // Initialize theme toggle (Dark Mode)
+    initializeThemeToggle();
     
     // Check if URL contains shared data and load it (Phase 7)
     const urlData = loadFromURL();

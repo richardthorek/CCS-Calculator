@@ -152,6 +152,12 @@ header::before {
     z-index: 1;
 }
 
+.header-top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--spacing-md);
+}
+
 header h1 {
     font-size: var(--font-size-3xl);
     font-weight: 800;
@@ -2446,6 +2452,363 @@ footer {
         left: 10px;
         max-width: none;
     }
+}
+
+/* ===== Theme Toggle Button ===== */
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-full);
+    color: var(--color-text-inverse);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    font-family: var(--font-family);
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.theme-toggle:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+}
+
+.theme-toggle:active {
+    transform: translateY(0);
+}
+
+.theme-toggle-icon {
+    font-size: var(--font-size-lg);
+    line-height: 1;
+}
+
+.theme-toggle-label {
+    font-size: var(--font-size-sm);
+}
+
+/* Hide label on very small screens */
+@media (max-width: 480px) {
+    .theme-toggle-label {
+        display: none;
+    }
+}
+
+/* ===== Dark Mode ===== */
+/* Dark mode variables and styles */
+:root.dark-mode {
+    /* Primary Colors - Adjusted for dark mode */
+    --color-primary: #22d3ee;
+    --color-primary-dark: #06b6d4;
+    --color-primary-light: #67e8f9;
+    --color-primary-50: #083344;
+    --color-primary-100: #164e63;
+    
+    /* Secondary - Brighter for dark mode */
+    --color-secondary: #818cf8;
+    --color-secondary-light: #a5b4fc;
+    
+    /* Success - Adjusted for dark mode */
+    --color-success: #10b981;
+    --color-success-light: #34d399;
+    --color-success-50: #064e3b;
+    
+    /* Accent - Adjusted for dark mode */
+    --color-accent: #fbbf24;
+    --color-accent-light: #fcd34d;
+    
+    /* Warning & Error - Brighter for dark mode */
+    --color-warning: #f59e0b;
+    --color-error: #f87171;
+    --color-error-light: #7f1d1d;
+    
+    /* Neutral Backgrounds - Dark variants */
+    --color-bg-primary: #0f172a;
+    --color-bg-secondary: #1e293b;
+    --color-bg-tertiary: #334155;
+    --color-bg-warm: #422006;
+    
+    /* Header - Dark variant */
+    --color-bg-header: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    
+    /* Text Colors - Light variants for dark mode */
+    --color-text-primary: #f1f5f9;
+    --color-text-secondary: #cbd5e1;
+    --color-text-muted: #64748b;
+    --color-text-inverse: #0f172a;
+    
+    /* Border Colors - Lighter for dark mode */
+    --color-border: #475569;
+    --color-border-focus: #22d3ee;
+    --color-border-success: #10b981;
+    
+    /* Shadows - Darker for dark mode */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 0 20px rgba(34, 211, 238, 0.3);
+    --shadow-success-glow: 0 0 20px rgba(16, 185, 129, 0.4);
+    --shadow-sticky-mobile: 0 10px 15px -3px rgba(0, 0, 0, 0.7), 0 4px 6px -4px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.8);
+}
+
+/* Dark mode specific adjustments */
+.dark-mode {
+    color-scheme: dark;
+}
+
+.dark-mode body {
+    background: var(--color-bg-secondary);
+}
+
+/* Header text in dark mode - keep it light and readable */
+.dark-mode header {
+    color: var(--color-text-primary);
+}
+
+.dark-mode header h1,
+.dark-mode header .subtitle,
+.dark-mode header .disclaimer {
+    color: var(--color-text-primary);
+}
+
+/* Form controls in dark mode */
+.dark-mode .form-control,
+.dark-mode input[type="text"],
+.dark-mode input[type="number"],
+.dark-mode input[type="date"],
+.dark-mode select,
+.dark-mode textarea {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.dark-mode .form-control:focus,
+.dark-mode input:focus,
+.dark-mode select:focus,
+.dark-mode textarea:focus {
+    background: var(--color-bg-primary);
+    border-color: var(--color-border-focus);
+}
+
+.dark-mode .form-control::placeholder,
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+    color: var(--color-text-muted);
+}
+
+/* Buttons in dark mode */
+.dark-mode .btn-primary {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+.dark-mode .btn-primary:hover {
+    background: var(--color-primary-light);
+}
+
+.dark-mode .btn-secondary {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.dark-mode .btn-secondary:hover {
+    background: var(--color-bg-primary);
+    border-color: var(--color-border-focus);
+}
+
+/* Cards and sections in dark mode */
+.dark-mode .form-section,
+.dark-mode .results-card,
+.dark-mode .scenario-card,
+.dark-mode .trust-banner,
+.dark-mode .chart-container {
+    background: var(--color-bg-primary);
+    border-color: var(--color-border);
+}
+
+/* Trust banner in dark mode */
+.dark-mode .trust-banner {
+    background: linear-gradient(135deg, var(--color-success-50) 0%, #065f46 100%);
+}
+
+/* Results cards in dark mode */
+.dark-mode .results-summary-grid {
+    background: var(--color-bg-tertiary);
+}
+
+.dark-mode .summary-card {
+    background: var(--color-bg-primary);
+}
+
+/* Theme toggle in dark mode */
+.dark-mode .theme-toggle {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .theme-toggle:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Tables in dark mode */
+.dark-mode .comparison-table {
+    background: var(--color-bg-primary);
+}
+
+.dark-mode .comparison-table thead {
+    background: var(--color-bg-tertiary);
+}
+
+.dark-mode .comparison-table th {
+    background: var(--color-bg-tertiary);
+}
+
+.dark-mode .comparison-table tbody tr {
+    background: var(--color-bg-primary);
+}
+
+.dark-mode .comparison-table tbody tr:nth-child(even) {
+    background: var(--color-bg-tertiary);
+}
+
+.dark-mode .comparison-table tbody tr:hover {
+    background: var(--color-bg-tertiary);
+}
+
+/* Best scenario highlight in dark mode */
+.dark-mode .comparison-table tbody tr.best-scenario td {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.1) 100%);
+}
+
+/* Tooltips in dark mode */
+.dark-mode .tooltip-trigger:hover::after,
+.dark-mode .tooltip-trigger:focus::after {
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+}
+
+/* Preset section in dark mode */
+.dark-mode .preset-section {
+    background: var(--color-bg-primary);
+    border-color: var(--color-border);
+}
+
+/* Charts in dark mode - update text colors */
+.dark-mode canvas {
+    filter: brightness(0.95);
+}
+
+/* Sticky header in dark mode */
+.dark-mode .mobile-sticky-header {
+    background: linear-gradient(135deg, var(--color-primary-100) 0%, var(--color-bg-primary) 100%);
+}
+
+/* Input prefixes and suffixes in dark mode */
+.dark-mode .input-prefix,
+.dark-mode .input-suffix {
+    background: var(--color-bg-primary);
+    color: var(--color-text-secondary);
+    border-color: var(--color-border);
+}
+
+/* Badges in dark mode */
+.dark-mode .badge {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+}
+
+.dark-mode .badge-success {
+    background: var(--color-success-50);
+    color: var(--color-success-light);
+}
+
+/* Key figures in dark mode - Fix accessibility issues */
+.dark-mode .key-figure {
+    background: var(--color-bg-tertiary);
+}
+
+.dark-mode .key-figure.primary {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.15) 100%);
+    border-color: var(--color-success);
+}
+
+.dark-mode .key-figure.primary::after {
+    background: var(--color-success);
+    color: var(--color-text-inverse);
+}
+
+.dark-mode .key-figure.secondary {
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(6, 182, 212, 0.15) 100%);
+    border-color: var(--color-primary);
+}
+
+.dark-mode .key-figure.primary .figure-value {
+    color: var(--color-success-light);
+}
+
+.dark-mode .key-figure.secondary .figure-value {
+    color: var(--color-primary);
+}
+
+.dark-mode .figure-label {
+    color: var(--color-text-secondary);
+}
+
+/* Live results header in dark mode */
+.dark-mode .live-results-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: var(--color-text-inverse);
+}
+
+/* Summary items in dark mode */
+.dark-mode .summary-item {
+    background: var(--color-bg-tertiary);
+}
+
+.dark-mode .summary-label {
+    color: var(--color-text-muted);
+}
+
+.dark-mode .summary-value {
+    color: var(--color-text-primary);
+}
+
+/* Subsidy breakdown in dark mode */
+.dark-mode .subsidy-breakdown {
+    background: var(--color-bg-tertiary);
+    border-left-color: var(--color-primary);
+}
+
+.dark-mode .breakdown-title {
+    color: var(--color-text-secondary);
+}
+
+.dark-mode .breakdown-label {
+    color: var(--color-text-secondary);
+}
+
+.dark-mode .breakdown-value {
+    color: var(--color-text-primary);
+}
+
+.dark-mode .breakdown-item.withholding {
+    border-top-color: var(--color-border);
+    border-bottom-color: var(--color-border);
 }
 
 /* ===== Accessibility: Reduced Motion ===== */

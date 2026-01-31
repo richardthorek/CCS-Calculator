@@ -109,6 +109,33 @@ When updating the master plan:
   - jsPDF (if browser print API insufficient for PDF export)
 - **Before adding ANY package**: Document why native APIs cannot achieve the goal
 
+### Using Context7 MCP for Library Documentation 🎯
+**CRITICAL: Always consult Context7 MCP when working with external libraries and packages**
+
+- **When to use Context7 MCP:**
+  - Before adding any external library or package to the project
+  - When implementing features that use existing external libraries
+  - When debugging issues with third-party packages
+  - When updating library versions or dependencies
+  - When you need up-to-date documentation for a specific library
+  
+- **How to use Context7 MCP:**
+  1. Use the Context7 MCP to get current, accurate documentation for the library
+  2. Review the latest API usage patterns and best practices
+  3. Check for any known issues, breaking changes, or updates
+  4. Verify compatibility with the project's Node.js version (20 LTS)
+  
+- **Context7 MCP provides:**
+  - Up-to-date library documentation
+  - Code examples and usage patterns
+  - Best practices for library integration
+  - Information about library versions and compatibility
+  
+- **Example workflow:**
+  1. Need to use Chart.js? → Query Context7 MCP for latest Chart.js documentation
+  2. Implementing jsPDF export? → Use Context7 MCP to get current API usage
+  3. Updating a package? → Check Context7 MCP for breaking changes and migration guides
+
 ### Azure Static Web Apps Specifics
 - Frontend files should be in the `src/` folder structure
 - Azure Functions should be in the `api/` folder (if needed)
@@ -152,7 +179,9 @@ When updating the master plan:
 - **Before adding a package**: 
   1. Try to solve with vanilla JS/native APIs first
   2. Document why native solution won't work
-  3. Verify package is contemporary and actively maintained
-  4. Add to package.json with justification in comments
+  3. Use Context7 MCP to get up-to-date documentation and guidance on the library
+  4. Verify package is contemporary and actively maintained
+  5. Add to package.json with justification in comments
+- **When working with external libraries**: Always use Context7 MCP to access current documentation, examples, and best practices for the library
 - **When implementing UI features**: Use vanilla JS, native DOM APIs, and CSS (no jQuery, no frameworks)
 - **When implementing calculations**: Create pure functions in separate modules for testability
