@@ -10,6 +10,34 @@ import { ACTIVITY_TEST } from '../config/ccs-config.js';
 const ACTIVITY_TEST_CONSTANTS = ACTIVITY_TEST;
 
 /**
+ * Calculate subsidised days per week based on parent activity levels
+ * This is for daily rate mode - converts activity test hours to days
+ * 
+ * @param {number} parent1HoursPerFortnight - Parent 1's work hours per fortnight
+ * @param {number} parent2HoursPerFortnight - Parent 2's work hours per fortnight (default: 0 for single parent)
+ * @param {number} hoursPerDay - Hours per day for conversion (default: 10)
+ * @returns {Object} Object with daysPerWeek, hoursPerWeek, and hoursPerFortnight
+ */
+export function calculateSubsidisedDays(parent1HoursPerFortnight, parent2HoursPerFortnight = 0, hoursPerDay = 10) {
+  // Get subsidised hours
+  const subsidisedHoursResult = calculateSubsidisedHours(parent1HoursPerFortnight, parent2HoursPerFortnight);
+  
+  // Validation for hoursPerDay
+  if (typeof hoursPerDay !== 'number' || hoursPerDay <= 0) {
+    throw new Error('Hours per day must be a positive number');
+  }
+  
+  // Convert hours to days (round down to nearest half day)
+  const daysPerWeek = Math.floor(subsidisedHoursResult.hoursPerWeek / hoursPerDay * 2) / 2;
+  
+  return {
+    daysPerWeek,
+    hoursPerWeek: subsidisedHoursResult.hoursPerWeek,
+    hoursPerFortnight: subsidisedHoursResult.hoursPerFortnight
+  };
+}
+
+/**
  * Calculate subsidised hours per week based on parent activity levels
  * 
  * @param {number} parent1HoursPerFortnight - Parent 1's work hours per fortnight

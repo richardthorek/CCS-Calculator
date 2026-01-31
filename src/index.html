@@ -63,6 +63,7 @@
                                 min="0" 
                                 max="5"
                                 step="1"
+                                value="5"
                                 required
                                 aria-required="true"
                                 aria-describedby="parent1-days-error"
@@ -82,12 +83,42 @@
                                 min="0" 
                                 max="24"
                                 step="0.5"
+                                value="7.6"
                                 required
                                 aria-required="true"
                                 aria-describedby="parent1-hours-error"
                             >
                             <span class="error-message" id="parent1-hours-error" role="alert"></span>
                         </div>
+                    </div>
+                    
+                    <!-- Work Days Selection -->
+                    <div class="form-group">
+                        <label>Which Days Do You Work? <span class="required" aria-label="required">*</span></label>
+                        <p class="help-text">Select the specific days you work each week</p>
+                        <div class="checkbox-group work-days-group" id="parent1-work-days">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="parent1-workday" value="monday" checked>
+                                <span>Monday</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="parent1-workday" value="tuesday" checked>
+                                <span>Tuesday</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="parent1-workday" value="wednesday" checked>
+                                <span>Wednesday</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="parent1-workday" value="thursday" checked>
+                                <span>Thursday</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="parent1-workday" value="friday" checked>
+                                <span>Friday</span>
+                            </label>
+                        </div>
+                        <span class="error-message" id="parent1-workdays-error" role="alert"></span>
                     </div>
                 </section>
 
@@ -144,6 +175,35 @@
                             >
                             <span class="error-message" id="parent2-hours-error" role="alert"></span>
                         </div>
+                    </div>
+                    
+                    <!-- Work Days Selection -->
+                    <div class="form-group" id="parent2-workdays-container">
+                        <label>Which Days Does Parent 2 Work?</label>
+                        <p class="help-text">Select the specific days parent 2 works each week</p>
+                        <div class="checkbox-group work-days-group" id="parent2-work-days">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="parent2-workday" value="monday">
+                                <span>Monday</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="parent2-workday" value="tuesday">
+                                <span>Tuesday</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="parent2-workday" value="wednesday">
+                                <span>Wednesday</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="parent2-workday" value="thursday">
+                                <span>Thursday</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="parent2-workday" value="friday">
+                                <span>Friday</span>
+                            </label>
+                        </div>
+                        <span class="error-message" id="parent2-workdays-error" role="alert"></span>
                     </div>
                 </section>
 

@@ -135,6 +135,39 @@ export const WORK_DEFAULTS = {
 };
 
 /**
+ * Childcare day and rate defaults
+ * Most centres charge by the day, not by the hour
+ */
+export const CHILDCARE_DEFAULTS = {
+  DEFAULT_HOURS_PER_DAY: 10,      // Default hours charged per day (typical childcare day)
+  TYPICAL_DAILY_RATE_MIN: 80,     // Typical daily rate range minimum (AUD)
+  TYPICAL_DAILY_RATE_MAX: 200,    // Typical daily rate range maximum (AUD)
+  CHARGING_MODE: {
+    DAILY: 'daily',               // Most common - charge per day
+    HOURLY: 'hourly'              // Less common - charge per hour
+  }
+};
+
+/**
+ * Days of the week for scheduling
+ */
+export const DAYS_OF_WEEK = {
+  MONDAY: 'monday',
+  TUESDAY: 'tuesday',
+  WEDNESDAY: 'wednesday',
+  THURSDAY: 'thursday',
+  FRIDAY: 'friday'
+};
+
+export const DAYS_OF_WEEK_LABELS = {
+  monday: 'Monday',
+  tuesday: 'Tuesday',
+  wednesday: 'Wednesday',
+  thursday: 'Thursday',
+  friday: 'Friday'
+};
+
+/**
  * Validation limits
  */
 export const VALIDATION_LIMITS = {
@@ -184,6 +217,20 @@ export function getHourlyRateCap(careType, childAge) {
 }
 
 /**
+ * Helper function to get daily rate cap for a specific care type and age
+ * Daily rate cap = Hourly rate cap × Hours per day charged
+ * 
+ * @param {string} careType - Type of care (use CARE_TYPES constants)
+ * @param {number} childAge - Age of the child in years
+ * @param {number} hoursPerDay - Hours charged per day (default: 10)
+ * @returns {number} Daily rate cap in AUD
+ */
+export function getDailyRateCap(careType, childAge, hoursPerDay = CHILDCARE_DEFAULTS.DEFAULT_HOURS_PER_DAY) {
+  const hourlyRateCap = getHourlyRateCap(careType, childAge);
+  return hourlyRateCap * hoursPerDay;
+}
+
+/**
  * Export all configuration as a single object for easy access
  */
 export const CCS_CONFIG = {
@@ -194,9 +241,13 @@ export const CCS_CONFIG = {
   CARE_TYPES,
   AGE_CATEGORIES,
   WORK_DEFAULTS,
+  CHILDCARE_DEFAULTS,
+  DAYS_OF_WEEK,
+  DAYS_OF_WEEK_LABELS,
   VALIDATION_LIMITS,
   FINANCIAL_YEAR,
-  getHourlyRateCap
+  getHourlyRateCap,
+  getDailyRateCap
 };
 
 export default CCS_CONFIG;

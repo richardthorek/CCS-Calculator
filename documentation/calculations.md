@@ -212,6 +212,120 @@ Net Annual Income = Household Income - Annual Out-of-Pocket Cost
 Cost Percentage = (Annual Out-of-Pocket ÷ Household Income) × 100%
 ```
 
+## Daily Rate Calculations (New in 2026)
+
+Most Australian childcare centres charge by the day rather than by the hour. The calculator now supports both daily and hourly charging modes.
+
+### Daily Rate Caps
+
+```
+Daily Rate Cap = Hourly Rate Cap × Hours Charged Per Day
+```
+
+**Example:**
+- Centre-based, child age 3
+- Hourly rate cap: $14.63/hour
+- Hours charged per day: 10
+- **Daily rate cap: $146.30/day**
+
+### Effective Daily Rate
+
+```
+Effective Daily Rate = min(Provider Daily Fee, Daily Rate Cap)
+```
+
+**Example:**
+- Provider daily fee: $120/day
+- Daily rate cap: $146.30/day
+- **Effective daily rate: $120/day** (provider fee is lower)
+
+### Subsidy Per Day
+
+```
+Subsidy Per Day = (Subsidy Rate ÷ 100) × Effective Daily Rate
+```
+
+**Example:**
+- Subsidy rate: 90%
+- Effective daily rate: $120/day
+- **Subsidy per day: $108/day**
+
+### Weekly Costs (Daily Rate Mode)
+
+```
+Days With Subsidy = min(Subsidised Days, Actual Days)
+Days Without Subsidy = max(0, Actual Days - Subsidised Days)
+
+Weekly Subsidy = Subsidy Per Day × Days With Subsidy
+Weekly Full Cost = Provider Daily Fee × Actual Days
+Weekly Out-of-Pocket = Weekly Full Cost - Weekly Subsidy
+```
+
+**Example:**
+- Subsidy per day: $108
+- Provider daily fee: $120
+- Subsidised days: 5 (from activity test)
+- Actual days needed: 3 (from parent schedule)
+
+Calculations:
+- Days with subsidy: min(5, 3) = 3
+- Days without subsidy: max(0, 3 - 5) = 0
+- Weekly subsidy: $108 × 3 = $324
+- Weekly full cost: $120 × 3 = $360
+- **Weekly out-of-pocket: $360 - $324 = $36**
+
+## Parent Work Schedule & Childcare Days
+
+### Module: `parent-schedule.js`
+
+The calculator now considers which specific days parents work to calculate the minimum number of childcare days needed.
+
+#### Minimum Childcare Days
+
+```
+Childcare Days = Union of Parent 1 Work Days and Parent 2 Work Days
+```
+
+**Key Principle:** Childcare is only needed on days when at least one parent is working.
+
+**Example 1: Overlapping Schedules**
+- Parent 1 works: Monday, Tuesday, Wednesday, Thursday (4 days)
+- Parent 2 works: Tuesday, Wednesday, Thursday, Friday (4 days)
+- **Childcare needed: Monday-Friday (5 days)**
+- Overlapping days: Tuesday, Wednesday, Thursday (3 days)
+
+**Example 2: Completely Different Schedules**
+- Parent 1 works: Monday, Wednesday, Friday (3 days)
+- Parent 2 works: Tuesday, Thursday (2 days)
+- **Childcare needed: Monday-Friday (5 days)**
+- No overlapping days
+
+**Example 3: Optimal Arrangement**
+- Parent 1 works: Monday, Tuesday, Wednesday, Thursday (4 days)
+- Parent 2 works: Monday, Tuesday, Wednesday, Thursday (4 days - same days)
+- **Childcare needed: Monday-Thursday (4 days)**
+- Friday: Neither parent working - no childcare needed
+- **Weekly savings: 1 day of childcare**
+
+#### Cost Savings from Parent Availability
+
+```
+Days Without Care = 5 - Childcare Days Needed
+Weekly Savings = Days Without Care × Daily Fee
+Annual Savings = Weekly Savings × 52 weeks
+Percentage Saved = (Days Without Care ÷ 5) × 100%
+```
+
+**Example:**
+- Daily fee: $120
+- Childcare days needed: 3
+- Days without care: 5 - 3 = 2
+
+Savings:
+- Weekly savings: 2 × $120 = $240
+- **Annual savings: $240 × 52 = $12,480**
+- **Percentage saved: 40%**
+
 ## Complete Calculation Flow
 
 ### Step-by-Step Process
