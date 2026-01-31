@@ -28,6 +28,9 @@ import { stripCommas, formatWithCommas } from '../utils/format-input.js';
 let lastFormData = null;
 let lastResults = null;
 
+// Default values for child inputs
+const DEFAULT_HOURS_PER_DAY = '10';
+
 /**
  * Initialize the calculator form
  */
@@ -985,6 +988,27 @@ function addChild() {
   const container = document.getElementById('children-container');
   const childIndex = childCounter++;
   
+  // Get values from first child to use as defaults for subsequent children
+  const existingChildren = container.querySelectorAll('.child-card');
+  let defaultDailyFee = '';
+  let defaultHoursPerDay = DEFAULT_HOURS_PER_DAY;
+  
+  if (existingChildren.length > 0) {
+    // Get values from first child
+    const firstChild = existingChildren[0];
+    const firstChildIndex = firstChild.dataset.childIndex;
+    
+    const dailyFeeInput = document.getElementById(`child-${firstChildIndex}-daily-fee`);
+    const hoursPerDayInput = document.getElementById(`child-${firstChildIndex}-hours-per-day`);
+    
+    if (dailyFeeInput && dailyFeeInput.value) {
+      defaultDailyFee = dailyFeeInput.value;
+    }
+    if (hoursPerDayInput && hoursPerDayInput.value) {
+      defaultHoursPerDay = hoursPerDayInput.value;
+    }
+  }
+  
   const childCard = document.createElement('div');
   childCard.className = 'child-card';
   childCard.setAttribute('role', 'listitem');
@@ -1082,6 +1106,7 @@ function addChild() {
               aria-required="true"
               aria-describedby="child-${childIndex}-daily-fee-error"
               placeholder="e.g., 120"
+              value="${defaultDailyFee}"
             >
           </div>
           <span class="error-message" id="child-${childIndex}-daily-fee-error" role="alert"></span>
@@ -1100,7 +1125,7 @@ function addChild() {
             min="1" 
             max="24"
             step="0.5"
-            value="10"
+            value="${defaultHoursPerDay}"
             required
             aria-required="true"
             aria-describedby="child-${childIndex}-hours-per-day-error"
