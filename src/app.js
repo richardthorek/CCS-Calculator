@@ -16,6 +16,10 @@ import {
   updateCharts, 
   clearCharts 
 } from './js/ui/chart-manager.js';
+import {
+  initializeExportHandlers,
+  loadFromURL
+} from './js/ui/export-handler.js';
 
 // Global state for scenarios
 let currentScenarios = [];
@@ -33,10 +37,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize charts
     initializeCharts();
     
+    // Initialize export handlers (print, PDF, share link)
+    initializeExportHandlers();
+    
+    // Check if URL contains shared data and load it
+    const urlData = loadFromURL();
+    if (urlData) {
+      console.log('Loading data from URL:', urlData);
+      // Dispatch event to populate form with URL data
+      document.dispatchEvent(new CustomEvent('loadFormDataFromURL', { detail: urlData }));
+    }
+    
     // Listen for form calculation success to enable scenario generation
     document.addEventListener('calculationComplete', (event) => {
       currentFormData = event.detail.formData;
       showScenarioGenerationOption();
+      
+      // Store form data in a hidden element for export handler
+      storeFormDataForExport(currentFormData);
+    });
+    
+    // Listen for request to provide form data (from export handler)
+    document.addEventListener('requestFormData', () => {
+      storeFormDataForExport(currentFormData);
     });
     
     // Generate all scenarios button
@@ -139,4 +162,23 @@ function generateAndDisplayScenarios(mode = 'common') {
     container.insertBefore(countMsg, container.firstChild);
   }
 }
+
+/**
+ * Store form data in a hidden element for export handler
+ * @param {Object} formData - Form data to store
+ */
+function storeFormDataForExport(formData) {
+  if (!formData) return;
+  
+  let dataElement = document.getElementById('current-form-data');
+  if (!dataElement) {
+    dataElement = document.createElement('div');
+    dataElement.id = 'current-form-data';
+    dataElement.style.display = 'none';
+    document.body.appendChild(dataElement);
+  }
+  
+  dataElement.dataset.formData = JSON.stringify(formData);
+}
+
 
