@@ -145,11 +145,36 @@ function isFormDataComplete(formData) {
 
 /**
  * Check if two form data objects are equal
+ * Uses shallow comparison for performance and property order independence
  */
 function isFormDataEqual(data1, data2) {
   if (!data1 || !data2) return false;
   
-  return JSON.stringify(data1) === JSON.stringify(data2);
+  // Compare parent 1
+  if (data1.parent1.income !== data2.parent1.income) return false;
+  if (data1.parent1.days !== data2.parent1.days) return false;
+  if (data1.parent1.hours !== data2.parent1.hours) return false;
+  
+  // Compare parent 2
+  if (data1.parent2.income !== data2.parent2.income) return false;
+  if (data1.parent2.days !== data2.parent2.days) return false;
+  if (data1.parent2.hours !== data2.parent2.hours) return false;
+  
+  // Compare children count
+  if (data1.children.length !== data2.children.length) return false;
+  
+  // Compare each child
+  for (let i = 0; i < data1.children.length; i++) {
+    const child1 = data1.children[i];
+    const child2 = data2.children[i];
+    
+    if (child1.age !== child2.age) return false;
+    if (child1.careType !== child2.careType) return false;
+    if (child1.hoursPerWeek !== child2.hoursPerWeek) return false;
+    if (child1.providerFee !== child2.providerFee) return false;
+  }
+  
+  return true;
 }
 
 /**
