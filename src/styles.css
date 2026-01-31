@@ -537,6 +537,46 @@ select.error:focus {
     }
 }
 
+/* Apply to All Control */
+.children-controls {
+    margin-bottom: var(--spacing-lg);
+}
+
+.apply-all-control {
+    background-color: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.apply-all-control label {
+    display: block;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.apply-all-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.form-control-small {
+    flex: 0 0 auto;
+    width: 100px;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+}
+
+.btn-small {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.875rem;
+}
+
 .child-card {
     background-color: var(--color-bg-secondary);
     border: 1px solid var(--color-border);

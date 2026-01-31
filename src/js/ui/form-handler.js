@@ -34,6 +34,7 @@ export function initializeForm() {
   const form = document.getElementById('ccs-calculator-form');
   const addChildBtn = document.getElementById('add-child-btn');
   const resetBtn = document.getElementById('reset-btn');
+  const applyAllBtn = document.getElementById('apply-all-btn');
   
   // Try to restore saved state
   const savedState = loadState();
@@ -50,6 +51,7 @@ export function initializeForm() {
   addChildBtn.addEventListener('click', addChild);
   form.addEventListener('submit', handleFormSubmit);
   resetBtn.addEventListener('click', handleReset);
+  applyAllBtn.addEventListener('click', handleApplyToAll);
   
   // Add real-time event listeners to all inputs (debounced)
   setupRealtimeUpdates();
@@ -59,6 +61,9 @@ export function initializeForm() {
   
   // Update adjusted income displays on initial load
   updateAdjustedIncomeDisplays();
+  
+  // Setup days of care auto-calculation
+  setupDaysOfCareAutoCalculation();
   
   console.log('Form initialized with real-time updates');
 }
@@ -163,6 +168,96 @@ function updateParentAdjustedIncome(parentId) {
   
   // Show the display
   displayElement.style.display = 'block';
+}
+
+/**
+ * Setup automatic calculation of days of care based on parent work schedules
+ */
+function setupDaysOfCareAutoCalculation() {
+  const form = document.getElementById('ccs-calculator-form');
+  
+  // Listen for changes to parent work day checkboxes and days inputs
+  form.addEventListener('change', (event) => {
+    const target = event.target;
+    
+    // Check if it's a parent work day checkbox or days input
+    if (target.name === 'parent1-workday' || 
+        target.name === 'parent2-workday' ||
+        target.id === 'parent1-days' ||
+        target.id === 'parent2-days') {
+      updateAllChildrenDaysOfCare();
+    }
+  });
+  
+  // Initial calculation
+  setTimeout(() => updateAllChildrenDaysOfCare(), 100);
+}
+
+/**
+ * Update days of care for all children based on parent work schedules
+ * Only updates if the field hasn't been manually edited by the user
+ */
+function updateAllChildrenDaysOfCare() {
+  // Get parent work days
+  const parent1WorkDaysCheckboxes = document.querySelectorAll('input[name="parent1-workday"]:checked');
+  const parent1WorkDays = Array.from(parent1WorkDaysCheckboxes).map(cb => cb.value);
+  
+  const parent2WorkDaysCheckboxes = document.querySelectorAll('input[name="parent2-workday"]:checked');
+  const parent2WorkDays = Array.from(parent2WorkDaysCheckboxes).map(cb => cb.value);
+  
+  // Calculate minimum days needed
+  const scheduleResult = calculateMinimumChildcareDays(parent1WorkDays, parent2WorkDays);
+  const defaultDays = scheduleResult.daysCount;
+  
+  // Update each child's days of care input
+  const daysOfCareInputs = document.querySelectorAll('.days-of-care-input');
+  daysOfCareInputs.forEach(input => {
+    // Only update if field is empty or hasn't been manually edited
+    if (input.value === '' || input.dataset.autoCalculated === 'true') {
+      input.value = defaultDays;
+      input.dataset.autoCalculated = 'true';
+      
+      // Update help text
+      const childIndex = input.dataset.childIndex;
+      const helpText = document.getElementById(`child-${childIndex}-days-help`);
+      if (helpText) {
+        helpText.textContent = `Based on parent schedules (${scheduleResult.explanation})`;
+      }
+    }
+  });
+  
+  // Mark manual edits
+  daysOfCareInputs.forEach(input => {
+    input.addEventListener('input', function() {
+      this.dataset.autoCalculated = 'false';
+    }, { once: true });
+  });
+}
+
+/**
+ * Handle "Apply to All" button click
+ */
+function handleApplyToAll() {
+  const applyAllInput = document.getElementById('apply-all-days');
+  const daysValue = parseInt(applyAllInput.value);
+  
+  if (isNaN(daysValue) || daysValue < 0 || daysValue > 5) {
+    alert('Please enter a valid number of days between 0 and 5');
+    return;
+  }
+  
+  // Apply to all children
+  const daysOfCareInputs = document.querySelectorAll('.days-of-care-input');
+  daysOfCareInputs.forEach(input => {
+    input.value = daysValue;
+    input.dataset.autoCalculated = 'false'; // Mark as manually set
+  });
+  
+  // Clear the apply-all input
+  applyAllInput.value = '';
+  
+  // Trigger recalculation
+  handleRealtimeCalculation();
 }
 
 /**
@@ -379,9 +474,11 @@ function collectFormData() {
     if (feeType === 'daily') {
       const dailyFeeValue = card.querySelector(`#child-${childIndex}-daily-fee`).value;
       const hoursPerDayValue = card.querySelector(`#child-${childIndex}-hours-per-day`).value;
+      const daysOfCareValue = card.querySelector(`#child-${childIndex}-days-of-care`).value;
       
       childData.dailyFee = dailyFeeValue !== '' ? parseFloat(dailyFeeValue) : null;
       childData.hoursPerDay = hoursPerDayValue !== '' ? parseFloat(hoursPerDayValue) : 10;
+      childData.daysOfCare = daysOfCareValue !== '' ? parseFloat(daysOfCareValue) : null;
     } else {
       // Hourly mode
       const hourlyFeeValue = card.querySelector(`#child-${childIndex}-hourly-fee`).value;
@@ -576,8 +673,10 @@ function calculateCCS(formData) {
         child.hoursPerDay
       );
       
-      // Use actual childcare days needed (from schedule)
-      const actualDaysNeeded = scheduleResult.daysCount;
+      // Use user-specified days of care, or fall back to calculated minimum
+      const actualDaysNeeded = child.daysOfCare !== null && child.daysOfCare !== undefined
+        ? child.daysOfCare
+        : scheduleResult.daysCount;
       
       costs = calculateWeeklyCostsFromDailyRate({
         subsidyPerDay,
@@ -954,6 +1053,28 @@ function addChild() {
           <span class="help-text">Usually 8-12 hours</span>
         </div>
       </div>
+      
+      <div class="form-group">
+        <label for="child-${childIndex}-days-of-care">
+          Days of Care per Week
+          <span class="required" aria-label="required">*</span>
+        </label>
+        <input 
+          type="number" 
+          id="child-${childIndex}-days-of-care" 
+          name="child-${childIndex}-days-of-care"
+          min="0" 
+          max="5"
+          step="1"
+          required
+          aria-required="true"
+          aria-describedby="child-${childIndex}-days-of-care-error"
+          class="days-of-care-input"
+          data-child-index="${childIndex}"
+        >
+        <span class="error-message" id="child-${childIndex}-days-of-care-error" role="alert"></span>
+        <span class="help-text" id="child-${childIndex}-days-help">Auto-calculated based on parent work schedules</span>
+      </div>
     </div>
     
     <!-- Hourly Rate Fields (hidden by default) -->
@@ -1014,6 +1135,12 @@ function addChild() {
   
   // Update numbering
   updateChildNumbering();
+  
+  // Update days of care for this new child
+  updateAllChildrenDaysOfCare();
+  
+  // Show/hide apply-all control based on child count
+  updateApplyAllControlVisibility();
 }
 
 /**
@@ -1068,6 +1195,9 @@ function removeChild(childCard) {
   
   childCard.remove();
   updateChildNumbering();
+  
+  // Show/hide apply-all control based on child count
+  updateApplyAllControlVisibility();
 }
 
 /**
@@ -1082,6 +1212,20 @@ function updateChildNumbering() {
     const removeBtn = card.querySelector('.remove-child-btn');
     removeBtn.setAttribute('aria-label', `Remove child ${index + 1}`);
   });
+}
+
+/**
+ * Show/hide the "Apply to All Children" control based on number of children
+ */
+function updateApplyAllControlVisibility() {
+  const childCards = document.querySelectorAll('.child-card');
+  const applyAllControl = document.getElementById('apply-all-control');
+  
+  if (childCards.length > 1) {
+    applyAllControl.style.display = 'block';
+  } else {
+    applyAllControl.style.display = 'none';
+  }
 }
 
 /**
