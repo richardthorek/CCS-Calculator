@@ -174,10 +174,16 @@
                         <button type="button" class="btn btn-danger btn-small" id="clear-data-btn">Clear Data</button>
                     </div>
                     
-                    <!-- Hidden apply all control -->
+                    <!-- Override days of care for all children -->
                     <div class="apply-all-control" id="apply-all-control" style="display: none;">
-                        <input type="number" id="apply-all-days" name="apply-all-days" min="0" max="5" step="1" class="form-control-small">
-                        <button type="button" id="apply-all-btn" class="btn btn-secondary btn-small">Apply to All</button>
+                        <label for="apply-all-days" class="apply-all-label">
+                            <strong>Override all children's care days:</strong>
+                            <span class="help-text">Set the same number of care days for all children</span>
+                        </label>
+                        <div class="apply-all-inputs">
+                            <input type="number" id="apply-all-days" name="apply-all-days" min="0" max="5" step="1" class="form-control-small" placeholder="Days">
+                            <button type="button" id="apply-all-btn" class="btn btn-secondary btn-small">Apply to All</button>
+                        </div>
                     </div>
                 </form>
             </div>

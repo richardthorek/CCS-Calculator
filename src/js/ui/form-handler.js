@@ -843,12 +843,17 @@ function displayResults(results) {
     costPercentageEl.textContent = formatPercentage(results.costAsPercentageOfIncome);
   }
   
-  // Care days needed - calculate from schedule breakdown
+  // Care days needed - display the actual days childcare is needed
   const careDaysEl = document.getElementById('result-care-days');
   if (careDaysEl && results.scheduleBreakdown) {
-    // Extract number from childcare days string
-    const match = results.scheduleBreakdown.childcareDays.match(/(\d+)/);
-    careDaysEl.textContent = match ? match[1] + ' days' : results.scheduleBreakdown.childcareDays;
+    const daysCount = results.scheduleResult?.daysCount || 0;
+    const daysString = results.scheduleBreakdown.childcareDays;
+    
+    if (daysCount === 0) {
+      careDaysEl.textContent = 'None (parent home each day)';
+    } else {
+      careDaysEl.textContent = daysString;
+    }
   }
   
   // Display schedule breakdown if available

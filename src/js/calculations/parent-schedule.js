@@ -8,8 +8,8 @@ import { DAYS_OF_WEEK, DAYS_OF_WEEK_LABELS } from '../config/ccs-config.js';
 
 /**
  * Calculate minimum childcare days needed based on parent work schedules
- * Key insight: If parents work different days, childcare is only needed on days
- * when BOTH parents are working OR when one parent is working and the other isn't available
+ * Key insight: Childcare is only needed on days when BOTH parents are working.
+ * If either parent is home on a given day, they can care for the children.
  * 
  * @param {Array<string>} parent1Days - Array of days parent 1 works (e.g., ['monday', 'tuesday', 'wednesday'])
  * @param {Array<string>} parent2Days - Array of days parent 2 works (empty array if single parent)
@@ -40,22 +40,24 @@ export function calculateMinimumChildcareDays(parent1Days = [], parent2Days = []
     };
   }
   
-  // Two parents: childcare needed when at least one parent is working
-  // Union of both parents' work days
-  const childcareDays = [...new Set([...parent1Days, ...parent2Days])].sort((a, b) => {
+  // Two parents: childcare needed only when BOTH parents are working
+  // Intersection of both parents' work days (days when neither parent is home)
+  const childcareDays = parent1Days.filter(day => parent2Days.includes(day)).sort((a, b) => {
     const order = Object.values(DAYS_OF_WEEK);
     return order.indexOf(a) - order.indexOf(b);
   });
   
-  // Calculate overlapping days (both parents working)
-  const overlappingDays = parent1Days.filter(day => parent2Days.includes(day));
+  // Calculate overlapping days (both parents working) - same as childcare days
+  const overlappingDays = [...childcareDays];
   
-  // Calculate days only one parent works
+  // Calculate days only one parent works (a parent is home, so no childcare needed)
   const parent1OnlyDays = parent1Days.filter(day => !parent2Days.includes(day));
   const parent2OnlyDays = parent2Days.filter(day => !parent1Days.includes(day));
   
-  // Days without care (neither parent working)
-  const daysWithoutCare = getDaysWithoutCare(parent1Days, parent2Days);
+  // Days without care: days where at least one parent is home (not working)
+  // This includes: days neither parent works + days only one parent works
+  const allWorkDays = [...new Set([...parent1Days, ...parent2Days])];
+  const daysWithoutCare = getDaysWithoutCare(childcareDays, []); // All non-childcare days
   
   return {
     childcareDays,
@@ -71,15 +73,16 @@ export function calculateMinimumChildcareDays(parent1Days = [], parent2Days = []
 }
 
 /**
- * Get days of the week without childcare
- * @param {Array<string>} parent1Days - Parent 1 work days
- * @param {Array<string>} parent2Days - Parent 2 work days
- * @returns {Array<string>} Days without care
+ * Get days of the week without childcare needed
+ * For single parent: days not working
+ * For two parents: days when at least one parent is home (not in the childcare days)
+ * @param {Array<string>} childcareDays - Days when childcare is needed (for two parents, this is the intersection)
+ * @param {Array<string>} _unused - Kept for backwards compatibility
+ * @returns {Array<string>} Days without care needed
  */
-function getDaysWithoutCare(parent1Days, parent2Days) {
+function getDaysWithoutCare(childcareDays, _unused = []) {
   const allWeekDays = Object.values(DAYS_OF_WEEK);
-  const workDays = [...new Set([...parent1Days, ...parent2Days])];
-  return allWeekDays.filter(day => !workDays.includes(day));
+  return allWeekDays.filter(day => !childcareDays.includes(day));
 }
 
 /**
