@@ -442,6 +442,60 @@ All four core calculation modules have been implemented with full test coverage:
 - Works with period selector (weekly/annual views)
 - Saved/restored with other form data
 
+### UI Enhancement: Extended Scenarios Table Redesign ✅ COMPLETE
+**Goal:** Redesign comparison table UI for consistency, visual appeal, and accessibility
+**Status:** COMPLETE (Completed: January 31, 2026)
+
+- [x] Audit UI inconsistencies in Extended Scenarios table
+  - [x] Identified missing CSS styles for table elements (thead, tbody, th, td, tr)
+  - [x] Found inconsistent visual design compared to scenario cards
+  - [x] Noted poor mobile responsiveness
+  - [x] Identified missing accessibility features
+- [x] Design and implement comprehensive table styling
+  - [x] Add complete CSS for all table elements (~200 lines)
+  - [x] Implement sticky positioning for headers and first column
+  - [x] Create gradient backgrounds matching scenario cards
+  - [x] Add hover states and transitions
+  - [x] Style best scenario highlighting with success colors
+  - [x] Design interactive button styles (favorite, remove)
+- [x] Ensure WCAG 2.1 AA accessibility compliance
+  - [x] Add `:focus-visible` states for keyboard navigation
+  - [x] Implement `@media (prefers-reduced-motion)` support
+  - [x] Verify ARIA attributes in JavaScript (already present)
+  - [x] Ensure color contrast meets standards
+- [x] Implement responsive design
+  - [x] Add mobile breakpoint (≤768px)
+  - [x] Reduce font sizes and padding for small screens
+  - [x] Maintain horizontal scroll capability
+  - [x] Test touch-friendly scrolling
+- [x] Document changes
+  - [x] Create comprehensive documentation file
+  - [x] Update master_plan.md
+  - [x] Document design decisions and technical details
+
+**Files Modified:**
+- `src/styles.css` - Added 200+ lines of table-specific CSS, removed duplicate styles
+- `documentation/current_state/extended-scenarios-table-redesign.md` - Complete documentation
+
+**Key Features:**
+- Professional table design matching scenario card quality
+- Sticky headers and first column for better data comparison
+- Green gradient highlighting for best values
+- Alternating row colors for readability
+- Full keyboard accessibility with visible focus states
+- Respects reduced motion preferences
+- Mobile-responsive with optimized font sizes and spacing
+
+**Test Results:**
+- ✅ All 280 existing tests pass
+- ✅ No visual or functional regressions
+
+**Design System Consistency:**
+- Uses all existing CSS variables (colors, spacing, shadows, transitions)
+- Matches scenario card hover effects and transitions
+- Consistent badge design for "Best" indicators
+- Same button styling patterns throughout
+
 ### Phase 6: Persist User Inputs & Scenarios Using Local Storage 🎯 NEXT
 **Goal:** Automatically save and restore user data locally in the browser
 **Status:** NOT STARTED
