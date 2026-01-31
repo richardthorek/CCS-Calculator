@@ -499,6 +499,62 @@ When CCS rates change:
 4. Update this documentation with new values
 5. Update README.md with current financial year
 
+## Per-Person Effective Rates
+
+### Module: `per-person-rates.js`
+
+Added in 2026-01 to help families understand the impact of childcare costs on each parent's income individually.
+
+#### Effective Rate Calculation
+
+Calculates what each parent would pay if all childcare costs came from their salary alone:
+
+```
+Daily Rate = Annual Out-of-Pocket ÷ 52 weeks ÷ 5 days
+Weekly Rate = Annual Out-of-Pocket ÷ 52 weeks
+Monthly Rate = Annual Out-of-Pocket ÷ 12 months
+Annual Rate = Annual Out-of-Pocket
+Percentage of Income = (Annual Out-of-Pocket ÷ Parent Income) × 100
+Net After Childcare = Parent Income - Annual Out-of-Pocket
+```
+
+**Key Features:**
+- Shows daily, weekly, monthly, and annual rates per parent
+- Displays percentage of each parent's income
+- Calculates net income after childcare for each parent
+- Provides comparison between parents
+
+#### Threshold Warning System
+
+The calculator monitors household income proximity to critical subsidy thresholds for families with multiple children aged ≤5.
+
+**Critical Thresholds:**
+- **$357,563**: Entry to flat 50% subsidy zone for younger children
+- **$367,563**: Exit from 50% zone, reversion to standard rate
+
+**Warning Levels:**
+
+1. **Low Risk** (within $10k below $357,563):
+   - "Approaching $357,563 threshold"
+   - Informational (blue)
+
+2. **Medium Risk** ($357,563 - $367,562):
+   - "In the 50% subsidy zone"
+   - Warning (orange) - cautions against exceeding upper threshold
+
+3. **High Risk** (within $10k above $367,563):
+   - "Just crossed the $367,563 threshold"
+   - Alert (red) - suggests considering salary sacrifice or other strategies
+
+**Example:**
+
+For a family with household income of $370,000 and two children under 5:
+- Status: High Risk (crossed threshold by $2,437)
+- Impact: Younger children now use standard rate (~33%) instead of 50%
+- Recommendation: Consider salary sacrifice to drop below $367,563
+
+**Note:** Threshold warnings only apply to families with 2+ children aged ≤5, as this is the only scenario where the higher subsidy rate applies to younger siblings.
+
 ## References
 
 - Australian Government Department of Education
