@@ -1,0 +1,27 @@
+{
+  "name": "ccs-calculator",
+  "version": "1.0.0",
+  "description": "Child Care Subsidy (CCS) Calculator for Australian parents",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "test": "echo \"No tests yet\" && exit 0",
+    "dev": "npx serve src -p 3000",
+    "lint": "echo \"No linting configured yet\" && exit 0"
+  },
+  "keywords": [
+    "childcare",
+    "subsidy",
+    "calculator",
+    "australia",
+    "ccs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "dependencies": {}
+}
