@@ -17,7 +17,18 @@ An interactive Child Care Subsidy (CCS) Estimator for Australian parents, deploy
 - **Philosophy**: Keep it simple, lightweight, and maintainable with native web technologies
 
 ## Current Status
-📋 Phase 1 Complete - Planning development phases based on requirements
+📋 Phase 2 Complete - Core calculation engine implemented with comprehensive tests and centralized configuration
+
+### Phase 2 Summary
+All four core calculation modules have been implemented with full test coverage:
+- ✅ Income calculations (39 tests)
+- ✅ Subsidy rate calculations (50 tests) 
+- ✅ Activity test calculations (44 tests)
+- ✅ Cost calculations (47 tests)
+- ✅ Centralized configuration for easy annual updates
+- ✅ Comprehensive documentation
+
+**Total: 180 tests, all passing**
 
 ## Planned Features
 <!-- Add planned features here -->
@@ -43,54 +54,60 @@ An interactive Child Care Subsidy (CCS) Estimator for Australian parents, deploy
 - [x] Create package.json with minimal dependencies
 - [x] Update documentation to reflect vanilla JS approach
 
-### Phase 2: Core Calculation Engine 🎯 NEXT
+### Phase 2: Core Calculation Engine ✅ COMPLETE
 **Goal:** Build the CCS calculation logic as reusable, testable modules
 
 #### 2.1 Income Calculations
-- [ ] Create `src/js/calculations/income.js` module
-- [ ] Implement adjusted income calculation for individual parents
-- [ ] Implement household income aggregation
-- [ ] Add input validation (numeric values, reasonable ranges)
-- [ ] Write unit tests for income calculations
-- [ ] Document income calculation logic
+- [x] Create `src/js/calculations/income.js` module
+- [x] Implement adjusted income calculation for individual parents
+- [x] Implement household income aggregation
+- [x] Add input validation (numeric values, reasonable ranges)
+- [x] Write unit tests for income calculations
+- [x] Document income calculation logic
 
 #### 2.2 CCS Percentage (Subsidy Rate) Calculations
-- [ ] Create `src/js/calculations/subsidy-rate.js` module
-- [ ] Implement standard rate calculation (eldest child ≤5)
-- [ ] Implement higher subsidy rate for younger siblings
-- [ ] Implement tiered percentage decreases based on income brackets
-- [ ] Handle edge cases (income at exact thresholds)
-- [ ] Write unit tests for all subsidy rate scenarios
-- [ ] Document subsidy rate logic and 2025-26 thresholds
+- [x] Create `src/js/calculations/subsidy-rate.js` module
+- [x] Implement standard rate calculation (eldest child ≤5)
+- [x] Implement higher subsidy rate for younger siblings
+- [x] Implement tiered percentage decreases based on income brackets
+- [x] Handle edge cases (income at exact thresholds)
+- [x] Write unit tests for all subsidy rate scenarios
+- [x] Document subsidy rate logic and 2025-26 thresholds
 
 #### 2.3 Activity Test & Subsidised Hours
-- [ ] Create `src/js/calculations/activity-test.js` module
-- [ ] Implement base 72 hours/fortnight calculation
-- [ ] Implement 100 hours/fortnight for higher activity families
-- [ ] Calculate actual childcare hours needed based on parent work schedules
-- [ ] Handle overlapping work hours logic
-- [ ] Write unit tests for activity test scenarios
-- [ ] Document activity test rules
+- [x] Create `src/js/calculations/activity-test.js` module
+- [x] Implement base 72 hours/fortnight calculation
+- [x] Implement 100 hours/fortnight for higher activity families
+- [x] Calculate actual childcare hours needed based on parent work schedules
+- [x] Handle overlapping work hours logic
+- [x] Write unit tests for activity test scenarios
+- [x] Document activity test rules
 
 #### 2.4 Hourly Rate Cap & Cost Calculations
-- [ ] Create `src/js/calculations/costs.js` module
-- [ ] Define hourly rate cap constants (by care type and age)
-- [ ] Implement effective hourly rate calculation
-- [ ] Calculate subsidy per hour
-- [ ] Calculate weekly subsidy, costs, and out-of-pocket amounts
-- [ ] Calculate net annual income after childcare
-- [ ] Calculate childcare cost as percentage of income
-- [ ] Write comprehensive unit tests
-- [ ] Document cost calculation formulas
+- [x] Create `src/js/calculations/costs.js` module
+- [x] Define hourly rate cap constants (by care type and age)
+- [x] Implement effective hourly rate calculation
+- [x] Calculate subsidy per hour
+- [x] Calculate weekly subsidy, costs, and out-of-pocket amounts
+- [x] Calculate net annual income after childcare
+- [x] Calculate childcare cost as percentage of income
+- [x] Write comprehensive unit tests
+- [x] Document cost calculation formulas
 
 #### 2.5 Testing & Validation
-- [ ] Set up Jest or similar testing framework
-- [ ] Create test data fixtures with known outcomes
-- [ ] Verify calculations against official CCS calculator (if available)
-- [ ] Add edge case tests (zero income, maximum income, etc.)
-- [ ] Document test coverage
+- [x] Set up Jest or similar testing framework
+- [x] Create test data fixtures with known outcomes
+- [x] Verify calculations against official CCS calculator (if available)
+- [x] Add edge case tests (zero income, maximum income, etc.)
+- [x] Document test coverage
 
-### Phase 3: Basic User Interface
+#### 2.6 Configuration Management (NEW)
+- [x] Create centralized configuration file `src/js/config/ccs-config.js`
+- [x] Move all thresholds and rates to config
+- [x] Update all modules to use centralized config
+- [x] Document configuration update process for annual rate changes
+
+### Phase 3: Basic User Interface 🎯 NEXT
 **Goal:** Create a functional single-scenario calculator with manual input
 
 #### 3.1 HTML Structure & Layout

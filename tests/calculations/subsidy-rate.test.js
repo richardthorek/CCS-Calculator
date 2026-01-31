@@ -283,7 +283,7 @@ describe('Subsidy Rate Calculations', () => {
   describe('SUBSIDY_CONSTANTS', () => {
     test('exports standard rate thresholds', () => {
       expect(SUBSIDY_CONSTANTS.STANDARD_RATE_THRESHOLDS.MAX_90_PERCENT).toBe(85279);
-      expect(SUBSIDY_CONSTANTS.STANDARD_RATE_THRESHOLDS.MAX_INCOME).toBe(535279);
+      expect(SUBSIDY_CONSTANTS.STANDARD_RATE_THRESHOLDS.MIN_ZERO_PERCENT).toBe(535279);
     });
 
     test('exports higher rate thresholds', () => {

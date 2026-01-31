@@ -4,37 +4,10 @@
  * Based on 2025-26 CCS policy requirements
  */
 
-// Constants for 2025-26 financial year
-const STANDARD_RATE_THRESHOLDS = {
-  MIN_INCOME: 0,
-  MAX_90_PERCENT: 85279,
-  TAPER_START: 85280,
-  TAPER_END: 535278,
-  MAX_INCOME: 535279,
-  TAPER_RATE_INCOME_INCREMENT: 5000,
-  TAPER_RATE_PERCENTAGE_DECREASE: 1
-};
-
-const HIGHER_RATE_THRESHOLDS = {
-  // 95% subsidy band
-  MIN_INCOME: 0,
-  MAX_95_PERCENT: 143273,
-  BAND1_START: 143274,
-  BAND1_END: 188272,
-  // 80% subsidy band
-  BAND2_START: 188273,
-  BAND2_END: 267562,
-  // Taper from 80% to 50%
-  BAND3_START: 267563,
-  BAND3_END: 357562,
-  // 50% subsidy band
-  BAND4_START: 357563,
-  BAND4_END: 367562,
-  // Reverts to standard rate
-  REVERT_TO_STANDARD: 367563,
-  TAPER_RATE_INCOME_INCREMENT: 3000,
-  TAPER_RATE_PERCENTAGE_DECREASE: 1
-};
+import {
+  STANDARD_RATE_THRESHOLDS,
+  HIGHER_RATE_THRESHOLDS
+} from '../config/ccs-config.js';
 
 /**
  * Calculate standard CCS rate for eldest child aged ≤5
@@ -53,7 +26,7 @@ export function calculateStandardRate(householdIncome) {
   }
 
   // ≥ $535,279 → 0%
-  if (householdIncome >= STANDARD_RATE_THRESHOLDS.MAX_INCOME) {
+  if (householdIncome >= STANDARD_RATE_THRESHOLDS.MIN_ZERO_PERCENT) {
     return 0;
   }
 
