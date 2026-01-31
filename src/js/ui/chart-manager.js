@@ -24,14 +24,14 @@ export function initializeCharts() {
   
   // Set up toggle button
   toggleBtn.addEventListener('click', () => {
-    const isVisible = chartsContainer.style.display !== 'none';
+    const isVisible = !chartsContainer.classList.contains('hidden');
     
     if (isVisible) {
-      chartsContainer.style.display = 'none';
+      chartsContainer.classList.add('hidden');
       toggleBtn.textContent = 'Show Charts';
       toggleBtn.setAttribute('aria-expanded', 'false');
     } else {
-      chartsContainer.style.display = 'grid';
+      chartsContainer.classList.remove('hidden');
       toggleBtn.textContent = 'Hide Charts';
       toggleBtn.setAttribute('aria-expanded', 'true');
     }
@@ -70,7 +70,7 @@ export function updateCharts(scenarios, selectedScenario = null) {
 function showCharts() {
   const chartsSection = document.getElementById('charts-section');
   if (chartsSection) {
-    chartsSection.style.display = 'block';
+    chartsSection.classList.remove('hidden');
   }
 }
 
@@ -80,12 +80,12 @@ function showCharts() {
 function hideCharts() {
   const chartsSection = document.getElementById('charts-section');
   if (chartsSection) {
-    chartsSection.style.display = 'none';
+    chartsSection.classList.add('hidden');
   }
   
   const chartsContainer = document.getElementById('charts-container');
   if (chartsContainer) {
-    chartsContainer.style.display = 'none';
+    chartsContainer.classList.add('hidden');
   }
   
   const toggleBtn = document.getElementById('toggle-chart-btn');

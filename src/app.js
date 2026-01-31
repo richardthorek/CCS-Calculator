@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function showScenarioGenerationOption() {
   const comparisonSection = document.getElementById('comparison-section');
   if (comparisonSection) {
-    comparisonSection.style.display = 'block';
+    comparisonSection.classList.remove('hidden');
   }
 }
 
@@ -195,12 +195,12 @@ function showScenarioGenerationOption() {
 function showDetailedResults() {
   const detailedSection = document.getElementById('detailed-results-section');
   if (detailedSection) {
-    detailedSection.style.display = 'block';
+    detailedSection.classList.remove('hidden');
   }
   
   const chartsSection = document.getElementById('charts-section');
   if (chartsSection) {
-    chartsSection.style.display = 'block';
+    chartsSection.classList.remove('hidden');
   }
 }
 
@@ -391,7 +391,7 @@ function storeFormDataForExport(formData) {
   if (!dataElement) {
     dataElement = document.createElement('div');
     dataElement.id = 'current-form-data';
-    dataElement.style.display = 'none';
+    dataElement.className = 'hidden';
     document.body.appendChild(dataElement);
   }
   

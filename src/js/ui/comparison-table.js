@@ -230,8 +230,7 @@ function createComparisonCardsElement(scenarios, options = {}) {
     
     // Card actions (optional - can be hidden for simplified view)
     const cardActions = document.createElement('div');
-    cardActions.className = 'scenario-card-actions';
-    cardActions.style.display = 'none'; // Hide for simplified view
+    cardActions.className = 'scenario-card-actions hidden'; // Hide for simplified view
     
     // Favorite button
     const favoriteBtn = document.createElement('button');
@@ -565,7 +564,7 @@ export function exportToCSV(scenarios, filename = 'ccs-scenarios.csv') {
   const link = document.createElement('a');
   link.setAttribute('href', url);
   link.setAttribute('download', filename);
-  link.style.display = 'none';
+  link.className = 'hidden';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
