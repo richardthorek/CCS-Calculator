@@ -45,6 +45,9 @@ export function initializeForm() {
   // Add real-time event listeners to all inputs (debounced)
   setupRealtimeUpdates();
   
+  // Setup parent work day selection sync
+  setupWorkDaySync();
+  
   console.log('Form initialized with real-time updates');
 }
 
@@ -1032,6 +1035,52 @@ function clearErrors() {
   
   const errorMessages = document.querySelectorAll('.error-message');
   errorMessages.forEach(msg => msg.textContent = '');
+}
+
+/**
+ * Setup work day selection sync
+ * Syncs checkbox selection with days per week input
+ */
+function setupWorkDaySync() {
+  // Parent 1 work days sync
+  const parent1DaysInput = document.getElementById('parent1-days');
+  const parent1Checkboxes = document.querySelectorAll('input[name="parent1-workday"]');
+  
+  // Update checkboxes when days input changes
+  parent1DaysInput.addEventListener('change', () => {
+    const days = parseInt(parent1DaysInput.value) || 0;
+    parent1Checkboxes.forEach((checkbox, index) => {
+      checkbox.checked = index < days;
+    });
+  });
+  
+  // Update days input when checkboxes change
+  parent1Checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+      const checkedCount = document.querySelectorAll('input[name="parent1-workday"]:checked').length;
+      parent1DaysInput.value = checkedCount;
+    });
+  });
+  
+  // Parent 2 work days sync
+  const parent2DaysInput = document.getElementById('parent2-days');
+  const parent2Checkboxes = document.querySelectorAll('input[name="parent2-workday"]');
+  
+  // Update checkboxes when days input changes
+  parent2DaysInput.addEventListener('change', () => {
+    const days = parseInt(parent2DaysInput.value) || 0;
+    parent2Checkboxes.forEach((checkbox, index) => {
+      checkbox.checked = index < days;
+    });
+  });
+  
+  // Update days input when checkboxes change
+  parent2Checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+      const checkedCount = document.querySelectorAll('input[name="parent2-workday"]:checked').length;
+      parent2DaysInput.value = checkedCount;
+    });
+  });
 }
 
 /**
