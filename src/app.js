@@ -11,6 +11,7 @@ import {
   generateAllScenarios, 
   generateCommonScenarios 
 } from './js/scenarios/generator.js';
+import { loadState, saveState, clearState } from './js/storage/persistence.js';
 import { 
   initializeCharts, 
   updateCharts, 
@@ -20,7 +21,7 @@ import {
   initializeExportHandlers,
   loadFromURL
 } from './js/ui/export-handler.js';
-import {
+import{
   initializeViewToggle
 } from './js/ui/view-toggle.js';
 import {
@@ -43,22 +44,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize comparison controls
     initializeComparisonControls();
     
-    // Initialize charts
+    // Setup clear data button (Phase 6)
+    setupClearDataButton();
+    
+    // Try to restore saved scenarios (Phase 6)
+    restoreSavedScenarios();
+    
+    // Initialize charts (Phase 7)
     initializeCharts();
     
-    // Initialize export handlers (print, PDF, share link)
+    // Initialize export handlers (Phase 7)
     initializeExportHandlers();
     
-    // Initialize view toggle (weekly/annual)
+    // Initialize view toggle (Phase 7)
     initializeViewToggle();
     
-    // Initialize scenario presets
+    // Initialize scenario presets (Phase 7)
     initializePresets();
     
-    // Initialize help tooltips
+    // Initialize help tooltips (Phase 7)
     initializeTooltips();
     
-    // Check if URL contains shared data and load it
+    // Check if URL contains shared data and load it (Phase 7)
     const urlData = loadFromURL();
     if (urlData) {
       console.log('Loading data from URL:', urlData);
@@ -71,11 +78,14 @@ document.addEventListener('DOMContentLoaded', function() {
       currentFormData = event.detail.formData;
       showScenarioGenerationOption();
       
-      // Store form data in a hidden element for export handler
+      // Save scenarios state when form data changes (Phase 6)
+      saveCurrentState();
+      
+      // Store form data in a hidden element for export handler (Phase 7)
       storeFormDataForExport(currentFormData);
     });
     
-    // Listen for request to provide form data (from export handler)
+    // Listen for request to provide form data (Phase 7)
     document.addEventListener('requestFormData', () => {
       storeFormDataForExport(currentFormData);
     });
@@ -93,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Generate common scenarios button
     const generateCommonBtn = document.getElementById('generate-common-scenarios-btn');
     if (generateCommonBtn) {
-      generateCommonBtn.addEventListener('click', () => {
+      generateAllBtn.addEventListener('click', () => {
         if (currentFormData) {
           generateAndDisplayScenarios('common');
         }
@@ -120,6 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('scenarioRemoved', (event) => {
       const scenarioId = event.detail.scenarioId;
       currentScenarios = currentScenarios.filter(s => s.id !== scenarioId);
+      saveCurrentState(); // Phase 6
     });
 });
 
@@ -168,7 +179,7 @@ function generateAndDisplayScenarios(mode = 'common') {
   // Display comparison table
   displayComparisonTable(scenarios);
   
-  // Update charts
+  // Update charts (Phase 7)
   updateCharts(scenarios);
   
   // Show count
@@ -179,10 +190,64 @@ function generateAndDisplayScenarios(mode = 'common') {
     countMsg.textContent = `Showing ${scenarios.length} scenario${scenarios.length > 1 ? 's' : ''}`;
     container.insertBefore(countMsg, container.firstChild);
   }
+  
+  // Save state after generating scenarios (Phase 6)
+  saveCurrentState();
 }
 
 /**
- * Store form data in a hidden element for export handler
+ * Save current application state (Phase 6)
+ */
+function saveCurrentState() {
+  try {
+    const state = loadState() || {};
+    state.scenarios = currentScenarios;
+    state.timestamp = new Date().toISOString();
+    saveState(state);
+  } catch (error) {
+    console.error('Error saving application state:', error);
+  }
+}
+
+/**
+ * Restore saved scenarios (Phase 6)
+ */
+function restoreSavedScenarios() {
+  try {
+    const savedState = loadState();
+    if (savedState && savedState.scenarios && Array.isArray(savedState.scenarios) && savedState.scenarios.length > 0) {
+      currentScenarios = savedState.scenarios;
+      displayComparisonTable(currentScenarios);
+      updateCharts(currentScenarios); // Phase 7
+      showScenarioGenerationOption();
+      console.log('Scenarios restored from localStorage');
+    }
+  } catch (error) {
+    console.error('Error restoring scenarios:', error);
+  }
+}
+
+/**
+ * Setup clear data button functionality (Phase 6)
+ */
+function setupClearDataButton() {
+  const clearDataBtn = document.getElementById('clear-data-btn');
+  if (clearDataBtn) {
+    clearDataBtn.addEventListener('click', () => {
+      // Show confirmation dialog
+      if (confirm('Are you sure you want to clear all saved data? This will reset the calculator and cannot be undone.')) {
+        // Clear localStorage
+        clearState();
+        
+        // Reload the page to reset the form
+        window.location.reload();
+      }
+    });
+  }
+}
+
+/**
+ * Store form data in a hidden element for export handler (Phase 7)
  * @param {Object} formData - Form data to store
  */
 function storeFormDataForExport(formData) {
@@ -198,5 +263,4 @@ function storeFormDataForExport(formData) {
   
   dataElement.dataset.formData = JSON.stringify(formData);
 }
-
 

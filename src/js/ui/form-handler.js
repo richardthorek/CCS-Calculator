@@ -21,6 +21,7 @@ import {
   calculateCostSavings
 } from '../calculations/parent-schedule.js';
 import { debounce } from '../utils/debounce.js';
+import { loadState, saveState } from '../storage/persistence.js';
 
 // Cache for calculation results to optimize performance
 let lastFormData = null;
@@ -34,8 +35,16 @@ export function initializeForm() {
   const addChildBtn = document.getElementById('add-child-btn');
   const resetBtn = document.getElementById('reset-btn');
   
-  // Add first child by default
-  addChild();
+  // Try to restore saved state
+  const savedState = loadState();
+  
+  if (savedState && savedState.formData) {
+    // Restore form data from localStorage
+    restoreFormData(savedState.formData);
+  } else {
+    // Add first child by default if no saved state
+    addChild();
+  }
   
   // Event listeners for form submission
   addChildBtn.addEventListener('click', addChild);
@@ -60,6 +69,9 @@ function setupRealtimeUpdates() {
   // Create debounced calculation function
   const debouncedCalculate = debounce(handleRealtimeCalculation, 500);
   
+  // Create debounced save function
+  const debouncedSave = debounce(saveCurrentState, 500);
+  
   // Listen to input events on the form (using event delegation)
   form.addEventListener('input', (event) => {
     const target = event.target;
@@ -71,6 +83,9 @@ function setupRealtimeUpdates() {
       
       // Trigger debounced calculation
       debouncedCalculate();
+      
+      // Trigger debounced save
+      debouncedSave();
     }
   });
   
@@ -81,6 +96,7 @@ function setupRealtimeUpdates() {
     if (target.tagName === 'SELECT') {
       showCalculatingIndicator();
       debouncedCalculate();
+      debouncedSave();
     }
   });
 }
@@ -1120,4 +1136,163 @@ function formatCareType(careType) {
     'in-home': 'In-Home Care'
   };
   return types[careType] || careType;
+}
+
+/**
+ * Save current form state to localStorage
+ */
+function saveCurrentState() {
+  try {
+    const formData = collectFormData();
+    const state = {
+      formData: formData,
+      timestamp: new Date().toISOString()
+    };
+    saveState(state);
+  } catch (error) {
+    console.error('Error saving current state:', error);
+  }
+}
+
+/**
+ * Restore form data from saved state
+ * @param {Object} formData - The saved form data
+ */
+function restoreFormData(formData) {
+  if (!formData) return;
+  
+  try {
+    // Restore Parent 1 data
+    if (formData.parent1) {
+      const parent1Income = document.getElementById('parent1-income');
+      const parent1Days = document.getElementById('parent1-days');
+      const parent1Hours = document.getElementById('parent1-hours');
+      
+      if (parent1Income && formData.parent1.income) {
+        parent1Income.value = formData.parent1.income;
+      }
+      if (parent1Days && formData.parent1.days !== undefined) {
+        parent1Days.value = formData.parent1.days;
+      }
+      if (parent1Hours && formData.parent1.hours !== undefined) {
+        parent1Hours.value = formData.parent1.hours;
+      }
+      
+      // Restore work days
+      if (formData.parent1.workDays && Array.isArray(formData.parent1.workDays)) {
+        formData.parent1.workDays.forEach(day => {
+          const checkbox = document.querySelector(`input[name="parent1-workday"][value="${day}"]`);
+          if (checkbox) {
+            checkbox.checked = true;
+          }
+        });
+      }
+    }
+    
+    // Restore Parent 2 data
+    if (formData.parent2) {
+      const parent2Income = document.getElementById('parent2-income');
+      const parent2Days = document.getElementById('parent2-days');
+      const parent2Hours = document.getElementById('parent2-hours');
+      
+      if (parent2Income && formData.parent2.income) {
+        parent2Income.value = formData.parent2.income;
+      }
+      if (parent2Days && formData.parent2.days !== undefined) {
+        parent2Days.value = formData.parent2.days;
+      }
+      if (parent2Hours && formData.parent2.hours !== undefined) {
+        parent2Hours.value = formData.parent2.hours;
+      }
+      
+      // Restore work days
+      if (formData.parent2.workDays && Array.isArray(formData.parent2.workDays)) {
+        formData.parent2.workDays.forEach(day => {
+          const checkbox = document.querySelector(`input[name="parent2-workday"][value="${day}"]`);
+          if (checkbox) {
+            checkbox.checked = true;
+          }
+        });
+      }
+    }
+    
+    // Restore children data
+    if (formData.children && Array.isArray(formData.children) && formData.children.length > 0) {
+      // Clear existing children first (except default)
+      const childrenContainer = document.getElementById('children-container');
+      if (childrenContainer) {
+        childrenContainer.innerHTML = '';
+      }
+      
+      // Add children from saved state
+      formData.children.forEach((childData, index) => {
+        addChild();
+        
+        // Get the child card that was just added
+        const childCards = document.querySelectorAll('.child-card');
+        const card = childCards[childCards.length - 1];
+        
+        if (!card) return;
+        
+        const childIndex = card.dataset.childIndex;
+        
+        // Restore age
+        const ageInput = card.querySelector(`#child-${childIndex}-age`);
+        if (ageInput && childData.age !== null && childData.age !== undefined) {
+          ageInput.value = childData.age;
+        }
+        
+        // Restore care type
+        const careTypeSelect = card.querySelector(`#child-${childIndex}-care-type`);
+        if (careTypeSelect && childData.careType) {
+          careTypeSelect.value = childData.careType;
+        }
+        
+        // Restore fee type
+        if (childData.feeType) {
+          const feeTypeRadio = card.querySelector(`input[name="child-${childIndex}-fee-type"][value="${childData.feeType}"]`);
+          if (feeTypeRadio) {
+            feeTypeRadio.checked = true;
+            // Trigger change event to show/hide appropriate fields
+            feeTypeRadio.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        }
+        
+        // Restore daily fee fields
+        if (childData.feeType === 'daily') {
+          const dailyFeeInput = card.querySelector(`#child-${childIndex}-daily-fee`);
+          const hoursPerDayInput = card.querySelector(`#child-${childIndex}-hours-per-day`);
+          
+          if (dailyFeeInput && childData.dailyFee !== null && childData.dailyFee !== undefined) {
+            dailyFeeInput.value = childData.dailyFee;
+          }
+          if (hoursPerDayInput && childData.hoursPerDay !== null && childData.hoursPerDay !== undefined) {
+            hoursPerDayInput.value = childData.hoursPerDay;
+          }
+        }
+        
+        // Restore hourly fee fields
+        if (childData.feeType === 'hourly') {
+          const hourlyFeeInput = card.querySelector(`#child-${childIndex}-hourly-fee`);
+          const hoursPerWeekInput = card.querySelector(`#child-${childIndex}-hours-per-week`);
+          
+          if (hourlyFeeInput && childData.providerFee !== null && childData.providerFee !== undefined) {
+            hourlyFeeInput.value = childData.providerFee;
+          }
+          if (hoursPerWeekInput && childData.hoursPerWeek !== null && childData.hoursPerWeek !== undefined) {
+            hoursPerWeekInput.value = childData.hoursPerWeek;
+          }
+        }
+      });
+    }
+    
+    console.log('Form data restored from localStorage');
+    
+    // Trigger calculation after restoration
+    setTimeout(() => {
+      handleRealtimeCalculation();
+    }, 100);
+  } catch (error) {
+    console.error('Error restoring form data:', error);
+  }
 }
