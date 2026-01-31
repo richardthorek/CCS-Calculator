@@ -17,9 +17,21 @@ An interactive Child Care Subsidy (CCS) Estimator for Australian parents, deploy
 - **Philosophy**: Keep it simple, lightweight, and maintainable with native web technologies
 
 ## Current Status
-✅ Phase 5 Complete - Real-Time Interactivity & Event-Driven Updates implemented
+🎯 Phase 7 IN PROGRESS - Data Visualization & Enhanced Export Features
 
-### Phase 5 Summary
+**Started**: January 31, 2026
+
+### Phase 7 Progress
+Implementation of data visualization and enhanced export features is underway:
+- [ ] Charting library evaluation and selection
+- [ ] Data visualization implementation (bar charts, pie charts)
+- [ ] Export features (PDF, CSV, print-friendly)
+- [ ] Shareable URLs with URLSearchParams
+- [ ] Advanced UI controls (weekly/annual toggle, presets, help tooltips)
+- [ ] Accessibility compliance for charts and new features
+- [ ] Comprehensive testing and documentation
+
+### Phase 5 Summary (Previously Completed)
 Real-time interactivity has been fully implemented using pure Vanilla JavaScript:
 - ✅ Event-driven updates with debouncing (500ms delay)
 - ✅ Automatic calculation on input changes (no button click required)
@@ -291,40 +303,84 @@ All four core calculation modules have been implemented with full test coverage:
 - localStorage quota is generous (~5-10MB) for our use case, but document known limits
 - Private browsing mode may disable localStorage in some browsers
 
-### Phase 7: Enhanced Features
-**Goal:** Add optional but valuable features
+### Phase 7: Enhanced Features 🎯 NEXT
+**Goal:** Add data visualization and enhanced export/sharing features
+**Status:** IN PROGRESS (Started: January 31, 2026)
 
 #### 7.1 Data Visualization
 - [ ] Evaluate lightweight charting options (Chart.js as minimal option, or vanilla JS SVG/Canvas)
+  - [ ] Research Chart.js bundle size and maintenance status
+  - [ ] Explore vanilla SVG/Canvas complexity for bar and pie charts
+  - [ ] Make decision based on complexity vs dependency trade-off
+  - [ ] Document decision in Phase 7 documentation
 - [ ] Create bar chart comparing net income across scenarios
-- [ ] Create pie chart showing cost breakdown
-- [ ] Add interactive tooltips (vanilla JS)
-- [ ] Make charts responsive
-- [ ] Test accessibility of visualizations
+  - [ ] Design chart layout and styling
+  - [ ] Implement responsive design
+  - [ ] Add interactive tooltips showing detailed values
+  - [ ] Test on mobile and desktop
+- [ ] Create pie chart showing cost breakdown (subsidy vs out-of-pocket)
+  - [ ] Design chart with clear labels and percentages
+  - [ ] Implement responsive design
+  - [ ] Add legend and interactive segments
+  - [ ] Test on mobile and desktop
+- [ ] Make charts accessible
+  - [ ] Add ARIA labels and roles
+  - [ ] Ensure keyboard navigation
+  - [ ] Test with screen readers
+  - [ ] Verify color contrast meets WCAG 2.1 AA
 - [ ] **Note:** Only add charting library if native SVG/Canvas is too complex
 
 #### 7.2 Export & Sharing
-- [ ] Implement PDF export (consider browser print API or minimal library like jsPDF)
-- [ ] Add CSV export using vanilla JS (Blob and URL.createObjectURL)
-- [ ] Create shareable URL with URLSearchParams for encoding parameters
-- [ ] Add "print-friendly" view with CSS @media print
-- [ ] Test export features across browsers
+- [ ] Implement print-friendly view
+  - [ ] Create CSS @media print styles
+  - [ ] Hide unnecessary UI elements (nav, buttons)
+  - [ ] Optimize layout for paper (portrait/landscape)
+  - [ ] Test browser print functionality
+- [ ] Add CSV export using vanilla JS
+  - [ ] Create export module using Blob and URL.createObjectURL
+  - [ ] Export scenario comparison table
+  - [ ] Export individual scenario details
+  - [ ] Test CSV format in Excel/Google Sheets
+- [ ] Implement PDF export
+  - [ ] Evaluate browser print API (window.print()) vs jsPDF
+  - [ ] Prefer print API if adequate for use case
+  - [ ] Add "Save as PDF" button if needed
+  - [ ] Test PDF generation across browsers
+- [ ] Create shareable URLs
+  - [ ] Encode form data in URLSearchParams
+  - [ ] Decode and populate form on page load
+  - [ ] Add "Copy Share Link" button
+  - [ ] Test URL length limits and encoding
 - [ ] **Note:** Prefer native browser APIs over libraries where possible
 
 #### 7.3 Advanced UI Features
 - [ ] Add weekly/annual view toggle
-- [ ] Implement "what-if" sliders for quick adjustments
+  - [ ] Create toggle button/switch UI component
+  - [ ] Update all currency displays to show weekly or annual
+  - [ ] Persist toggle state in localStorage
+  - [ ] Test toggle functionality
 - [ ] Add preset scenarios (common work arrangements)
+  - [ ] Define common presets (5+5, 4+4, 3+0, etc.)
+  - [ ] Create preset selector dropdown
+  - [ ] Auto-populate form with selected preset
+  - [ ] Test preset loading
 - [ ] Create help tooltips explaining CCS rules
-- [ ] Add calculator tour/onboarding
-- [ ] Implement dark mode (optional)
+  - [ ] Add tooltip icons next to complex fields
+  - [ ] Implement vanilla JS tooltip component
+  - [ ] Write clear, concise help text
+  - [ ] Ensure accessibility (keyboard accessible, ARIA)
+  - [ ] Test on mobile (touch events)
+- [ ] Add calculator tour/onboarding (optional)
+  - [ ] Create step-by-step tour using vanilla JS
+  - [ ] Highlight key features and inputs
+  - [ ] Allow skip/dismiss functionality
+  - [ ] Test first-time user experience
 
-#### 7.4 Multi-child Support Enhancement
-- [ ] Improve UI for managing multiple children
-- [ ] Add/remove children dynamically
-- [ ] Handle different care types per child
-- [ ] Show per-child cost breakdown
-- [ ] Test with 1-5 children scenarios
+#### 7.4 Multi-child Support Enhancement (Deferred to Future Phase)
+- This was already implemented in Phase 3
+- Current implementation supports dynamic add/remove children
+- Per-child cost breakdown is already shown in results
+- No additional work needed for Phase 7
 
 ### Phase 8: Backend Integration (Optional)
 **Goal:** Add server-side features if needed

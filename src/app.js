@@ -11,6 +11,11 @@ import {
   generateAllScenarios, 
   generateCommonScenarios 
 } from './js/scenarios/generator.js';
+import { 
+  initializeCharts, 
+  updateCharts, 
+  clearCharts 
+} from './js/ui/chart-manager.js';
 
 // Global state for scenarios
 let currentScenarios = [];
@@ -24,6 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize comparison controls
     initializeComparisonControls();
+    
+    // Initialize charts
+    initializeCharts();
     
     // Listen for form calculation success to enable scenario generation
     document.addEventListener('calculationComplete', (event) => {
@@ -118,6 +126,9 @@ function generateAndDisplayScenarios(mode = 'common') {
   
   // Display comparison table
   displayComparisonTable(scenarios);
+  
+  // Update charts
+  updateCharts(scenarios);
   
   // Show count
   const container = document.getElementById('comparison-table-container');
