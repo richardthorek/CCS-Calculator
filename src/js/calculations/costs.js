@@ -8,8 +8,102 @@ import {
   CARE_TYPES,
   AGE_CATEGORIES,
   WORK_DEFAULTS,
-  getHourlyRateCap
+  CHILDCARE_DEFAULTS,
+  getHourlyRateCap,
+  getDailyRateCap
 } from '../config/ccs-config.js';
+
+/**
+ * Calculate effective daily rate (minimum of provider fee and rate cap)
+ * 
+ * @param {number} providerDailyFee - Provider's daily fee
+ * @param {string} careType - Type of care (from CARE_TYPES)
+ * @param {number} childAge - Age of child in years
+ * @param {number} hoursPerDay - Hours charged per day (default: 10)
+ * @returns {number} Effective daily rate
+ */
+export function calculateEffectiveDailyRate(providerDailyFee, careType, childAge, hoursPerDay = CHILDCARE_DEFAULTS.DEFAULT_HOURS_PER_DAY) {
+  if (typeof providerDailyFee !== 'number' || providerDailyFee < 0) {
+    throw new Error('Provider daily fee must be a non-negative number');
+  }
+  
+  if (typeof childAge !== 'number' || childAge < 0 || childAge > 18) {
+    throw new Error('Child age must be between 0 and 18');
+  }
+  
+  if (typeof hoursPerDay !== 'number' || hoursPerDay <= 0) {
+    throw new Error('Hours per day must be a positive number');
+  }
+  
+  const rateCap = getDailyRateCap(careType, childAge, hoursPerDay);
+  return Math.min(providerDailyFee, rateCap);
+}
+
+/**
+ * Calculate subsidy per day for a child
+ * 
+ * @param {number} subsidyRate - CCS subsidy rate percentage (0-95)
+ * @param {number} effectiveDailyRate - Effective daily rate after cap
+ * @returns {number} Subsidy amount per day
+ */
+export function calculateSubsidyPerDay(subsidyRate, effectiveDailyRate) {
+  if (typeof subsidyRate !== 'number' || subsidyRate < 0 || subsidyRate > 100) {
+    throw new Error('Subsidy rate must be between 0 and 100');
+  }
+  
+  if (typeof effectiveDailyRate !== 'number' || effectiveDailyRate < 0) {
+    throw new Error('Effective daily rate must be a non-negative number');
+  }
+  
+  return (subsidyRate / 100) * effectiveDailyRate;
+}
+
+/**
+ * Calculate weekly subsidy, costs, and out-of-pocket amounts using daily rates
+ * 
+ * @param {Object} params - Calculation parameters
+ * @param {number} params.subsidyPerDay - Subsidy amount per day
+ * @param {number} params.providerDailyFee - Provider's daily fee
+ * @param {number} params.subsidisedDays - Number of subsidised days per week
+ * @param {number} params.actualDays - Actual childcare days needed per week
+ * @returns {Object} Weekly costs breakdown
+ */
+export function calculateWeeklyCostsFromDailyRate(params) {
+  const { subsidyPerDay, providerDailyFee, subsidisedDays, actualDays } = params;
+  
+  // Validation
+  if (typeof subsidyPerDay !== 'number' || subsidyPerDay < 0) {
+    throw new Error('Subsidy per day must be a non-negative number');
+  }
+  
+  if (typeof providerDailyFee !== 'number' || providerDailyFee < 0) {
+    throw new Error('Provider daily fee must be a non-negative number');
+  }
+  
+  if (typeof subsidisedDays !== 'number' || subsidisedDays < 0 || subsidisedDays > 7) {
+    throw new Error('Subsidised days must be between 0 and 7');
+  }
+  
+  if (typeof actualDays !== 'number' || actualDays < 0 || actualDays > 7) {
+    throw new Error('Actual days must be between 0 and 7');
+  }
+  
+  // Calculate costs
+  const daysWithSubsidy = Math.min(subsidisedDays, actualDays);
+  const daysWithoutSubsidy = Math.max(0, actualDays - subsidisedDays);
+  
+  const weeklySubsidy = subsidyPerDay * daysWithSubsidy;
+  const weeklyFullCost = providerDailyFee * actualDays;
+  const weeklyOutOfPocket = weeklyFullCost - weeklySubsidy;
+  
+  return {
+    weeklySubsidy: Math.round(weeklySubsidy * 100) / 100,
+    weeklyFullCost: Math.round(weeklyFullCost * 100) / 100,
+    weeklyOutOfPocket: Math.round(weeklyOutOfPocket * 100) / 100,
+    daysWithSubsidy,
+    daysWithoutSubsidy
+  };
+}
 
 /**
  * Calculate effective hourly rate (minimum of provider fee and rate cap)
