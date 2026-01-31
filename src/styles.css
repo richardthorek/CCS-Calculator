@@ -277,6 +277,98 @@ select.error:focus {
     min-height: 0.875rem;
 }
 
+.help-text {
+    display: block;
+    color: var(--color-text-secondary);
+    font-size: 0.6875rem;
+    margin-top: var(--spacing-xs);
+    font-style: italic;
+}
+
+/* ===== Radio and Checkbox Groups ===== */
+.radio-group,
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.radio-label,
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+}
+
+.radio-label:hover,
+.checkbox-label:hover {
+    background-color: var(--color-bg-tertiary);
+}
+
+.radio-label input[type="radio"],
+.checkbox-label input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
+    margin: 0;
+}
+
+.radio-label span,
+.checkbox-label span {
+    font-size: 0.875rem;
+    font-weight: 400;
+}
+
+/* Work days checkbox group - horizontal layout */
+.work-days-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.work-days-group .checkbox-label {
+    flex: 0 0 auto;
+    min-width: 100px;
+}
+
+/* Hide/show fields based on fee type */
+.daily-rate-fields,
+.hourly-rate-fields {
+    transition: opacity var(--transition-normal);
+}
+
+/* Success color for savings display */
+.result-value.success {
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+/* Schedule breakdown section */
+.schedule-breakdown {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background-color: var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-primary);
+}
+
+.schedule-breakdown h3 {
+    margin-bottom: var(--spacing-md);
+    color: var(--color-text-primary);
+}
+
+.schedule-explanation {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: var(--color-bg-primary);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+}
+
 /* ===== Buttons ===== */
 .btn {
     display: inline-flex;
