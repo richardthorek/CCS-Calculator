@@ -362,6 +362,29 @@ All four core calculation modules have been implemented with full test coverage:
 - [x] Enhance results section hierarchy and clarity
 - [x] Add government source badge and updated privacy messaging
 
+### Bug Fixes: UI and Content Security Policy (January 2026) ✅ COMPLETE
+**Goal:** Fix UI scrolling issues and Content Security Policy violations
+**Status:** COMPLETE (Completed: January 31, 2026)
+
+- [x] Replace all inline `style="display: none;"` attributes with CSS utility classes
+- [x] Create `.hidden` and `.visible` utility classes for CSP compliance
+- [x] Update all JavaScript files to use `classList` instead of `style.display`
+- [x] Add scrollable container utilities (`.scrollable-x`, `.scrollable-y`, `.scrollable`)
+- [x] Fix `.comparison-table-wrapper` to enable horizontal scrolling
+- [x] Verify no CSP violations in browser console
+- [x] Test scrolling functionality on comparison tables
+
+**Files Modified:**
+- `src/styles.css` - Added utility classes for visibility and scrolling
+- `src/index.html` - Replaced 8 inline style attributes with CSS classes
+- `src/js/ui/form-handler.js` - Updated to use `classList` methods
+- `src/js/ui/chart-manager.js` - Updated to use `classList` methods
+- `src/js/ui/comparison-table.js` - Updated to use `classList` methods
+- `src/js/ui/export-handler.js` - Updated to use `classList` methods
+- `src/app.js` - Updated to use `classList` methods
+
+**Result:** Zero CSP violations, proper horizontal scrolling on wide tables
+
 ### Phase 6: Persist User Inputs & Scenarios Using Local Storage 🎯 NEXT
 **Goal:** Automatically save and restore user data locally in the browser
 **Status:** NOT STARTED
