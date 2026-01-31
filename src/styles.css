@@ -922,3 +922,83 @@ footer {
   font-weight: 600;
   color: var(--color-primary);
 }
+
+/* ===== Real-Time Calculation Indicator ===== */
+
+/* Calculating indicator animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Add subtle pulse effect to results when calculating */
+#results-section.calculating {
+  position: relative;
+  opacity: 0.7;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+#results-section.calculating::before {
+  content: 'Calculating...';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-weight: 600;
+  color: var(--color-primary);
+  z-index: 10;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Smooth transitions for result updates */
+#results-section {
+  transition: all var(--transition-normal);
+}
+
+.result-value {
+  transition: color var(--transition-fast);
+}
+
+.result-value.updated {
+  color: var(--color-success);
+  animation: pulse 0.5s ease-in-out;
+}
+
+/* Input field visual feedback during typing */
+input:focus,
+select:focus {
+  border-color: var(--color-border-focus);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  transition: all var(--transition-fast);
+}
+
+input.typing {
+  border-color: var(--color-primary-light);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(37, 99, 235, 0.05) 50%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s linear infinite;
+}
