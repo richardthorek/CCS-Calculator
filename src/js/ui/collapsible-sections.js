@@ -114,6 +114,16 @@ function createScreenReaderAnnouncer() {
 }
 
 /**
+ * Parse numeric value from input, removing commas
+ * @param {HTMLInputElement} input - Input element
+ * @returns {number} Parsed numeric value or 0
+ */
+function parseNumericValue(input) {
+  if (!input || !input.value) return 0;
+  return parseFloat(input.value.replace(/,/g, '')) || 0;
+}
+
+/**
  * Get summary data for a parent section
  * @param {number} parentNumber - Parent number (1 or 2)
  * @returns {string} Summary HTML
@@ -123,7 +133,7 @@ function getParentSummary(parentNumber) {
   const daysInput = document.getElementById(`parent${parentNumber}-days`);
   const hoursInput = document.getElementById(`parent${parentNumber}-hours`);
   
-  const income = incomeInput ? parseFloat(incomeInput.value.replace(/,/g, '')) || 0 : 0;
+  const income = parseNumericValue(incomeInput);
   const days = daysInput ? parseFloat(daysInput.value) || 0 : 0;
   const hours = hoursInput ? parseFloat(hoursInput.value) || 0 : 0;
   
@@ -176,7 +186,7 @@ function getChildSummary(childIndex) {
     }
   });
   
-  const dailyFee = dailyFeeInput ? parseFloat(dailyFeeInput.value.replace(/,/g, '')) || 0 : 0;
+  const dailyFee = parseNumericValue(dailyFeeInput);
   const daysOfCare = daysOfCareInput ? parseFloat(daysOfCareInput.value) || 0 : 0;
   
   if (age === 0 && dailyFee === 0) {
