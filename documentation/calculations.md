@@ -530,7 +530,7 @@ The calculator monitors household income proximity to critical subsidy threshold
 
 **Critical Thresholds:**
 - **$357,563**: Entry to flat 50% subsidy zone for younger children
-- **$367,563**: Exit from 50% zone, reversion to standard rate
+- **$367,563**: Exit from 50% zone (income at or above this reverts to standard rate)
 
 **Warning Levels:**
 
@@ -540,7 +540,7 @@ The calculator monitors household income proximity to critical subsidy threshold
 
 2. **Medium Risk** ($357,563 - $367,562):
    - "In the 50% subsidy zone"
-   - Warning (orange) - cautions against exceeding upper threshold
+   - Warning (orange) - cautions against exceeding $367,562
 
 3. **High Risk** (within $10k above $367,563):
    - "Just crossed the $367,563 threshold"

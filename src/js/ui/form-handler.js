@@ -1172,13 +1172,20 @@ function displayPerPersonRates(perPersonRates, formData) {
   
   // Add comparison note
   if (hasParent2) {
-    const higherPercentageParent = perPersonRates.parent1.percentage > perPersonRates.parent2.percentage ? 'Parent 1' : 'Parent 2';
     const percentageDiff = Math.abs(perPersonRates.parent1.percentage - perPersonRates.parent2.percentage);
+    
+    let comparisonText;
+    if (percentageDiff < 0.01) {
+      // Essentially equal (less than 0.01% difference)
+      comparisonText = 'Both parents would pay the same percentage of their income if all childcare was paid from one salary.';
+    } else {
+      const higherPercentageParent = perPersonRates.parent1.percentage > perPersonRates.parent2.percentage ? 'Parent 1' : 'Parent 2';
+      comparisonText = `If all childcare was paid from one person's salary: ${higherPercentageParent} would pay ${formatPercentage(percentageDiff)} more of their income than the other parent.`;
+    }
     
     html += `
       <div class="per-person-comparison">
-        If all childcare was paid from one person's salary: ${higherPercentageParent} would pay 
-        ${formatPercentage(percentageDiff)} more of their income than the other parent.
+        ${comparisonText}
       </div>
     `;
   }
