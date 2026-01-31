@@ -385,6 +385,48 @@ All four core calculation modules have been implemented with full test coverage:
 
 **Result:** Zero CSP violations, proper horizontal scrolling on wide tables
 
+### Enhancement: Full Results Breakdown with Adjustable Withholding ✅ COMPLETE
+**Goal:** Display comprehensive breakdown showing gross subsidy, withholding, and paid subsidy
+**Status:** COMPLETE (Completed: January 31, 2026)
+
+- [x] Add CCS Settings section with withholding rate control
+  - [x] Create input field (default 5%, range 0-100%)
+  - [x] Add info icon with tooltip explaining withholding
+  - [x] Include in form data collection
+- [x] Create subsidy breakdown display in results
+  - [x] Show Gross Subsidy (before withholding)
+  - [x] Show Withholding amount (negative, red)
+  - [x] Show Paid Subsidy (after withholding, highlighted)
+- [x] Integrate with calculation pipeline
+  - [x] Pass withholding rate to cost calculations
+  - [x] Aggregate withholding data in totals
+  - [x] Update display with breakdown values
+- [x] Add CSS styling for breakdown section
+  - [x] Professional layout with borders and spacing
+  - [x] Color coding (red for withholding, green for paid subsidy)
+  - [x] Responsive design
+- [x] Update form persistence
+  - [x] Save withholding rate to localStorage
+  - [x] Restore withholding rate on page load
+- [x] Test and verify
+  - [x] All 280 existing tests pass
+  - [x] Manual testing with various rates
+  - [x] Period selector integration
+  - [x] Code review (1 minor suggestion noted for future)
+  - [x] CodeQL security scan (0 vulnerabilities)
+
+**Files Modified:**
+- `src/index.html` - Added CCS Settings section and subsidy breakdown display
+- `src/styles.css` - Added breakdown styling and input suffix class
+- `src/js/ui/form-handler.js` - Updated form data collection, calculations, and display
+
+**Features:**
+- Users can adjust withholding from 0-100% (default 5%)
+- Complete transparency showing gross vs. net subsidy
+- Breakdown updates in real-time with other calculations
+- Works with period selector (weekly/annual views)
+- Saved/restored with other form data
+
 ### Phase 6: Persist User Inputs & Scenarios Using Local Storage 🎯 NEXT
 **Goal:** Automatically save and restore user data locally in the browser
 **Status:** NOT STARTED
