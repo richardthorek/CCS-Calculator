@@ -3,7 +3,7 @@
 This folder contains the Chart.js library used for data visualization in the CCS Calculator.
 
 ## Version
-- Chart.js v4.4.1
+- Chart.js v4.5.1
 
 ## Why included in source?
 Chart.js is included as a UMD build in the source code to:
