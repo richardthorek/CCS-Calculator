@@ -2392,6 +2392,17 @@ footer {
     background: var(--color-bg-secondary);
 }
 
+/* Header text in dark mode - keep it light and readable */
+.dark-mode header {
+    color: var(--color-text-primary);
+}
+
+.dark-mode header h1,
+.dark-mode header .subtitle,
+.dark-mode header .disclaimer {
+    color: var(--color-text-primary);
+}
+
 /* Form controls in dark mode */
 .dark-mode .form-control,
 .dark-mode input[type="text"],
