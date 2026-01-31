@@ -30,6 +30,28 @@
         </div>
     </header>
     
+    <!-- Mobile Sticky Results Header - Shows key metrics while scrolling -->
+    <div id="mobile-sticky-header" class="mobile-sticky-header hidden" role="region" aria-label="Quick results summary">
+        <div class="sticky-header-container">
+            <div class="sticky-metric">
+                <span class="sticky-label">Out-of-Pocket</span>
+                <span class="sticky-value" id="sticky-out-of-pocket" data-weekly-value="0">$0</span>
+            </div>
+            <div class="sticky-metric">
+                <span class="sticky-label">Subsidy</span>
+                <span class="sticky-value" id="sticky-subsidy" data-weekly-value="0">$0</span>
+            </div>
+            <div class="sticky-metric">
+                <span class="sticky-label">Withholding</span>
+                <span class="sticky-value" id="sticky-withholding" data-weekly-value="0">$0</span>
+            </div>
+            <div class="sticky-metric">
+                <span class="sticky-label">Total Cost</span>
+                <span class="sticky-value" id="sticky-total-cost" data-weekly-value="0">$0</span>
+            </div>
+        </div>
+    </div>
+    
     <main>
         <!-- Trust Banner -->
         <div class="trust-banner">

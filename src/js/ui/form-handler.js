@@ -800,10 +800,53 @@ function calculateCCS(formData) {
 }
 
 /**
+ * Update mobile sticky header with key metrics
+ */
+function updateMobileStickyHeader(results) {
+  const stickyHeader = document.getElementById('mobile-sticky-header');
+  if (!stickyHeader) return;
+  
+  // Update values
+  const outOfPocketEl = document.getElementById('sticky-out-of-pocket');
+  if (outOfPocketEl) {
+    outOfPocketEl.textContent = formatCurrency(results.totalWeeklyGap);
+    outOfPocketEl.dataset.weeklyValue = results.totalWeeklyGap;
+  }
+  
+  const subsidyEl = document.getElementById('sticky-subsidy');
+  if (subsidyEl) {
+    subsidyEl.textContent = formatCurrency(results.totalWeeklySubsidy);
+    subsidyEl.dataset.weeklyValue = results.totalWeeklySubsidy;
+  }
+  
+  const withholdingEl = document.getElementById('sticky-withholding');
+  if (withholdingEl) {
+    withholdingEl.textContent = formatCurrency(results.totalWeeklyWithheld);
+    withholdingEl.dataset.weeklyValue = results.totalWeeklyWithheld;
+  }
+  
+  const totalCostEl = document.getElementById('sticky-total-cost');
+  if (totalCostEl) {
+    totalCostEl.textContent = formatCurrency(results.totalWeeklyCost);
+    totalCostEl.dataset.weeklyValue = results.totalWeeklyCost;
+  }
+  
+  // Show sticky header if we have valid results, hide if invalid
+  if (results.totalWeeklyCost > 0) {
+    stickyHeader.classList.remove('hidden');
+  } else {
+    stickyHeader.classList.add('hidden');
+  }
+}
+
+/**
  * Display calculation results
  */
 function displayResults(results) {
   const resultsSection = document.getElementById('results-section');
+  
+  // Update mobile sticky header
+  updateMobileStickyHeader(results);
   
   // Update summary cards - key figures
   const householdIncomeEl = document.getElementById('result-household-income');
