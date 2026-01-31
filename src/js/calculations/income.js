@@ -6,12 +6,23 @@
 
 /**
  * Calculate adjusted income for a single parent
- * Formula: (Base Annual Income) × (Work Days per Week ÷ 5) × (Work Hours per Day ÷ Full-Time Hours)
+ * Formula: (Base Annual Income) × (Work Days per Week ÷ 5)
  * 
- * @param {number} annualIncome - Base annual income in AUD
+ * This provides clean income percentages based on days worked:
+ * - 1 day = 20% of full-time income
+ * - 2 days = 40% of full-time income
+ * - 3 days = 60% of full-time income
+ * - 4 days = 80% of full-time income
+ * - 5 days = 100% of full-time income
+ * 
+ * Note: workHoursPerDay parameter is kept for backwards compatibility but is no longer
+ * used in the calculation. Hours per day is still used for childcare cost calculations
+ * and activity test calculations, but not for income adjustment.
+ * 
+ * @param {number} annualIncome - Base annual income in AUD (full-time equivalent)
  * @param {number} workDaysPerWeek - Number of days worked per week (0-5)
- * @param {number} workHoursPerDay - Number of hours worked per day
- * @param {number} fullTimeHours - Full-time hours per day (default: 7.6)
+ * @param {number} workHoursPerDay - Number of hours worked per day (kept for backwards compatibility, not used in calculation)
+ * @param {number} fullTimeHours - Full-time hours per day (kept for backwards compatibility, not used in calculation)
  * @returns {number} Adjusted annual income
  */
 export function calculateAdjustedIncome(annualIncome, workDaysPerWeek, workHoursPerDay, fullTimeHours = 7.6) {
@@ -32,11 +43,11 @@ export function calculateAdjustedIncome(annualIncome, workDaysPerWeek, workHours
     throw new Error('Full-time hours must be a positive number');
   }
   
-  // Calculate adjusted income
+  // Calculate adjusted income based on days worked only
+  // This provides clean percentages: 1 day = 20%, 2 days = 40%, 3 days = 60%, 4 days = 80%, 5 days = 100%
   const daysFactor = workDaysPerWeek / 5;
-  const hoursFactor = workHoursPerDay / fullTimeHours;
   
-  return annualIncome * daysFactor * hoursFactor;
+  return annualIncome * daysFactor;
 }
 
 /**

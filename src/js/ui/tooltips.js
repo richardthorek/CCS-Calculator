@@ -5,11 +5,11 @@
 
 // Tooltip content mapping
 const TOOLTIP_CONTENT = {
-  'adjusted-income': 'Your adjusted income is calculated based on your annual income, work days per week, and hours per day. This reflects your actual earnings for the days and hours you work.',
+  'adjusted-income': 'Your adjusted income is calculated based on your annual income and work days per week. This reflects your actual earnings: 1 day = 20%, 2 days = 40%, 3 days = 60%, 4 days = 80%, 5 days = 100% of your full-time income.',
   
-  'work-days': 'Select the days you typically work each week. The more days you work, the more childcare hours you\'ll likely need.',
+  'work-days': 'Select the days you typically work each week. Your adjusted income is based on days worked (not hours per day).',
   
-  'hours-per-day': 'Enter your typical work hours per day. This affects your adjusted income calculation and childcare needs.',
+  'hours-per-day': 'Enter your typical work hours per day. This is used to calculate childcare hours needed and activity test requirements, but does not affect your adjusted income calculation.',
   
   'child-age': 'The child\'s age affects the CCS subsidy rate. Children under 5 may qualify for higher subsidy rates for younger siblings.',
   
