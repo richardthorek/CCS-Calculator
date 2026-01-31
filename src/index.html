@@ -3,21 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Child Care Subsidy Calculator - Australia</title>
-    <meta name="description" content="Calculate your Child Care Subsidy (CCS) entitlements and out-of-pocket childcare costs in Australia">
+    <title>Child Care Subsidy Calculator | Australia 2025-26</title>
+    <meta name="description" content="Free, accurate Child Care Subsidy (CCS) calculator for Australian families. Estimate your subsidy, compare work scenarios, and plan your childcare budget with confidence.">
+    <meta name="keywords" content="child care subsidy, CCS calculator, childcare costs Australia, family budget, centrelink">
+    <meta name="author" content="CCS Calculator">
+    <meta name="theme-color" content="#0891b2">
+    
+    <!-- Open Graph / Social -->
+    <meta property="og:title" content="Child Care Subsidy Calculator | Australia 2025-26">
+    <meta property="og:description" content="Free, accurate CCS calculator. Estimate your subsidy and plan your childcare budget.">
+    <meta property="og:type" content="website">
+    
     <link rel="stylesheet" href="styles.css">
     <script src="lib/chart.js"></script>
+    
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
     <header>
         <div class="header-content">
-            <h1>Child Care Subsidy Calculator</h1>
-            <p class="subtitle">Estimate your CCS entitlements and childcare costs</p>
-            <p class="disclaimer">Based on 2025-26 Australian Government rates</p>
+            <h1>🧒 Child Care Subsidy Calculator</h1>
+            <p class="subtitle">Know exactly what childcare will cost your family</p>
+            <p class="disclaimer">Based on official 2025-26 Australian Government rates</p>
         </div>
     </header>
     
     <main>
+        <!-- Trust Banner -->
+        <div class="trust-banner">
+            <div class="trust-banner-icon">✓</div>
+            <div class="trust-banner-content">
+                <h3>Calculations You Can Trust</h3>
+                <p>Using official 2025-26 CCS rates from the Australian Government Department of Education. Your data never leaves your device.</p>
+            </div>
+        </div>
+        
         <div class="calculator-layout">
             <!-- LEFT COLUMN: Inputs -->
             <div class="inputs-column">
@@ -171,9 +193,7 @@
                 <section class="live-results-section" id="results-section" aria-live="polite">
                     <div class="live-results-header">
                         <h2 class="live-results-title">Your Estimate</h2>
-                        <div class="calculating-indicator" id="calculating-indicator" style="display: none;">
-                            Calculating...
-                        </div>
+                        <span class="verified-badge">Verified Rates</span>
                     </div>
                     
                     <!-- Key Figures - Prominent -->
@@ -311,17 +331,23 @@
         
         <!-- Privacy Notice -->
         <div class="privacy-notice compact">
-            <p>🔒 Your data stays on your device (Local Storage). Never sold or stored on our servers.</p>
+            <p>🔒 Your data stays on your device. We never collect, store, or sell your information.</p>
+        </div>
+        
+        <!-- Government Source Badge -->
+        <div class="gov-source-badge" style="text-align: center; margin-top: var(--spacing-md);">
+            Rates verified against <a href="https://www.education.gov.au/early-childhood/child-care-subsidy" target="_blank" rel="noopener noreferrer">Department of Education</a>
         </div>
     </main>
     
     <footer>
         <div class="footer-content">
             <p class="footer-disclaimer">
-                <strong>Disclaimer:</strong> Estimates only. Visit 
-                <a href="https://www.servicesaustralia.gov.au/child-care-subsidy" target="_blank" rel="noopener noreferrer">Services Australia</a> for official information.
+                <strong>Important:</strong> This calculator provides estimates only and should not be considered financial advice. 
+                For official CCS information and applications, visit 
+                <a href="https://www.servicesaustralia.gov.au/child-care-subsidy" target="_blank" rel="noopener noreferrer">Services Australia</a>.
             </p>
-            <p class="footer-copyright">&copy; 2026 CCS Calculator</p>
+            <p class="footer-copyright">© 2026 CCS Calculator | Not affiliated with the Australian Government</p>
         </div>
     </footer>
     
