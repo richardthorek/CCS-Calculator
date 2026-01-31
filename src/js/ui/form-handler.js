@@ -57,6 +57,9 @@ export function initializeForm() {
   // Setup parent work day selection sync
   setupWorkDaySync();
   
+  // Update adjusted income displays on initial load
+  updateAdjustedIncomeDisplays();
+  
   console.log('Form initialized with real-time updates');
 }
 
@@ -78,6 +81,9 @@ function setupRealtimeUpdates() {
     
     // Only trigger for input fields, not buttons
     if (target.tagName === 'INPUT' || target.tagName === 'SELECT') {
+      // Update adjusted income displays immediately (no debounce for better UX)
+      updateAdjustedIncomeDisplays();
+      
       // Show calculating indicator
       showCalculatingIndicator();
       
@@ -99,6 +105,78 @@ function setupRealtimeUpdates() {
       debouncedSave();
     }
   });
+}
+
+/**
+ * Update the adjusted income displays for both parents
+ * Shows real-time calculation of income based on days and hours worked
+ */
+function updateAdjustedIncomeDisplays() {
+  // Parent 1
+  updateParentAdjustedIncome('parent1');
+  
+  // Parent 2
+  updateParentAdjustedIncome('parent2');
+}
+
+/**
+ * Update adjusted income display for a specific parent
+ * @param {string} parentId - 'parent1' or 'parent2'
+ */
+function updateParentAdjustedIncome(parentId) {
+  const incomeInput = document.getElementById(`${parentId}-income`);
+  const daysInput = document.getElementById(`${parentId}-days`);
+  const hoursInput = document.getElementById(`${parentId}-hours`);
+  const displayElement = document.getElementById(`${parentId}-adjusted-income-display`);
+  const valueElement = document.getElementById(`${parentId}-adjusted-income-value`);
+  const percentageElement = document.getElementById(`${parentId}-income-percentage`);
+  
+  // Get values
+  const income = parseFloat(incomeInput.value) || 0;
+  const days = parseFloat(daysInput.value) || 0;
+  const hours = parseFloat(hoursInput.value) || 0;
+  
+  // Only show if income is entered
+  if (income <= 0) {
+    displayElement.style.display = 'none';
+    return;
+  }
+  
+  // Calculate adjusted income
+  const adjustedIncome = calculateAdjustedIncome(income, days, hours);
+  
+  // Calculate percentage of full-time
+  const daysFactor = days / 5;
+  const hoursFactor = hours / 7.6;
+  const totalFactor = daysFactor * hoursFactor;
+  const percentage = Math.round(totalFactor * 100);
+  
+  // Format and display
+  valueElement.textContent = formatCurrency(adjustedIncome);
+  
+  // Show percentage if not 100%
+  if (percentage !== 100) {
+    percentageElement.textContent = `(${percentage}% of full-time)`;
+  } else {
+    percentageElement.textContent = '(full-time)';
+  }
+  
+  // Show the display
+  displayElement.style.display = 'block';
+}
+
+/**
+ * Format currency value
+ * @param {number} value - Value to format
+ * @returns {string} Formatted currency string
+ */
+function formatCurrency(value) {
+  return new Intl.NumberFormat('en-AU', {
+    style: 'currency',
+    currency: 'AUD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(value);
 }
 
 /**

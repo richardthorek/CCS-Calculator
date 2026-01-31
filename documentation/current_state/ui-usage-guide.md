@@ -42,9 +42,12 @@ The calculator requires an HTTP server to load ES6 modules. You can use any stat
 ## Using the Calculator
 
 ### Step 1: Enter Parent 1 Details (Required)
-- **Annual Income**: Total yearly income in AUD (e.g., 100000)
+- **Full-Time Equivalent Annual Income**: Your annual income as if working full-time (5 days/week). If you work part-time, enter what you would earn at your current rate working 5 days/week.
+  - The system will automatically adjust this based on your actual work days and hours
+  - A real-time display shows your adjusted income for the calculation
 - **Work Days per Week**: Number of days worked (0-5)
 - **Hours per Day**: Average hours worked per day (e.g., 7.6 for full-time)
+- **Which Days Do You Work**: Select the specific days you work each week
 
 ### Step 2: Enter Parent 2 Details (Optional)
 - Same fields as Parent 1

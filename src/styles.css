@@ -330,6 +330,35 @@ select.error:focus {
     font-style: italic;
 }
 
+/* Adjusted income display */
+.adjusted-income-display {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: #eff6ff;
+    border-left: 3px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+}
+
+.adjusted-income-display strong {
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.adjusted-income-display span {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+#parent1-income-percentage,
+#parent2-income-percentage {
+    display: inline-block;
+    margin-left: var(--spacing-sm);
+    color: var(--color-text-secondary);
+    font-size: 0.8125rem;
+    font-style: italic;
+}
+
 /* ===== Radio and Checkbox Groups ===== */
 .radio-group,
 .checkbox-group {

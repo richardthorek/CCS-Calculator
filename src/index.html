@@ -51,9 +51,10 @@
                     
                     <div class="form-group">
                         <label for="parent1-income">
-                            Annual Income (AUD)
+                            Full-Time Equivalent Annual Income (AUD)
                             <span class="required" aria-label="required">*</span>
                         </label>
+                        <p class="help-text">Enter your annual income as if working full-time (5 days/week at your current rate). If you work part-time, enter what you would earn at this rate working full-time.</p>
                         <div class="input-wrapper">
                             <span class="input-prefix">$</span>
                             <input 
@@ -65,8 +66,12 @@
                                 step="1000"
                                 required
                                 aria-required="true"
-                                aria-describedby="parent1-income-error"
+                                aria-describedby="parent1-income-error parent1-income-help"
                             >
+                        </div>
+                        <div id="parent1-adjusted-income-display" class="adjusted-income-display" style="display: none;">
+                            <strong>Adjusted Income for calculation:</strong> <span id="parent1-adjusted-income-value"></span>
+                            <span id="parent1-income-percentage"></span>
                         </div>
                         <span class="error-message" id="parent1-income-error" role="alert"></span>
                     </div>
@@ -152,7 +157,8 @@
                     </h2>
                     
                     <div class="form-group">
-                        <label for="parent2-income">Annual Income (AUD)</label>
+                        <label for="parent2-income">Full-Time Equivalent Annual Income (AUD)</label>
+                        <p class="help-text">Enter your annual income as if working full-time (5 days/week at your current rate). If you work part-time, enter what you would earn at this rate working full-time.</p>
                         <div class="input-wrapper">
                             <span class="input-prefix">$</span>
                             <input 
@@ -162,8 +168,12 @@
                                 min="0" 
                                 max="10000000"
                                 step="1000"
-                                aria-describedby="parent2-income-error"
+                                aria-describedby="parent2-income-error parent2-income-help"
                             >
+                        </div>
+                        <div id="parent2-adjusted-income-display" class="adjusted-income-display" style="display: none;">
+                            <strong>Adjusted Income for calculation:</strong> <span id="parent2-adjusted-income-value"></span>
+                            <span id="parent2-income-percentage"></span>
                         </div>
                         <span class="error-message" id="parent2-income-error" role="alert"></span>
                     </div>
