@@ -20,6 +20,10 @@ import {
   formatScheduleBreakdown,
   calculateCostSavings
 } from '../calculations/parent-schedule.js';
+import { 
+  calculatePerPersonRates, 
+  checkThresholdRisk 
+} from '../calculations/per-person-rates.js';
 import { debounce } from '../utils/debounce.js';
 import { loadState, saveState } from '../storage/persistence.js';
 import { stripCommas, formatWithCommas } from '../utils/format-input.js';
@@ -781,6 +785,17 @@ function calculateCCS(formData) {
     ? (annualOutOfPocket / householdIncome) * 100 
     : 0;
   
+  // Calculate per-person effective rates
+  const perPersonRates = calculatePerPersonRates(
+    formData.parent1.income,
+    formData.parent2.income,
+    annualOutOfPocket
+  );
+  
+  // Check for threshold risks
+  const hasMultipleChildrenUnder5 = formData.children.filter(child => child.age <= 5).length >= 2;
+  const thresholdWarning = checkThresholdRisk(householdIncome, hasMultipleChildrenUnder5);
+  
   return {
     householdIncome,
     subsidisedHoursPerWeek,
@@ -795,7 +810,9 @@ function calculateCCS(formData) {
     netAnnualIncome,
     costAsPercentageOfIncome,
     childrenResults,
-    withholdingRate: formData.withholdingRate
+    withholdingRate: formData.withholdingRate,
+    perPersonRates,
+    thresholdWarning
   };
 }
 
@@ -963,6 +980,18 @@ function displayResults(results) {
     }).join('');
   }
   
+  // Display threshold warning
+  if (results.thresholdWarning) {
+    displayThresholdWarning(results.thresholdWarning);
+  }
+  
+  // Display per-person effective rates
+  if (results.perPersonRates) {
+    // Need to get form data for this
+    const formData = getFormData();
+    displayPerPersonRates(results.perPersonRates, formData);
+  }
+  
   // Show results section (no longer hidden by default)
   if (resultsSection) {
     resultsSection.hidden = false;
@@ -1011,6 +1040,150 @@ function displayScheduleBreakdown(scheduleBreakdown) {
       <p class="schedule-explanation">${scheduleBreakdown.explanation}</p>
     `;
   }
+}
+
+/**
+ * Display threshold warning
+ */
+function displayThresholdWarning(thresholdWarning) {
+  const warningSection = document.getElementById('threshold-warning-section');
+  
+  if (!warningSection) {
+    return;
+  }
+  
+  if (!thresholdWarning.showWarning) {
+    warningSection.classList.add('hidden');
+    return;
+  }
+  
+  // Remove existing risk level classes
+  warningSection.classList.remove('risk-low', 'risk-medium', 'risk-high');
+  
+  // Add appropriate risk level class
+  warningSection.classList.add(`risk-${thresholdWarning.riskLevel}`);
+  
+  // Show the warning
+  warningSection.classList.remove('hidden');
+  
+  // Get appropriate icon based on risk level
+  let icon = '⚠️';
+  if (thresholdWarning.riskLevel === 'low') icon = 'ℹ️';
+  if (thresholdWarning.riskLevel === 'high') icon = '⚠️';
+  
+  warningSection.innerHTML = `
+    <div class="threshold-warning-title">
+      <span>${icon}</span>
+      <span>${thresholdWarning.message}</span>
+    </div>
+    <div class="threshold-warning-message">
+      ${thresholdWarning.detail}
+    </div>
+  `;
+}
+
+/**
+ * Display per-person effective rates
+ */
+function displayPerPersonRates(perPersonRates, formData) {
+  const ratesContent = document.getElementById('per-person-rates-content');
+  
+  if (!ratesContent) {
+    return;
+  }
+  
+  const hasParent2 = formData.parent2.income > 0;
+  
+  let html = '<div class="per-person-rates-grid">';
+  
+  // Parent 1 card
+  html += `
+    <div class="per-person-card">
+      <div class="per-person-card-header">Parent 1 Effective Rates</div>
+      <div class="per-person-rate-item">
+        <span class="per-person-rate-label">Income:</span>
+        <span class="per-person-rate-value">${formatCurrency(perPersonRates.parent1.income)}/year</span>
+      </div>
+      <div class="per-person-rate-item">
+        <span class="per-person-rate-label">Daily Rate:</span>
+        <span class="per-person-rate-value highlight">${formatCurrency(perPersonRates.parent1.dailyRate)}/day</span>
+      </div>
+      <div class="per-person-rate-item">
+        <span class="per-person-rate-label">Weekly Rate:</span>
+        <span class="per-person-rate-value">${formatCurrency(perPersonRates.parent1.weeklyRate)}/week</span>
+      </div>
+      <div class="per-person-rate-item">
+        <span class="per-person-rate-label">Monthly Rate:</span>
+        <span class="per-person-rate-value">${formatCurrency(perPersonRates.parent1.monthlyRate)}/month</span>
+      </div>
+      <div class="per-person-rate-item">
+        <span class="per-person-rate-label">Annual Rate:</span>
+        <span class="per-person-rate-value">${formatCurrency(perPersonRates.parent1.annualRate)}/year</span>
+      </div>
+      <div class="per-person-rate-item">
+        <span class="per-person-rate-label">As % of Income:</span>
+        <span class="per-person-rate-value highlight">${formatPercentage(perPersonRates.parent1.percentage)}</span>
+      </div>
+      <div class="per-person-rate-item">
+        <span class="per-person-rate-label">Net After Childcare:</span>
+        <span class="per-person-rate-value">${formatCurrency(perPersonRates.parent1.netIncome)}</span>
+      </div>
+    </div>
+  `;
+  
+  // Parent 2 card (if applicable)
+  if (hasParent2) {
+    html += `
+      <div class="per-person-card">
+        <div class="per-person-card-header">Parent 2 Effective Rates</div>
+        <div class="per-person-rate-item">
+          <span class="per-person-rate-label">Income:</span>
+          <span class="per-person-rate-value">${formatCurrency(perPersonRates.parent2.income)}/year</span>
+        </div>
+        <div class="per-person-rate-item">
+          <span class="per-person-rate-label">Daily Rate:</span>
+          <span class="per-person-rate-value highlight">${formatCurrency(perPersonRates.parent2.dailyRate)}/day</span>
+        </div>
+        <div class="per-person-rate-item">
+          <span class="per-person-rate-label">Weekly Rate:</span>
+          <span class="per-person-rate-value">${formatCurrency(perPersonRates.parent2.weeklyRate)}/week</span>
+        </div>
+        <div class="per-person-rate-item">
+          <span class="per-person-rate-label">Monthly Rate:</span>
+          <span class="per-person-rate-value">${formatCurrency(perPersonRates.parent2.monthlyRate)}/month</span>
+        </div>
+        <div class="per-person-rate-item">
+          <span class="per-person-rate-label">Annual Rate:</span>
+          <span class="per-person-rate-value">${formatCurrency(perPersonRates.parent2.annualRate)}/year</span>
+        </div>
+        <div class="per-person-rate-item">
+          <span class="per-person-rate-label">As % of Income:</span>
+          <span class="per-person-rate-value highlight">${formatPercentage(perPersonRates.parent2.percentage)}</span>
+        </div>
+        <div class="per-person-rate-item">
+          <span class="per-person-rate-label">Net After Childcare:</span>
+          <span class="per-person-rate-value">${formatCurrency(perPersonRates.parent2.netIncome)}</span>
+        </div>
+      </div>
+    `;
+  }
+  
+  html += '</div>';
+  
+  // Add comparison note
+  if (hasParent2) {
+    const higherPercentageParent = perPersonRates.parent1.percentage > perPersonRates.parent2.percentage ? 'Parent 1' : 'Parent 2';
+    const percentageDiff = Math.abs(perPersonRates.parent1.percentage - perPersonRates.parent2.percentage);
+    
+    html += `
+      <div class="per-person-comparison">
+        If all childcare was paid from one person's salary: ${higherPercentageParent} would pay 
+        ${formatPercentage(percentageDiff)} more of their income than the other parent.
+      </div>
+    `;
+  }
+  
+  ratesContent.innerHTML = html;
 }
 
 /**
