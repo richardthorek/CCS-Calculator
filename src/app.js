@@ -1,15 +1,10 @@
 // CCS Calculator - Main Application JavaScript
 
+import { initializeForm } from './js/ui/form-handler.js';
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('CCS Calculator initialized');
     
-    // Application initialization code will go here
-    
-    // Example: Check if API is available
-    checkApiHealth();
+    // Initialize the calculator form
+    initializeForm();
 });
-
-async function checkApiHealth() {
-    // This will be implemented once API endpoints are created
-    console.log('API health check - to be implemented');
-}
