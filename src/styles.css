@@ -1154,6 +1154,14 @@ select.valid:focus {
     font-size: var(--font-size-sm);
 }
 
+.no-scenarios {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    font-style: italic;
+}
+
 /* ===== Scenario Cards ===== */
 .comparison-cards {
     display: grid;
@@ -1680,25 +1688,6 @@ select.valid:focus {
     min-height: 300px;
 }
 
-/* ===== Table Controls ===== */
-.table-controls {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
-}
-
-.table-controls label {
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    color: var(--color-text-secondary);
-}
-
-.table-controls .form-control {
-    width: auto;
-    min-width: 200px;
-}
-
 /* ===== Privacy Notice ===== */
 .privacy-notice {
     max-width: 1440px;
@@ -2018,17 +2007,223 @@ footer {
     -webkit-overflow-scrolling: touch;
 }
 
+/* ===== Comparison Table Styles ===== */
 /* Table wrapper for horizontal scrolling */
 .comparison-table-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     margin: var(--spacing-md) 0;
+    background: var(--color-bg-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-border);
 }
 
 /* Ensure tables don't break layout */
 .comparison-table-wrapper table {
     min-width: 100%;
     width: max-content;
+}
+
+/* Main comparison table */
+.comparison-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--font-size-sm);
+}
+
+/* Table header */
+.comparison-table thead {
+    background: linear-gradient(135deg, var(--color-bg-tertiary) 0%, var(--color-bg-secondary) 100%);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.comparison-table thead tr {
+    border-bottom: 2px solid var(--color-border);
+}
+
+.comparison-table th {
+    padding: var(--spacing-md) var(--spacing-lg);
+    text-align: left;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    background: transparent;
+    border-bottom: 2px solid var(--color-border);
+    white-space: nowrap;
+}
+
+/* First column header (metrics column) */
+.comparison-table thead th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 11;
+    background: linear-gradient(135deg, var(--color-bg-tertiary) 0%, var(--color-bg-secondary) 100%);
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Scenario headers */
+.comparison-table thead th.best-scenario {
+    background: linear-gradient(135deg, var(--color-success-50) 0%, #d1fae5 100%);
+    border-bottom-color: var(--color-success);
+}
+
+.scenario-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    min-width: 150px;
+}
+
+.scenario-name {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.scenario-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    align-items: center;
+}
+
+/* Table body */
+.comparison-table tbody tr {
+    transition: background-color var(--transition-fast);
+}
+
+.comparison-table tbody tr:hover {
+    background-color: var(--color-bg-secondary);
+}
+
+.comparison-table tbody tr:nth-child(even) {
+    background-color: rgba(248, 250, 252, 0.5);
+}
+
+.comparison-table tbody tr:nth-child(even):hover {
+    background-color: var(--color-bg-secondary);
+}
+
+.comparison-table tbody th {
+    padding: var(--spacing-md) var(--spacing-lg);
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.03);
+}
+
+.comparison-table tbody tr:hover th {
+    background-color: var(--color-bg-secondary);
+}
+
+.comparison-table td {
+    padding: var(--spacing-md) var(--spacing-lg);
+    text-align: left;
+    color: var(--color-text-primary);
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 500;
+}
+
+/* Highlighted cells (best values) */
+.comparison-table td.highlight {
+    background: linear-gradient(135deg, var(--color-success-50) 0%, rgba(16, 185, 129, 0.1) 100%);
+    font-weight: 700;
+    color: var(--color-success);
+}
+
+.comparison-table tbody tr:hover td.highlight {
+    background: linear-gradient(135deg, var(--color-success-50) 0%, rgba(16, 185, 129, 0.15) 100%);
+}
+
+/* Action buttons in table */
+.favorite-btn,
+.remove-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-base);
+    padding: var(--spacing-xs);
+    color: var(--color-text-muted);
+    transition: all var(--transition-fast);
+    border-radius: var(--radius-sm);
+}
+
+.favorite-btn:hover,
+.remove-btn:hover {
+    background: var(--color-bg-tertiary);
+    transform: scale(1.1);
+}
+
+.favorite-btn:focus-visible,
+.remove-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.favorite-btn.active {
+    color: var(--color-accent);
+}
+
+.remove-btn:hover {
+    color: var(--color-error);
+    background: var(--color-error-light);
+}
+
+/* Scenario count message */
+.scenario-count {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin: 0 0 var(--spacing-sm) 0;
+    font-weight: 500;
+}
+
+/* Responsive table design */
+@media (max-width: 768px) {
+    .comparison-table {
+        font-size: var(--font-size-xs);
+    }
+    
+    .comparison-table th,
+    .comparison-table td {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .scenario-header {
+        min-width: 120px;
+    }
+    
+    .scenario-name {
+        font-size: var(--font-size-xs);
+    }
+}
+
+/* Table controls */
+.table-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.table-controls label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.table-controls .form-control {
+    flex: 1;
+    max-width: 250px;
 }
 
 /* ===== Toast Notifications ===== */
@@ -2071,5 +2266,18 @@ footer {
         right: 10px;
         left: 10px;
         max-width: none;
+    }
+}
+
+/* ===== Accessibility: Reduced Motion ===== */
+/* Respect user's motion preferences for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }
