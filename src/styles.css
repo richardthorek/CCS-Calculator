@@ -1598,12 +1598,36 @@ footer {
 /* ===== Apply All Control ===== */
 .apply-all-control {
     display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-top: var(--spacing-md);
+}
+
+.apply-all-label {
+    display: block;
+    color: var(--color-text);
+    font-size: var(--font-size-sm);
+}
+
+.apply-all-label strong {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+}
+
+.apply-all-label .help-text {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    margin-top: 0;
+}
+
+.apply-all-inputs {
+    display: flex;
     gap: var(--spacing-sm);
     align-items: center;
-    padding: var(--spacing-sm);
-    background: var(--color-bg-tertiary);
-    border-radius: var(--radius-md);
-    margin-top: var(--spacing-sm);
 }
 
 .apply-all-control input {
