@@ -339,11 +339,20 @@ function isFormDataComplete(formData) {
   // Check if at least one child is added
   if (formData.children.length === 0) return false;
   
-  // Check all children have required fields
+  // Check all children have required fields based on fee type
   for (const child of formData.children) {
     if (child.age === null || child.age === undefined) return false;
-    if (child.hoursPerWeek === null || child.hoursPerWeek === undefined) return false;
-    if (child.providerFee === null || child.providerFee === undefined) return false;
+    
+    // Validate based on fee type (daily or hourly)
+    if (child.feeType === 'daily') {
+      // For daily fee mode, check dailyFee and hoursPerDay
+      if (child.dailyFee === null || child.dailyFee === undefined || child.dailyFee <= 0) return false;
+      if (child.hoursPerDay === null || child.hoursPerDay === undefined || child.hoursPerDay <= 0) return false;
+    } else {
+      // For hourly fee mode, check hoursPerWeek and providerFee
+      if (child.hoursPerWeek === null || child.hoursPerWeek === undefined || child.hoursPerWeek <= 0) return false;
+      if (child.providerFee === null || child.providerFee === undefined || child.providerFee <= 0) return false;
+    }
   }
   
   return true;
