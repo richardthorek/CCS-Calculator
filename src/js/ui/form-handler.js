@@ -1185,18 +1185,6 @@ function setupWorkDaySync() {
 }
 
 /**
- * Format currency value
- */
-function formatCurrency(value) {
-  return new Intl.NumberFormat('en-AU', {
-    style: 'currency',
-    currency: 'AUD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(value);
-}
-
-/**
  * Format percentage value
  */
 function formatPercentage(value) {
