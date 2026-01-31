@@ -42,6 +42,9 @@ import {
 import {
   initFormattedIncomeInputs
 } from './js/utils/format-input.js';
+import {
+  initializeAllCollapses
+} from './js/ui/collapsible-sections.js';
 
 // Global state for scenarios
 let currentScenarios = [];
@@ -94,6 +97,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize help tooltips (Phase 7)
     initializeTooltips();
+    
+    // Initialize collapsible sections for mobile/tablet
+    initializeAllCollapses();
     
     // Check if URL contains shared data and load it (Phase 7)
     const urlData = loadFromURL();
