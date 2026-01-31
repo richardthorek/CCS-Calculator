@@ -173,7 +173,7 @@ function createComparisonTableElement(scenarios, options = {}) {
   
   // Household income row
   if (showIncome) {
-    const row = createTableRow('Household Income', scenarios, (s) => 
+    const row = createTableRow('Adjusted Household Income', scenarios, (s) => 
       formatCurrency(s.householdIncome)
     );
     tbody.appendChild(row);
