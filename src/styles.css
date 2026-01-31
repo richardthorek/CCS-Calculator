@@ -2547,14 +2547,6 @@ footer {
     color: var(--color-success-light);
 }
 
-/* Auto dark mode - follows system preference */
-@media (prefers-color-scheme: dark) {
-    :root:not(.dark-mode):not(:has(.theme-toggle)) {
-        /* Only apply auto dark mode if theme toggle hasn't been initialized */
-        /* This prevents flash of unstyled content */
-    }
-}
-
 /* ===== Accessibility: Reduced Motion ===== */
 /* Respect user's motion preferences for accessibility */
 @media (prefers-reduced-motion: reduce) {
