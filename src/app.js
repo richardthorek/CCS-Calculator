@@ -42,10 +42,17 @@ import {
 import {
   initFormattedIncomeInputs
 } from './js/utils/format-input.js';
+import {
+  initializeTheme,
+  initializeThemeToggle
+} from './js/ui/theme-toggle.js';
 
 // Global state for scenarios
 let currentScenarios = [];
 let currentFormData = null;
+
+// Initialize theme before DOM content loads to prevent flash
+initializeTheme();
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('CCS Calculator initialized');
@@ -94,6 +101,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize help tooltips (Phase 7)
     initializeTooltips();
+    
+    // Initialize theme toggle (Dark Mode)
+    initializeThemeToggle();
     
     // Check if URL contains shared data and load it (Phase 7)
     const urlData = loadFromURL();
