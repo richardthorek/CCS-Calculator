@@ -182,6 +182,31 @@ export const VALIDATION_LIMITS = {
 };
 
 /**
+ * CCS Withholding configuration
+ * The government withholds a percentage of CCS to create a buffer for income fluctuations
+ * This reduces the risk of overpayment debts at year-end reconciliation
+ * 
+ * Source: Services Australia
+ * See: https://www.servicesaustralia.gov.au/your-income-can-affect-child-care-subsidy
+ */
+export const WITHHOLDING = {
+  // Default withholding percentage (can be adjusted by families via myGov)
+  DEFAULT_RATE: 5,
+  
+  // Allowable withholding range
+  MIN_RATE: 0,
+  MAX_RATE: 100,
+  
+  // Policy information
+  POLICY: {
+    description: 'CCS withholding reduces overpayment risk when income fluctuates',
+    adjustable: true,
+    adjustmentLimit: 2, // Times per year via myGov
+    adjustmentMethod: 'myGov (Centrelink online account) or phone'
+  }
+};
+
+/**
  * Financial year information
  */
 export const FINANCIAL_YEAR = {
@@ -245,6 +270,7 @@ export const CCS_CONFIG = {
   DAYS_OF_WEEK,
   DAYS_OF_WEEK_LABELS,
   VALIDATION_LIMITS,
+  WITHHOLDING,
   FINANCIAL_YEAR,
   getHourlyRateCap,
   getDailyRateCap

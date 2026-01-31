@@ -10,8 +10,10 @@ import {
   calculateNetIncome,
   calculateCostAsPercentageOfIncome,
   calculateCompleteCostBreakdown,
+  applyWithholding,
   CARE_TYPES,
-  AGE_CATEGORIES
+  AGE_CATEGORIES,
+  WITHHOLDING
 } from '../../src/js/calculations/costs.js';
 
 describe('Cost Calculations', () => {
@@ -108,9 +110,14 @@ describe('Cost Calculations', () => {
         actualHours: 35
       });
       
-      expect(result.weeklySubsidy).toBeCloseTo(460.95, 2);
+      // Gross subsidy: 13.17 * 35 = 460.95
+      // 5% withholding: 23.05
+      // Paid subsidy: 437.90
+      expect(result.weeklyGrossSubsidy).toBeCloseTo(460.95, 2);
+      expect(result.weeklyWithheld).toBeCloseTo(23.05, 2);
+      expect(result.weeklySubsidy).toBeCloseTo(437.90, 2);
       expect(result.weeklyFullCost).toBe(525);
-      expect(result.weeklyOutOfPocket).toBeCloseTo(64.05, 2);
+      expect(result.weeklyOutOfPocket).toBeCloseTo(87.10, 2);
       expect(result.hoursWithSubsidy).toBe(35);
       expect(result.hoursWithoutSubsidy).toBe(0);
     });
@@ -123,9 +130,14 @@ describe('Cost Calculations', () => {
         actualHours: 45
       });
       
-      expect(result.weeklySubsidy).toBeCloseTo(474.12, 2);
+      // Gross subsidy: 13.17 * 36 = 474.12
+      // 5% withholding: 23.71
+      // Paid subsidy: 450.41
+      expect(result.weeklyGrossSubsidy).toBeCloseTo(474.12, 2);
+      expect(result.weeklyWithheld).toBeCloseTo(23.71, 2);
+      expect(result.weeklySubsidy).toBeCloseTo(450.41, 2);
       expect(result.weeklyFullCost).toBe(675);
-      expect(result.weeklyOutOfPocket).toBeCloseTo(200.88, 2);
+      expect(result.weeklyOutOfPocket).toBeCloseTo(224.59, 2);
       expect(result.hoursWithSubsidy).toBe(36);
       expect(result.hoursWithoutSubsidy).toBe(9);
     });
@@ -278,14 +290,22 @@ describe('Cost Calculations', () => {
       expect(result.annual).toBeDefined();
       expect(result.annual.outOfPocket).toBeDefined();
       
+      // Effective rate: min(15, 14.63) = 14.63
+      // Subsidy per hour: 0.9 * 14.63 = 13.167
+      // Weekly gross subsidy: 13.167 * 36 = 474.01
+      // Weekly withholding (5%): 23.70
+      // Weekly paid subsidy: 450.31
+      // Out of pocket: 600 - 450.31 = 149.69
       expect(result.effectiveHourlyRate).toBe(14.63);
       expect(result.subsidyPerHour).toBeCloseTo(13.167, 2);
-      expect(result.weekly.weeklySubsidy).toBeCloseTo(474.01, 1);
+      expect(result.weekly.weeklyGrossSubsidy).toBeCloseTo(474.01, 1);
+      expect(result.weekly.weeklyWithheld).toBeCloseTo(23.70, 1);
+      expect(result.weekly.weeklySubsidy).toBeCloseTo(450.31, 1);
       expect(result.weekly.weeklyFullCost).toBe(600);
-      expect(result.weekly.weeklyOutOfPocket).toBeCloseTo(125.99, 1);
-      expect(result.annual.outOfPocket).toBeCloseTo(6551.48, 1);
-      expect(result.netIncome).toBeCloseTo(93448.52, 1);
-      expect(result.costPercentage).toBeCloseTo(6.55, 1);
+      expect(result.weekly.weeklyOutOfPocket).toBeCloseTo(149.69, 1);
+      expect(result.annual.outOfPocket).toBeCloseTo(7783.88, 1);
+      expect(result.netIncome).toBeCloseTo(92216.12, 1);
+      expect(result.costPercentage).toBeCloseTo(7.78, 1);
     });
 
     test('handles provider fee below cap', () => {
@@ -347,6 +367,213 @@ describe('Cost Calculations', () => {
     test('exports age category constants', () => {
       expect(AGE_CATEGORIES.SCHOOL_AGE_THRESHOLD).toBe(6);
       expect(AGE_CATEGORIES.HIGHER_RATE_AGE_THRESHOLD).toBe(5);
+    });
+  });
+
+  describe('WITHHOLDING export', () => {
+    test('exports withholding constants', () => {
+      expect(WITHHOLDING.DEFAULT_RATE).toBe(5);
+      expect(WITHHOLDING.MIN_RATE).toBe(0);
+      expect(WITHHOLDING.MAX_RATE).toBe(100);
+    });
+  });
+
+  describe('applyWithholding', () => {
+    test('applies default 5% withholding correctly', () => {
+      const result = applyWithholding(100);
+      expect(result.grossSubsidy).toBe(100);
+      expect(result.withheldAmount).toBe(5);
+      expect(result.paidSubsidy).toBe(95);
+      expect(result.withholdingRate).toBe(5);
+    });
+
+    test('applies 0% withholding (opt-out)', () => {
+      const result = applyWithholding(100, 0);
+      expect(result.grossSubsidy).toBe(100);
+      expect(result.withheldAmount).toBe(0);
+      expect(result.paidSubsidy).toBe(100);
+      expect(result.withholdingRate).toBe(0);
+    });
+
+    test('applies 10% withholding', () => {
+      const result = applyWithholding(200, 10);
+      expect(result.grossSubsidy).toBe(200);
+      expect(result.withheldAmount).toBe(20);
+      expect(result.paidSubsidy).toBe(180);
+      expect(result.withholdingRate).toBe(10);
+    });
+
+    test('applies 100% withholding', () => {
+      const result = applyWithholding(150, 100);
+      expect(result.grossSubsidy).toBe(150);
+      expect(result.withheldAmount).toBe(150);
+      expect(result.paidSubsidy).toBe(0);
+      expect(result.withholdingRate).toBe(100);
+    });
+
+    test('rounds monetary values to 2 decimal places', () => {
+      const result = applyWithholding(100.555, 5);
+      expect(result.grossSubsidy).toBe(100.56);
+      expect(result.withheldAmount).toBe(5.03);
+      expect(result.paidSubsidy).toBe(95.53);
+    });
+
+    test('handles zero subsidy amount', () => {
+      const result = applyWithholding(0, 5);
+      expect(result.grossSubsidy).toBe(0);
+      expect(result.withheldAmount).toBe(0);
+      expect(result.paidSubsidy).toBe(0);
+    });
+
+    test('throws error for negative subsidy amount', () => {
+      expect(() => applyWithholding(-100, 5))
+        .toThrow('Subsidy amount must be a non-negative number');
+    });
+
+    test('throws error for withholding rate below 0', () => {
+      expect(() => applyWithholding(100, -1))
+        .toThrow('Withholding rate must be between 0 and 100');
+    });
+
+    test('throws error for withholding rate above 100', () => {
+      expect(() => applyWithholding(100, 101))
+        .toThrow('Withholding rate must be between 0 and 100');
+    });
+
+    test('throws error for non-numeric subsidy amount', () => {
+      expect(() => applyWithholding('100', 5))
+        .toThrow('Subsidy amount must be a non-negative number');
+    });
+
+    test('throws error for non-numeric withholding rate', () => {
+      expect(() => applyWithholding(100, '5'))
+        .toThrow('Withholding rate must be between 0 and 100');
+    });
+  });
+
+  describe('calculateWeeklyCosts with withholding', () => {
+    test('includes withholding in weekly costs with default rate', () => {
+      const result = calculateWeeklyCosts({
+        subsidyPerHour: 10,
+        providerFee: 15,
+        subsidisedHours: 40,
+        actualHours: 40
+      });
+      
+      // Gross subsidy: 10 * 40 = 400
+      // 5% withholding: 20
+      // Paid subsidy: 380
+      // Full cost: 15 * 40 = 600
+      // Out of pocket: 600 - 380 = 220
+      expect(result.weeklyGrossSubsidy).toBe(400);
+      expect(result.weeklyWithheld).toBe(20);
+      expect(result.weeklySubsidy).toBe(380);
+      expect(result.weeklyFullCost).toBe(600);
+      expect(result.weeklyOutOfPocket).toBe(220);
+      expect(result.withholdingRate).toBe(5);
+    });
+
+    test('includes withholding with custom 0% rate', () => {
+      const result = calculateWeeklyCosts({
+        subsidyPerHour: 10,
+        providerFee: 15,
+        subsidisedHours: 40,
+        actualHours: 40,
+        withholdingRate: 0
+      });
+      
+      expect(result.weeklyGrossSubsidy).toBe(400);
+      expect(result.weeklyWithheld).toBe(0);
+      expect(result.weeklySubsidy).toBe(400);
+      expect(result.weeklyFullCost).toBe(600);
+      expect(result.weeklyOutOfPocket).toBe(200);
+      expect(result.withholdingRate).toBe(0);
+    });
+
+    test('includes withholding with custom 10% rate', () => {
+      const result = calculateWeeklyCosts({
+        subsidyPerHour: 10,
+        providerFee: 15,
+        subsidisedHours: 40,
+        actualHours: 40,
+        withholdingRate: 10
+      });
+      
+      // Gross subsidy: 400
+      // 10% withholding: 40
+      // Paid subsidy: 360
+      expect(result.weeklyGrossSubsidy).toBe(400);
+      expect(result.weeklyWithheld).toBe(40);
+      expect(result.weeklySubsidy).toBe(360);
+      expect(result.weeklyOutOfPocket).toBe(240);
+      expect(result.withholdingRate).toBe(10);
+    });
+  });
+
+  describe('calculateCompleteCostBreakdown with withholding', () => {
+    test('includes withholding in complete breakdown with default rate', () => {
+      const result = calculateCompleteCostBreakdown({
+        householdIncome: 100000,
+        subsidyRate: 90,
+        providerFee: 15,
+        careType: CARE_TYPES.CENTRE_BASED,
+        childAge: 3,
+        subsidisedHours: 40,
+        actualHours: 40
+      });
+
+      // Effective rate: min(15, 14.63) = 14.63
+      // Subsidy per hour: 0.9 * 14.63 = 13.167
+      // Weekly gross subsidy: 13.167 * 40 = 526.68
+      // Weekly withholding: 526.68 * 0.05 = 26.33
+      // Weekly paid subsidy: 500.35
+      // Annual gross subsidy: 526.68 * 52 = 27,387.36
+      // Annual paid subsidy: 500.35 * 52 = 26,018.20
+      
+      expect(result.withholdingRate).toBe(5);
+      expect(result.weekly.weeklyGrossSubsidy).toBeCloseTo(526.68, 1);
+      expect(result.weekly.weeklyWithheld).toBeCloseTo(26.33, 1);
+      expect(result.weekly.weeklySubsidy).toBeCloseTo(500.35, 1);
+      expect(result.annual.grossSubsidy).toBeCloseTo(27387.36, 0);
+      expect(result.annual.withheld).toBeCloseTo(1369.16, 0);
+      expect(result.annual.subsidy).toBeCloseTo(26018.20, 0);
+    });
+
+    test('includes withholding in complete breakdown with 0% rate', () => {
+      const result = calculateCompleteCostBreakdown({
+        householdIncome: 100000,
+        subsidyRate: 90,
+        providerFee: 15,
+        careType: CARE_TYPES.CENTRE_BASED,
+        childAge: 3,
+        subsidisedHours: 40,
+        actualHours: 40,
+        withholdingRate: 0
+      });
+
+      expect(result.withholdingRate).toBe(0);
+      expect(result.weekly.weeklyWithheld).toBe(0);
+      expect(result.weekly.weeklySubsidy).toBe(result.weekly.weeklyGrossSubsidy);
+      expect(result.annual.withheld).toBe(0);
+      expect(result.annual.subsidy).toBe(result.annual.grossSubsidy);
+    });
+
+    test('includes withholding in complete breakdown with custom 10% rate', () => {
+      const result = calculateCompleteCostBreakdown({
+        householdIncome: 100000,
+        subsidyRate: 90,
+        providerFee: 15,
+        careType: CARE_TYPES.CENTRE_BASED,
+        childAge: 3,
+        subsidisedHours: 40,
+        actualHours: 40,
+        withholdingRate: 10
+      });
+
+      expect(result.withholdingRate).toBe(10);
+      // Weekly withholding should be 10% of gross subsidy
+      const expectedWithheld = result.weekly.weeklyGrossSubsidy * 0.1;
+      expect(result.weekly.weeklyWithheld).toBeCloseTo(expectedWithheld, 1);
     });
   });
 });

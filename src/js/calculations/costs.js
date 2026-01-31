@@ -9,9 +9,38 @@ import {
   AGE_CATEGORIES,
   WORK_DEFAULTS,
   CHILDCARE_DEFAULTS,
+  WITHHOLDING,
   getHourlyRateCap,
   getDailyRateCap
 } from '../config/ccs-config.js';
+
+/**
+ * Apply withholding to subsidy amount
+ * The government withholds a percentage of CCS to prevent overpayment debts
+ * 
+ * @param {number} subsidyAmount - Subsidy amount before withholding
+ * @param {number} withholdingRate - Withholding percentage (0-100, default: 5)
+ * @returns {Object} Breakdown of subsidy with withholding applied
+ */
+export function applyWithholding(subsidyAmount, withholdingRate = WITHHOLDING.DEFAULT_RATE) {
+  if (typeof subsidyAmount !== 'number' || subsidyAmount < 0) {
+    throw new Error('Subsidy amount must be a non-negative number');
+  }
+  
+  if (typeof withholdingRate !== 'number' || withholdingRate < WITHHOLDING.MIN_RATE || withholdingRate > WITHHOLDING.MAX_RATE) {
+    throw new Error(`Withholding rate must be between ${WITHHOLDING.MIN_RATE} and ${WITHHOLDING.MAX_RATE}`);
+  }
+  
+  const withheldAmount = (withholdingRate / 100) * subsidyAmount;
+  const paidSubsidy = subsidyAmount - withheldAmount;
+  
+  return {
+    grossSubsidy: Math.round(subsidyAmount * 100) / 100,
+    withheldAmount: Math.round(withheldAmount * 100) / 100,
+    paidSubsidy: Math.round(paidSubsidy * 100) / 100,
+    withholdingRate
+  };
+}
 
 /**
  * Calculate effective daily rate (minimum of provider fee and rate cap)
@@ -66,10 +95,17 @@ export function calculateSubsidyPerDay(subsidyRate, effectiveDailyRate) {
  * @param {number} params.providerDailyFee - Provider's daily fee
  * @param {number} params.subsidisedDays - Number of subsidised days per week
  * @param {number} params.actualDays - Actual childcare days needed per week
+ * @param {number} params.withholdingRate - Withholding percentage (default: 5)
  * @returns {Object} Weekly costs breakdown
  */
 export function calculateWeeklyCostsFromDailyRate(params) {
-  const { subsidyPerDay, providerDailyFee, subsidisedDays, actualDays } = params;
+  const { 
+    subsidyPerDay, 
+    providerDailyFee, 
+    subsidisedDays, 
+    actualDays,
+    withholdingRate = WITHHOLDING.DEFAULT_RATE
+  } = params;
   
   // Validation
   if (typeof subsidyPerDay !== 'number' || subsidyPerDay < 0) {
@@ -92,16 +128,21 @@ export function calculateWeeklyCostsFromDailyRate(params) {
   const daysWithSubsidy = Math.min(subsidisedDays, actualDays);
   const daysWithoutSubsidy = Math.max(0, actualDays - subsidisedDays);
   
-  const weeklySubsidy = subsidyPerDay * daysWithSubsidy;
+  const weeklyGrossSubsidy = subsidyPerDay * daysWithSubsidy;
+  const withholding = applyWithholding(weeklyGrossSubsidy, withholdingRate);
+  
   const weeklyFullCost = providerDailyFee * actualDays;
-  const weeklyOutOfPocket = weeklyFullCost - weeklySubsidy;
+  const weeklyOutOfPocket = weeklyFullCost - withholding.paidSubsidy;
   
   return {
-    weeklySubsidy: Math.round(weeklySubsidy * 100) / 100,
+    weeklySubsidy: withholding.paidSubsidy,
+    weeklyGrossSubsidy: withholding.grossSubsidy,
+    weeklyWithheld: withholding.withheldAmount,
     weeklyFullCost: Math.round(weeklyFullCost * 100) / 100,
     weeklyOutOfPocket: Math.round(weeklyOutOfPocket * 100) / 100,
     daysWithSubsidy,
-    daysWithoutSubsidy
+    daysWithoutSubsidy,
+    withholdingRate
   };
 }
 
@@ -153,10 +194,17 @@ export function calculateSubsidyPerHour(subsidyRate, effectiveHourlyRate) {
  * @param {number} params.providerFee - Provider's hourly fee
  * @param {number} params.subsidisedHours - Number of subsidised hours per week
  * @param {number} params.actualHours - Actual childcare hours needed per week
+ * @param {number} params.withholdingRate - Withholding percentage (default: 5)
  * @returns {Object} Weekly costs breakdown
  */
 export function calculateWeeklyCosts(params) {
-  const { subsidyPerHour, providerFee, subsidisedHours, actualHours } = params;
+  const { 
+    subsidyPerHour, 
+    providerFee, 
+    subsidisedHours, 
+    actualHours,
+    withholdingRate = WITHHOLDING.DEFAULT_RATE
+  } = params;
   
   // Validation
   if (typeof subsidyPerHour !== 'number' || subsidyPerHour < 0) {
@@ -179,16 +227,21 @@ export function calculateWeeklyCosts(params) {
   const hoursWithSubsidy = Math.min(subsidisedHours, actualHours);
   const hoursWithoutSubsidy = Math.max(0, actualHours - subsidisedHours);
   
-  const weeklySubsidy = subsidyPerHour * hoursWithSubsidy;
+  const weeklyGrossSubsidy = subsidyPerHour * hoursWithSubsidy;
+  const withholding = applyWithholding(weeklyGrossSubsidy, withholdingRate);
+  
   const weeklyFullCost = providerFee * actualHours;
-  const weeklyOutOfPocket = weeklyFullCost - weeklySubsidy;
+  const weeklyOutOfPocket = weeklyFullCost - withholding.paidSubsidy;
   
   return {
-    weeklySubsidy: Math.round(weeklySubsidy * 100) / 100,
+    weeklySubsidy: withholding.paidSubsidy,
+    weeklyGrossSubsidy: withholding.grossSubsidy,
+    weeklyWithheld: withholding.withheldAmount,
     weeklyFullCost: Math.round(weeklyFullCost * 100) / 100,
     weeklyOutOfPocket: Math.round(weeklyOutOfPocket * 100) / 100,
     hoursWithSubsidy,
-    hoursWithoutSubsidy
+    hoursWithoutSubsidy,
+    withholdingRate
   };
 }
 
@@ -269,7 +322,8 @@ export function calculateCompleteCostBreakdown(params) {
     careType,
     childAge,
     subsidisedHours,
-    actualHours
+    actualHours,
+    withholdingRate = WITHHOLDING.DEFAULT_RATE
   } = params;
   
   // Calculate effective hourly rate
@@ -278,16 +332,19 @@ export function calculateCompleteCostBreakdown(params) {
   // Calculate subsidy per hour
   const subsidyPerHour = calculateSubsidyPerHour(subsidyRate, effectiveHourlyRate);
   
-  // Calculate weekly costs
+  // Calculate weekly costs (including withholding)
   const weeklyCosts = calculateWeeklyCosts({
     subsidyPerHour,
     providerFee,
     subsidisedHours,
-    actualHours
+    actualHours,
+    withholdingRate
   });
   
   // Calculate annual costs
   const annualSubsidy = calculateAnnualCost(weeklyCosts.weeklySubsidy);
+  const annualGrossSubsidy = calculateAnnualCost(weeklyCosts.weeklyGrossSubsidy);
+  const annualWithheld = calculateAnnualCost(weeklyCosts.weeklyWithheld);
   const annualFullCost = calculateAnnualCost(weeklyCosts.weeklyFullCost);
   const annualOutOfPocket = calculateAnnualCost(weeklyCosts.weeklyOutOfPocket);
   
@@ -301,13 +358,16 @@ export function calculateCompleteCostBreakdown(params) {
     weekly: weeklyCosts,
     annual: {
       subsidy: annualSubsidy,
+      grossSubsidy: annualGrossSubsidy,
+      withheld: annualWithheld,
       fullCost: annualFullCost,
       outOfPocket: annualOutOfPocket
     },
     netIncome,
-    costPercentage
+    costPercentage,
+    withholdingRate
   };
 }
 
-// Export care types for convenience
-export { CARE_TYPES, AGE_CATEGORIES };
+// Export care types and withholding for convenience
+export { CARE_TYPES, AGE_CATEGORIES, WITHHOLDING };

@@ -9,7 +9,9 @@ This document explains the calculation logic for the Child Care Subsidy (CCS) Ca
 3. [Subsidy Rate Calculations](#subsidy-rate-calculations)
 4. [Activity Test & Subsidised Hours](#activity-test--subsidised-hours)
 5. [Cost Calculations](#cost-calculations)
-6. [Complete Calculation Flow](#complete-calculation-flow)
+6. [CCS Withholding](#ccs-withholding)
+7. [Daily Rate Calculations](#daily-rate-calculations-new-in-2026)
+8. [Complete Calculation Flow](#complete-calculation-flow)
 
 ## Configuration
 
@@ -211,6 +213,74 @@ Net Annual Income = Household Income - Annual Out-of-Pocket Cost
 ```
 Cost Percentage = (Annual Out-of-Pocket ÷ Household Income) × 100%
 ```
+
+## CCS Withholding
+
+### Overview
+
+The Australian Government withholds a percentage of the Child Care Subsidy to create a buffer for income fluctuations. This reduces the risk of families incurring a debt when their actual income is reconciled at tax time.
+
+**Source:** Services Australia  
+**Default withholding rate:** 5%  
+**Adjustable:** Yes, up to 2 times per year via myGov (more via phone)
+
+### Why Withholding Exists
+
+When you claim CCS, Services Australia estimates your subsidy based on your declared income. However, your actual income may vary throughout the year. At the end of the financial year, your CCS entitlement is reconciled against your actual income reported to the ATO.
+
+If you earned more than expected, you may have received too much subsidy and would need to repay the difference. Withholding creates a buffer to reduce or eliminate this debt.
+
+### Withholding Calculation
+
+```
+Gross Subsidy = (Subsidy Rate ÷ 100) × Effective Rate × Hours
+Withheld Amount = (Withholding Rate ÷ 100) × Gross Subsidy
+Paid Subsidy = Gross Subsidy - Withheld Amount
+Out-of-Pocket Cost = Full Cost - Paid Subsidy
+```
+
+**Example (default 5% withholding):**
+- Gross weekly subsidy: $400
+- Withholding (5%): $20
+- **Paid weekly subsidy: $380**
+- Weekly full cost: $600
+- **Out-of-pocket: $220**
+
+**Example (0% withholding - opted out):**
+- Gross weekly subsidy: $400
+- Withholding (0%): $0
+- **Paid weekly subsidy: $400**
+- Weekly full cost: $600
+- **Out-of-pocket: $200**
+
+### Adjusting Withholding
+
+Families can adjust their withholding rate:
+- **Online:** Via myGov (Centrelink online account) - up to 2 times per year
+- **Phone:** Contact Services Australia Families line - for additional changes
+
+**Common scenarios for adjusting withholding:**
+- **Increase withholding:** If you expect your income to increase significantly
+- **Decrease to 0%:** If your income is stable and you want maximum cash flow
+- **Increase to 10%+:** If you've had overpayment debts in previous years
+
+### Year-End Reconciliation
+
+At the end of the financial year:
+1. Services Australia compares your actual income (from ATO) with your estimate
+2. Your CCS entitlement is recalculated based on actual income
+3. If withholding exceeded any overpayment, you receive the difference
+4. If withholding was insufficient, you may need to repay the shortfall
+
+### Impact on Calculator Results
+
+All calculator results show:
+- **Gross Subsidy:** CCS amount before withholding
+- **Withheld Amount:** Amount held back by Services Australia
+- **Paid Subsidy:** Actual subsidy paid to your provider
+- **Out-of-Pocket:** Cost after paid subsidy (not gross subsidy)
+
+The default withholding rate of 5% is applied to all calculations unless specified otherwise.
 
 ## Daily Rate Calculations (New in 2026)
 
