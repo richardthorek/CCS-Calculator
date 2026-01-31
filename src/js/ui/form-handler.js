@@ -548,51 +548,131 @@ function addChild() {
       </div>
     </div>
     
-    <div class="form-row">
-      <div class="form-group">
-        <label for="child-${childIndex}-hours">
-          Hours per Week
-          <span class="required" aria-label="required">*</span>
+    <!-- Fee Type Selection -->
+    <div class="form-group">
+      <label>Fee Charging Method <span class="required" aria-label="required">*</span></label>
+      <div class="radio-group">
+        <label class="radio-label">
+          <input 
+            type="radio" 
+            name="child-${childIndex}-fee-type" 
+            value="daily"
+            checked
+          >
+          <span>Daily Rate (most common)</span>
         </label>
-        <input 
-          type="number" 
-          id="child-${childIndex}-hours" 
-          name="child-${childIndex}-hours"
-          min="1" 
-          max="100"
-          step="0.5"
-          required
-          aria-required="true"
-          aria-describedby="child-${childIndex}-hours-error"
-        >
-        <span class="error-message" id="child-${childIndex}-hours-error" role="alert"></span>
+        <label class="radio-label">
+          <input 
+            type="radio" 
+            name="child-${childIndex}-fee-type" 
+            value="hourly"
+          >
+          <span>Hourly Rate</span>
+        </label>
       </div>
-      
-      <div class="form-group">
-        <label for="child-${childIndex}-fee">
-          Provider Hourly Fee (AUD)
-          <span class="required" aria-label="required">*</span>
-        </label>
-        <div class="input-wrapper">
-          <span class="input-prefix">$</span>
+    </div>
+    
+    <!-- Daily Rate Fields (shown by default) -->
+    <div class="daily-rate-fields" data-child-index="${childIndex}">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="child-${childIndex}-daily-fee">
+            Daily Fee (AUD)
+            <span class="required" aria-label="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <span class="input-prefix">$</span>
+            <input 
+              type="number" 
+              id="child-${childIndex}-daily-fee" 
+              name="child-${childIndex}-daily-fee"
+              min="0" 
+              max="500"
+              step="1"
+              required
+              aria-required="true"
+              aria-describedby="child-${childIndex}-daily-fee-error"
+              placeholder="e.g., 120"
+            >
+          </div>
+          <span class="error-message" id="child-${childIndex}-daily-fee-error" role="alert"></span>
+          <span class="help-text">Typical range: $80-$200 per day</span>
+        </div>
+        
+        <div class="form-group">
+          <label for="child-${childIndex}-hours-per-day">
+            Hours Charged per Day
+            <span class="required" aria-label="required">*</span>
+          </label>
           <input 
             type="number" 
-            id="child-${childIndex}-fee" 
-            name="child-${childIndex}-fee"
-            min="0" 
-            max="200"
+            id="child-${childIndex}-hours-per-day" 
+            name="child-${childIndex}-hours-per-day"
+            min="1" 
+            max="24"
             step="0.5"
+            value="10"
             required
             aria-required="true"
-            aria-describedby="child-${childIndex}-fee-error"
+            aria-describedby="child-${childIndex}-hours-per-day-error"
           >
+          <span class="error-message" id="child-${childIndex}-hours-per-day-error" role="alert"></span>
+          <span class="help-text">Usually 8-12 hours</span>
         </div>
-        <span class="error-message" id="child-${childIndex}-fee-error" role="alert"></span>
+      </div>
+    </div>
+    
+    <!-- Hourly Rate Fields (hidden by default) -->
+    <div class="hourly-rate-fields" data-child-index="${childIndex}" style="display: none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="child-${childIndex}-hourly-fee">
+            Hourly Fee (AUD)
+            <span class="required" aria-label="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <span class="input-prefix">$</span>
+            <input 
+              type="number" 
+              id="child-${childIndex}-hourly-fee" 
+              name="child-${childIndex}-hourly-fee"
+              min="0" 
+              max="50"
+              step="0.5"
+              aria-describedby="child-${childIndex}-hourly-fee-error"
+              placeholder="e.g., 15"
+            >
+          </div>
+          <span class="error-message" id="child-${childIndex}-hourly-fee-error" role="alert"></span>
+        </div>
+        
+        <div class="form-group">
+          <label for="child-${childIndex}-hours-per-week">
+            Hours per Week
+            <span class="required" aria-label="required">*</span>
+          </label>
+          <input 
+            type="number" 
+            id="child-${childIndex}-hours-per-week" 
+            name="child-${childIndex}-hours-per-week"
+            min="1" 
+            max="100"
+            step="0.5"
+            aria-describedby="child-${childIndex}-hours-per-week-error"
+          >
+          <span class="error-message" id="child-${childIndex}-hours-per-week-error" role="alert"></span>
+        </div>
       </div>
     </div>
   `;
   
   container.appendChild(childCard);
+  
+  // Add event listeners for fee type radio buttons
+  const feeTypeRadios = childCard.querySelectorAll(`input[name="child-${childIndex}-fee-type"]`);
+  feeTypeRadios.forEach(radio => {
+    radio.addEventListener('change', () => toggleFeeTypeFields(childIndex));
+  });
   
   // Add remove button handler
   const removeBtn = childCard.querySelector('.remove-child-btn');
@@ -600,6 +680,43 @@ function addChild() {
   
   // Update numbering
   updateChildNumbering();
+}
+
+/**
+ * Toggle between daily and hourly rate fields
+ */
+function toggleFeeTypeFields(childIndex) {
+  const dailyFields = document.querySelector(`.daily-rate-fields[data-child-index="${childIndex}"]`);
+  const hourlyFields = document.querySelector(`.hourly-rate-fields[data-child-index="${childIndex}"]`);
+  const selectedType = document.querySelector(`input[name="child-${childIndex}-fee-type"]:checked`).value;
+  
+  if (selectedType === 'daily') {
+    dailyFields.style.display = 'block';
+    hourlyFields.style.display = 'none';
+    
+    // Make daily fields required, hourly optional
+    dailyFields.querySelectorAll('input').forEach(input => {
+      if (input.id.includes('daily-fee') || input.id.includes('hours-per-day')) {
+        input.required = true;
+      }
+    });
+    hourlyFields.querySelectorAll('input').forEach(input => {
+      input.required = false;
+    });
+  } else {
+    dailyFields.style.display = 'none';
+    hourlyFields.style.display = 'block';
+    
+    // Make hourly fields required, daily optional
+    hourlyFields.querySelectorAll('input').forEach(input => {
+      if (input.id.includes('hourly-fee') || input.id.includes('hours-per-week')) {
+        input.required = true;
+      }
+    });
+    dailyFields.querySelectorAll('input').forEach(input => {
+      input.required = false;
+    });
+  }
 }
 
 /**
