@@ -1,0 +1,311 @@
+# CCS Calculation Documentation
+
+This document explains the calculation logic for the Child Care Subsidy (CCS) Calculator, based on the 2025-26 financial year policy.
+
+## Table of Contents
+
+1. [Configuration](#configuration)
+2. [Income Calculations](#income-calculations)
+3. [Subsidy Rate Calculations](#subsidy-rate-calculations)
+4. [Activity Test & Subsidised Hours](#activity-test--subsidised-hours)
+5. [Cost Calculations](#cost-calculations)
+6. [Complete Calculation Flow](#complete-calculation-flow)
+
+## Configuration
+
+All CCS rates, thresholds, and constants are centralized in `/src/js/config/ccs-config.js`. This makes it easy to update values when new financial year rates are published.
+
+### Key Configuration Values (2025-26)
+
+**Income Thresholds:**
+- Max 90% subsidy: $85,279
+- Taper range: $85,280 - $535,278 (decreases 1% per $5,000)
+- Zero subsidy: $535,279+
+
+**Activity Test:**
+- Base hours: 72 hours/fortnight (36 hours/week)
+- Higher hours: 100 hours/fortnight (50 hours/week) when lower-activity parent works >48 hours/fortnight
+
+**Hourly Rate Caps:**
+- Centre-Based (non-school age): $14.63/hour
+- Centre-Based (school age): $12.81/hour
+- Family Day Care: $13.56/hour
+- In-Home Care: $39.80/hour (per family)
+
+## Income Calculations
+
+### Module: `income.js`
+
+#### Adjusted Income Calculation
+
+Formula:
+```
+Adjusted Income = Base Annual Income × (Work Days per Week ÷ 5) × (Work Hours per Day ÷ Full-Time Hours)
+```
+
+**Default Full-Time:** 7.6 hours/day, 5 days/week
+
+**Example:**
+- Parent earning $100,000/year
+- Working 3 days/week, 7.6 hours/day
+- Adjusted Income = $100,000 × (3 ÷ 5) × (7.6 ÷ 7.6) = $60,000
+
+#### Household Income
+
+For two-parent households:
+```
+Household Income = Parent 1 Adjusted Income + Parent 2 Adjusted Income
+```
+
+For combined income without individual breakdown:
+- Default: 50/50 split between parents
+- Custom: User-defined ratio
+
+## Subsidy Rate Calculations
+
+### Module: `subsidy-rate.js`
+
+#### Standard Rate (Eldest Child ≤5 years)
+
+| Income Range | Subsidy Rate |
+|--------------|--------------|
+| ≤ $85,279 | 90% |
+| $85,280 - $535,278 | 90% minus 1% per $5,000 |
+| ≥ $535,279 | 0% |
+
+**Calculation Logic:**
+1. If income ≤ $85,279 → return 90%
+2. If income ≥ $535,279 → return 0%
+3. Otherwise:
+   - Calculate: `(income - $85,280) ÷ $5,000` 
+   - Round down to get bracket number
+   - Subsidy = 90% - (bracket + 1)%
+
+**Example:**
+- Income: $100,000
+- Above threshold: $100,000 - $85,280 = $14,720
+- Bracket: floor($14,720 ÷ $5,000) = 2
+- Subsidy: 90% - (2 + 1)% = 87%
+
+#### Higher Rate (Second+ Children ≤5 years)
+
+| Income Range | Subsidy Rate |
+|--------------|--------------|
+| ≤ $143,273 | 95% |
+| $143,274 - $188,272 | 95% minus 1% per $3,000 |
+| $188,273 - $267,562 | 80% |
+| $267,563 - $357,562 | 80% minus 1% per $3,000 |
+| $357,563 - $367,562 | 50% |
+| ≥ $367,563 | Reverts to standard rate |
+
+**Child Position Logic:**
+- Sort children by age (oldest first)
+- First child ≤5 years → standard rate
+- Subsequent children ≤5 years → higher rate
+- All children >5 years → standard rate
+
+## Activity Test & Subsidised Hours
+
+### Module: `activity-test.js`
+
+#### Subsidised Hours Determination
+
+```
+1. Calculate each parent's hours per fortnight
+2. Identify lower-activity parent
+3. Apply test:
+   - If lower-activity parent ≤ 48 hours/fortnight → 72 hours/fortnight (36/week)
+   - If lower-activity parent > 48 hours/fortnight → 100 hours/fortnight (50/week)
+```
+
+**Example 1 - Base Hours:**
+- Parent 1: 5 days × 8 hours = 80 hours/fortnight
+- Parent 2: 3 days × 7.6 hours = 45.6 hours/fortnight
+- Lower activity: 45.6 hours (≤ 48)
+- **Result: 72 hours/fortnight (36/week)**
+
+**Example 2 - Higher Hours:**
+- Parent 1: 5 days × 8 hours = 80 hours/fortnight
+- Parent 2: 4 days × 7 hours = 56 hours/fortnight
+- Lower activity: 56 hours (> 48)
+- **Result: 100 hours/fortnight (50/week)**
+
+#### Actual Childcare Hours
+
+Simplified calculation uses maximum of parents' weekly hours:
+```
+Actual Hours = max(Parent 1 Weekly Hours, Parent 2 Weekly Hours)
+```
+
+**Note:** A more sophisticated version would consider specific day/time overlaps.
+
+## Cost Calculations
+
+### Module: `costs.js`
+
+#### Effective Hourly Rate
+
+```
+Effective Rate = min(Provider Fee, Rate Cap)
+```
+
+Rate cap depends on:
+- Care type (Centre-Based, OSHC, Family Day Care, In-Home)
+- Child age (school age ≥6 years vs. non-school age)
+
+**Example:**
+- Provider fee: $20/hour
+- Centre-based, child age 3
+- Rate cap: $14.63/hour
+- **Effective rate: $14.63/hour**
+
+#### Subsidy Per Hour
+
+```
+Subsidy Per Hour = (Subsidy Rate ÷ 100) × Effective Hourly Rate
+```
+
+**Example:**
+- Subsidy rate: 90%
+- Effective rate: $14.63/hour
+- **Subsidy: $13.17/hour**
+
+#### Weekly Costs
+
+```
+Hours With Subsidy = min(Subsidised Hours, Actual Hours)
+Hours Without Subsidy = max(0, Actual Hours - Subsidised Hours)
+
+Weekly Subsidy = Subsidy Per Hour × Hours With Subsidy
+Weekly Full Cost = Provider Fee × Actual Hours
+Weekly Out-of-Pocket = Weekly Full Cost - Weekly Subsidy
+```
+
+**Example:**
+- Subsidy per hour: $13.17
+- Provider fee: $15/hour
+- Subsidised hours: 36
+- Actual hours: 40
+
+Calculations:
+- Hours with subsidy: min(36, 40) = 36
+- Hours without subsidy: max(0, 40 - 36) = 4
+- Weekly subsidy: $13.17 × 36 = $474.12
+- Weekly full cost: $15 × 40 = $600
+- **Weekly out-of-pocket: $600 - $474.12 = $125.88**
+
+#### Annual Costs
+
+```
+Annual Cost = Weekly Cost × 52 weeks
+```
+
+#### Net Income
+
+```
+Net Annual Income = Household Income - Annual Out-of-Pocket Cost
+```
+
+#### Cost as Percentage of Income
+
+```
+Cost Percentage = (Annual Out-of-Pocket ÷ Household Income) × 100%
+```
+
+## Complete Calculation Flow
+
+### Step-by-Step Process
+
+1. **Calculate Adjusted Incomes**
+   - Parent 1 adjusted income
+   - Parent 2 adjusted income (if applicable)
+   - Household income (sum)
+
+2. **Determine Subsidy Rates**
+   - For each child:
+     - Determine position (eldest ≤5, younger ≤5, or >5)
+     - Calculate applicable subsidy rate
+
+3. **Calculate Subsidised Hours**
+   - Calculate each parent's hours/fortnight
+   - Apply activity test
+   - Determine subsidised hours/week
+
+4. **Calculate Actual Hours Needed**
+   - Based on parent work schedules
+   - Use maximum of parents' hours (simplified)
+
+5. **Calculate Costs Per Child**
+   - Effective hourly rate
+   - Subsidy per hour
+   - Weekly costs
+   - Annual costs
+
+6. **Calculate Household Totals**
+   - Sum costs across all children
+   - Calculate net income
+   - Calculate cost as % of income
+
+### Complete Example
+
+**Family Details:**
+- Household income: $100,000 (both parents working)
+- 2 children: age 4 and age 2
+- Centre-based care, provider fee: $15/hour
+- Parent 1: 5 days × 8 hours
+- Parent 2: 3 days × 7.6 hours
+
+**Calculations:**
+
+1. **Subsidy Rates:**
+   - Child 1 (age 4, eldest ≤5): 87% (standard rate)
+   - Child 2 (age 2, younger ≤5): 91% (higher rate)
+
+2. **Subsidised Hours:**
+   - Parent 1: 80 hours/fortnight
+   - Parent 2: 45.6 hours/fortnight
+   - Lower activity: 45.6 ≤ 48
+   - **Subsidised: 36 hours/week**
+
+3. **Actual Hours:**
+   - Parent 1: 40 hours/week
+   - Parent 2: 22.8 hours/week
+   - **Actual: 40 hours/week**
+
+4. **Costs (per child):**
+   - Effective rate: $14.63/hour (rate cap)
+   - Child 1 subsidy: 87% × $14.63 = $12.73/hour
+   - Child 2 subsidy: 91% × $14.63 = $13.31/hour
+   
+   Weekly costs:
+   - Child 1: $600 - ($12.73 × 36) = $141.72
+   - Child 2: $600 - ($13.31 × 36) = $120.84
+   - **Total out-of-pocket: $262.56/week**
+   
+   Annual:
+   - **Total out-of-pocket: $13,653.12/year**
+
+5. **Net Income:**
+   - **$100,000 - $13,653.12 = $86,346.88**
+   - **Cost as % of income: 13.65%**
+
+## Updating for New Financial Years
+
+When CCS rates change:
+
+1. Update `/src/js/config/ccs-config.js`
+2. Modify the relevant constants:
+   - `STANDARD_RATE_THRESHOLDS`
+   - `HIGHER_RATE_THRESHOLDS`
+   - `ACTIVITY_TEST`
+   - `HOURLY_RATE_CAPS`
+   - `FINANCIAL_YEAR`
+3. Run tests to verify: `npm test`
+4. Update this documentation with new values
+5. Update README.md with current financial year
+
+## References
+
+- Australian Government Department of Education
+- Child Care Subsidy policy documentation
+- Current as of: 2025-26 Financial Year
