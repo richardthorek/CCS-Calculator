@@ -6,6 +6,7 @@
     <title>Child Care Subsidy Calculator - Australia</title>
     <meta name="description" content="Calculate your Child Care Subsidy (CCS) entitlements and out-of-pocket childcare costs in Australia">
     <link rel="stylesheet" href="styles.css">
+    <script src="lib/chart.js"></script>
 </head>
 <body>
     <header>
@@ -18,6 +19,26 @@
     
     <main>
         <div class="container">
+            <!-- Preset Selector -->
+            <section class="preset-section">
+                <div class="preset-header">
+                    <h2 class="preset-title">Quick Start</h2>
+                    <p class="preset-description">Start with a common scenario or enter your own details below</p>
+                </div>
+                <div class="preset-selector">
+                    <label for="scenario-preset">Choose a preset scenario:</label>
+                    <select id="scenario-preset" class="form-control">
+                        <option value="">-- Custom (enter your own) --</option>
+                        <option value="full-time-both">Full-time Both Parents (5+5 days)</option>
+                        <option value="full-time-one">Full-time One Parent (5+0 days)</option>
+                        <option value="part-time-both">Part-time Both Parents (3+3 days)</option>
+                        <option value="full-part">Full-time + Part-time (5+3 days)</option>
+                        <option value="four-four">Four Days Each (4+4 days)</option>
+                        <option value="compressed">Compressed Week (4+0 days)</option>
+                    </select>
+                </div>
+            </section>
+            
             <!-- Calculator Form -->
             <form id="ccs-calculator-form" class="calculator-form" novalidate>
                 
@@ -253,7 +274,17 @@
 
             <!-- Results Section -->
             <section class="results-section" id="results-section" aria-live="polite" aria-atomic="true" hidden>
-                <h2 class="results-title">Your CCS Estimate</h2>
+                <div class="results-header">
+                    <h2 class="results-title">Your CCS Estimate</h2>
+                    <div class="view-toggle">
+                        <label class="toggle-label">
+                            <span class="toggle-option">Weekly</span>
+                            <input type="checkbox" id="annual-toggle" class="toggle-input" aria-label="Toggle between weekly and annual view">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-option">Annual</span>
+                        </label>
+                    </div>
+                </div>
                 
                 <!-- Summary Cards -->
                 <div class="results-summary">
@@ -331,14 +362,46 @@
                             <option value="workDays">Work Days</option>
                         </select>
                         
-                        <button type="button" id="export-csv-btn" class="btn btn-secondary">
-                            Export to CSV
-                        </button>
+                        <div class="export-controls">
+                            <button type="button" id="export-csv-btn" class="btn btn-secondary">
+                                📊 Export CSV
+                            </button>
+                            <button type="button" id="print-btn" class="btn btn-secondary">
+                                🖨️ Print / PDF
+                            </button>
+                            <button type="button" id="share-link-btn" class="btn btn-secondary">
+                                🔗 Share Link
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="scenario-info">
                     <p><strong>Note:</strong> Scenarios consider that when a parent isn't working, they're available for childcare, reducing childcare hours and costs.</p>
+                </div>
+                
+                <!-- Charts Section -->
+                <div id="charts-section" class="charts-section" style="display: none;">
+                    <div class="charts-header">
+                        <h3>Visual Comparison</h3>
+                        <div class="chart-toggle">
+                            <button type="button" id="toggle-chart-btn" class="btn btn-secondary">
+                                Show Charts
+                            </button>
+                        </div>
+                    </div>
+                    <div id="charts-container" class="charts-container" style="display: none;">
+                        <div class="chart-wrapper">
+                            <div id="bar-chart-container" class="chart-container">
+                                <!-- Bar chart will be inserted here -->
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <div id="pie-chart-container" class="chart-container">
+                                <!-- Pie chart will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div id="comparison-table-container" class="comparison-table-container">

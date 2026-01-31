@@ -12,6 +12,24 @@ import {
   generateCommonScenarios 
 } from './js/scenarios/generator.js';
 import { loadState, saveState, clearState } from './js/storage/persistence.js';
+import { 
+  initializeCharts, 
+  updateCharts, 
+  clearCharts 
+} from './js/ui/chart-manager.js';
+import {
+  initializeExportHandlers,
+  loadFromURL
+} from './js/ui/export-handler.js';
+import{
+  initializeViewToggle
+} from './js/ui/view-toggle.js';
+import {
+  initializePresets
+} from './js/ui/presets.js';
+import {
+  initializeTooltips
+} from './js/ui/tooltips.js';
 
 // Global state for scenarios
 let currentScenarios = [];
@@ -26,19 +44,50 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize comparison controls
     initializeComparisonControls();
     
-    // Setup clear data button
+    // Setup clear data button (Phase 6)
     setupClearDataButton();
     
-    // Try to restore saved scenarios
+    // Try to restore saved scenarios (Phase 6)
     restoreSavedScenarios();
+    
+    // Initialize charts (Phase 7)
+    initializeCharts();
+    
+    // Initialize export handlers (Phase 7)
+    initializeExportHandlers();
+    
+    // Initialize view toggle (Phase 7)
+    initializeViewToggle();
+    
+    // Initialize scenario presets (Phase 7)
+    initializePresets();
+    
+    // Initialize help tooltips (Phase 7)
+    initializeTooltips();
+    
+    // Check if URL contains shared data and load it (Phase 7)
+    const urlData = loadFromURL();
+    if (urlData) {
+      console.log('Loading data from URL:', urlData);
+      // Dispatch event to populate form with URL data
+      document.dispatchEvent(new CustomEvent('loadFormDataFromURL', { detail: urlData }));
+    }
     
     // Listen for form calculation success to enable scenario generation
     document.addEventListener('calculationComplete', (event) => {
       currentFormData = event.detail.formData;
       showScenarioGenerationOption();
       
-      // Save scenarios state when form data changes
+      // Save scenarios state when form data changes (Phase 6)
       saveCurrentState();
+      
+      // Store form data in a hidden element for export handler (Phase 7)
+      storeFormDataForExport(currentFormData);
+    });
+    
+    // Listen for request to provide form data (Phase 7)
+    document.addEventListener('requestFormData', () => {
+      storeFormDataForExport(currentFormData);
     });
     
     // Generate all scenarios button
@@ -54,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Generate common scenarios button
     const generateCommonBtn = document.getElementById('generate-common-scenarios-btn');
     if (generateCommonBtn) {
-      generateCommonBtn.addEventListener('click', () => {
+      generateAllBtn.addEventListener('click', () => {
         if (currentFormData) {
           generateAndDisplayScenarios('common');
         }
@@ -81,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('scenarioRemoved', (event) => {
       const scenarioId = event.detail.scenarioId;
       currentScenarios = currentScenarios.filter(s => s.id !== scenarioId);
-      saveCurrentState();
+      saveCurrentState(); // Phase 6
     });
 });
 
@@ -130,6 +179,9 @@ function generateAndDisplayScenarios(mode = 'common') {
   // Display comparison table
   displayComparisonTable(scenarios);
   
+  // Update charts (Phase 7)
+  updateCharts(scenarios);
+  
   // Show count
   const container = document.getElementById('comparison-table-container');
   if (container && scenarios.length > 0) {
@@ -139,12 +191,12 @@ function generateAndDisplayScenarios(mode = 'common') {
     container.insertBefore(countMsg, container.firstChild);
   }
   
-  // Save state after generating scenarios
+  // Save state after generating scenarios (Phase 6)
   saveCurrentState();
 }
 
 /**
- * Save current application state
+ * Save current application state (Phase 6)
  */
 function saveCurrentState() {
   try {
@@ -158,7 +210,7 @@ function saveCurrentState() {
 }
 
 /**
- * Restore saved scenarios
+ * Restore saved scenarios (Phase 6)
  */
 function restoreSavedScenarios() {
   try {
@@ -166,6 +218,7 @@ function restoreSavedScenarios() {
     if (savedState && savedState.scenarios && Array.isArray(savedState.scenarios) && savedState.scenarios.length > 0) {
       currentScenarios = savedState.scenarios;
       displayComparisonTable(currentScenarios);
+      updateCharts(currentScenarios); // Phase 7
       showScenarioGenerationOption();
       console.log('Scenarios restored from localStorage');
     }
@@ -175,7 +228,7 @@ function restoreSavedScenarios() {
 }
 
 /**
- * Setup clear data button functionality
+ * Setup clear data button functionality (Phase 6)
  */
 function setupClearDataButton() {
   const clearDataBtn = document.getElementById('clear-data-btn');
@@ -191,5 +244,23 @@ function setupClearDataButton() {
       }
     });
   }
+}
+
+/**
+ * Store form data in a hidden element for export handler (Phase 7)
+ * @param {Object} formData - Form data to store
+ */
+function storeFormDataForExport(formData) {
+  if (!formData) return;
+  
+  let dataElement = document.getElementById('current-form-data');
+  if (!dataElement) {
+    dataElement = document.createElement('div');
+    dataElement.id = 'current-form-data';
+    dataElement.style.display = 'none';
+    document.body.appendChild(dataElement);
+  }
+  
+  dataElement.dataset.formData = JSON.stringify(formData);
 }
 

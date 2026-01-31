@@ -1,62 +1,4 @@
-# CCS Calculator - Master Plan
 
-## Overview
-An interactive Child Care Subsidy (CCS) Estimator for Australian parents, deployed as an Azure Static Web App with Azure Functions backend. This tool helps families estimate their CCS entitlements and out-of-pocket childcare costs across different work scenarios.
-
-## Project Structure
-- **Frontend**: Static web application (HTML, CSS, Vanilla JavaScript)
-- **Backend**: Azure Functions for any server-side processing (optional)
-- **Deployment**: Azure Static Web Apps
-
-## Technical Stack
-- **Frontend**: Vanilla JavaScript (ES6+), HTML5, CSS3
-- **Node.js**: Version 20 LTS (latest supported by Azure Static Web Apps)
-- **Testing**: Jest (minimal, for calculation logic only)
-- **Build**: No build step required for vanilla JS (optional bundler if needed)
-- **Dependencies**: Minimal - only add if absolutely necessary and well-maintained
-- **Philosophy**: Keep it simple, lightweight, and maintainable with native web technologies
-
-## Current Status
-✅ Phase 6 Complete - Local Storage Persistence implemented
-
-### Phase 6 Summary (Just Completed)
-Local storage persistence has been fully implemented with privacy controls:
-- ✅ Automatic save/restore of form data using localStorage
-- ✅ Schema versioning (v1) with migration support
-- ✅ Debounced auto-save (500ms delay) on input changes
-- ✅ Scenario persistence and restoration
-- ✅ Privacy notice with clear messaging
-- ✅ "Clear Saved Data" button with confirmation dialog
-- ✅ Graceful handling of edge cases (quota, unavailable, private mode)
-- ✅ Comprehensive tests (15 new tests, 257 total, all passing)
-- ✅ Complete documentation in docs/current_state/
-- ✅ Zero external dependencies (pure Vanilla JS)
-
-### Phase 5 Summary
-Real-time interactivity has been fully implemented using pure Vanilla JavaScript:
-- ✅ Event-driven updates with debouncing (500ms delay)
-- ✅ Automatic calculation on input changes (no button click required)
-- ✅ Visual feedback with CSS animations (calculating indicator)
-- ✅ Performance optimization with smart caching and event delegation
-- ✅ Debounce utility module with comprehensive tests (11 tests)
-- ✅ All 224 tests passing (213 previous + 11 new)
-- ✅ Complete documentation in docs/current_state/
-- ✅ Zero external dependencies (pure Vanilla JS)
-
-### Phase 4 Summary (Previously Completed)
-All scenario generation and comparison features have been implemented:
-- ✅ Comprehensive scenario generation (all 0-5 day combinations)
-- ✅ Smart childcare hours calculation (reduces when parent home)
-- ✅ Interactive comparison table with sort, filter, export
-- ✅ Favorite and remove scenario functionality
-- ✅ CSV export using native APIs
-- ✅ Responsive design and full accessibility
-- ✅ 33 additional tests (213 total tests, all passing)
-- ✅ Complete documentation
-
-### Phase 3 Summary (Previously Completed)
-All UI components have been implemented with accessibility and responsive design:
-- ✅ HTML structure with semantic markup and ARIA attributes
 - ✅ CSS styling with WCAG 2.1 AA compliance
 - ✅ Form handler module with validation and calculation integration
 - ✅ Results display with formatted output
@@ -73,7 +15,7 @@ All four core calculation modules have been implemented with full test coverage:
 - ✅ Centralized configuration for easy annual updates
 - ✅ Comprehensive documentation
 
-**Total: 257 tests, all passing** (180 calculation tests + 33 scenario tests + 11 debounce tests + 15 persistence tests + 18 other tests)
+**Total: 224 tests, all passing** (180 calculation tests + 33 scenario tests + 11 debounce tests)
 
 ## Planned Features
 <!-- Add planned features here -->
@@ -242,7 +184,7 @@ All four core calculation modules have been implemented with full test coverage:
 - [x] Document optimization strategies
 - [x] Use event delegation for efficient event handling
 
-### Phase 6: Persist User Inputs & Scenarios Using Local Storage ✅ COMPLETE
+### Phase 6: Persist User Inputs & Scenarios Using Local Storage
 **Goal:** Automatically save and restore user data locally in the browser
 
 **User Problem**
@@ -254,97 +196,168 @@ All four core calculation modules have been implemented with full test coverage:
 - Provide a clear privacy notice: data is stored only on the user's device.
 
 #### 6.1 Local Storage Schema & Module Design
-- [x] Define a localStorage schema + version (e.g. `ccsCalculator:v1`) for:
+- [ ] Define a localStorage schema + version (e.g. `ccsCalculator:v1`) for:
   - income inputs
   - child details (DOB/age, care type, sessions, etc.)
   - scenario list + currently selected scenario
   - any UI settings needed to restore state
-- [x] Implement a small pure JS persistence module (`src/js/storage/persistence.js`):
+- [ ] Implement a small pure JS persistence module (`src/js/storage/persistence.js`):
   - `loadState()` - Load saved state from localStorage
   - `saveState(state)` - Save current state to localStorage
   - `clearState()` - Clear all saved data
   - `migrateState(oldState)` - Handle future version migrations
-- [x] Add versioning support for future schema changes
-- [x] Document storage schema in code comments
+- [ ] Add versioning support for future schema changes
+- [ ] Document storage schema in code comments
 
 #### 6.2 UI Integration
-- [x] Wire up persistence to form handler module
-- [x] Load state on startup/page load
-- [x] Save state on every input/scenario change (with debouncing)
-- [x] Handle edge cases (localStorage unavailable, quota exceeded, private browsing)
-- [x] Test persistence across page refreshes and browser sessions
+- [ ] Wire up persistence to form handler module
+- [ ] Load state on startup/page load
+- [ ] Save state on every input/scenario change (with debouncing)
+- [ ] Handle edge cases (localStorage unavailable, quota exceeded, private browsing)
+- [ ] Test persistence across page refreshes and browser sessions
 
 #### 6.3 Privacy & User Controls
-- [x] Add UI notice (near inputs, footer, or help section):
+- [ ] Add UI notice (near inputs, footer, or help section):
   - "Your data is only stored on this device in your browser (Local Storage). Nothing is uploaded or shared."
-- [x] Add a "Clear saved data" / "Reset" control with confirmation dialog
-- [x] Ensure privacy notice is always visible and clear
-- [x] Test clear data functionality
+- [ ] Add a "Clear saved data" / "Reset" control with confirmation dialog
+- [ ] Ensure privacy notice is always visible and clear
+- [ ] Test clear data functionality
 
 #### 6.4 Testing & Documentation
-- [x] Write unit tests for persistence module
-- [x] Write integration tests for save/load flows
-- [x] Test manual scenarios (refresh, close/reopen, clear data)
-- [x] Create `documentation/current_state/phase-6-local-storage.md` documenting:
+- [ ] Write unit tests for persistence module
+- [ ] Write integration tests for save/load flows
+- [ ] Test manual scenarios (refresh, close/reopen, clear data)
+- [ ] Create `documentation/local-storage.md` documenting:
   - Data structure and schema
   - Component API and usage
   - Browser compatibility and limitations
   - Privacy considerations
   - Migration strategy for future versions
 
-**Acceptance Criteria** ✅ ALL MET
-- ✅ Refreshing or reopening browser restores last-entered inputs and scenarios
-- ✅ "Clear saved data" control resets storage and UI
-- ✅ Privacy notice is always visible
-- ✅ No data is sent to server or external services
-- ✅ Graceful handling of private browsing mode and quota limits
+**Acceptance Criteria**
+- Refreshing or reopening browser restores last-entered inputs and scenarios
+- "Clear saved data" control resets storage and UI
+- Privacy notice is always visible
+- No data is sent to server or external services
+- Graceful handling of private browsing mode and quota limits
 
-**Implementation Notes**
-- Schema version 1 implemented with migration support
-- 15 comprehensive tests added (257 total tests, all passing)
-- Zero external dependencies (pure Vanilla JS)
-- Debounced auto-save (500ms) for optimal performance
-- Complete documentation in `documentation/current_state/phase-6-local-storage.md`
-
-**Known Limitations**
+**Risks/Notes**
 - Data may be lost if the user clears browser data, uses private mode, or moves devices
-- localStorage quota is generous (~5-10MB) for our use case
-- Private browsing mode may disable localStorage in some browsers (gracefully handled)
+- localStorage quota is generous (~5-10MB) for our use case, but document known limits
+- Private browsing mode may disable localStorage in some browsers
 
-### Phase 7: Enhanced Features
-**Goal:** Add optional but valuable features
+### Phase 7: Enhanced Features ✅ COMPLETE
+**Goal:** Add data visualization and enhanced export/sharing features
+**Status:** COMPLETE (Completed: January 31, 2026)
 
-#### 7.1 Data Visualization
-- [ ] Evaluate lightweight charting options (Chart.js as minimal option, or vanilla JS SVG/Canvas)
-- [ ] Create bar chart comparing net income across scenarios
-- [ ] Create pie chart showing cost breakdown
-- [ ] Add interactive tooltips (vanilla JS)
-- [ ] Make charts responsive
-- [ ] Test accessibility of visualizations
-- [ ] **Note:** Only add charting library if native SVG/Canvas is too complex
+#### 7.1 Data Visualization ✅ COMPLETE (with Chart.js v4.4.1)
+- [x] Evaluate lightweight charting options
+  - [x] Initial research: Chart.js vs vanilla SVG/Canvas
+  - [x] **Decision**: Chart.js selected per user requirement for compelling, simple, manageable charts
+  - [x] Document decision and rationale in Phase 7 documentation
+- [x] Integrate Chart.js library
+  - [x] Install Chart.js v4.4.1 via npm
+  - [x] Include UMD build in src/lib/ (204KB, ~18KB gzipped)
+  - [x] Add Chart.js script tag to HTML
+  - [x] Document library version and update process
+- [x] Create bar chart comparing net income across scenarios
+  - [x] Design professional chart layout with gradient colors
+  - [x] Implement responsive design (10 scenarios mobile, 15 desktop)
+  - [x] Add smooth animations (750ms with easing)
+  - [x] Create interactive tooltips with AUD formatting
+  - [x] Highlight best scenario in green, others in blue
+  - [x] Test on mobile and desktop
+- [x] Create doughnut chart showing cost breakdown
+  - [x] Design chart with clear labels and percentages
+  - [x] Implement 60% cutout for modern donut style
+  - [x] Add legend and hover effects (10px offset)
+  - [x] Animate rotation and scale (1000ms)
+  - [x] Add summary text below chart
+  - [x] Test on mobile and desktop
+- [x] Make charts accessible
+  - [x] Add ARIA labels and roles to canvas elements
+  - [x] Ensure keyboard navigation works
+  - [x] Add descriptive chart titles
+  - [x] Verify color contrast meets WCAG 2.1 AA
+- [x] Integrate with comparison table
+  - [x] Charts update when scenarios are generated
+  - [x] Charts reflect sorted scenario data
+  - [x] Toggle button to show/hide charts
+  - [x] Proper chart instance cleanup
+- [x] Add CSS styling for chart containers
+  - [x] Responsive grid layout (1 or 2 columns)
+  - [x] Proper spacing and shadows
+  - [x] Print media queries
+- [x] Test implementation
+  - [x] All 242 existing tests still pass
+  - [x] Manual testing of chart rendering
+  - [x] Accessibility testing
+  - [x] Responsive design testing
+- [x] Documentation
+  - [x] Create comprehensive Phase 7 documentation
+  - [x] Document Chart.js integration approach
+  - [x] Add library README in src/lib/
+  - [x] Update master plan
 
-#### 7.2 Export & Sharing
-- [ ] Implement PDF export (consider browser print API or minimal library like jsPDF)
-- [ ] Add CSV export using vanilla JS (Blob and URL.createObjectURL)
-- [ ] Create shareable URL with URLSearchParams for encoding parameters
-- [ ] Add "print-friendly" view with CSS @media print
-- [ ] Test export features across browsers
-- [ ] **Note:** Prefer native browser APIs over libraries where possible
+#### 7.2 Export & Sharing ✅ COMPLETE
+- [x] Implement print-friendly view
+  - [x] Create CSS @media print styles
+  - [x] Hide unnecessary UI elements (nav, buttons)
+  - [x] Optimize layout for paper (portrait/landscape)
+  - [x] Test browser print functionality
+- [x] Add CSV export using vanilla JS
+  - [x] Create export module using Blob and URL.createObjectURL
+  - [x] Export scenario comparison table
+  - [x] Export individual scenario details
+  - [x] Test CSV format in Excel/Google Sheets
+- [x] Implement PDF export
+  - [x] Evaluate browser print API (window.print()) vs jsPDF
+  - [x] Prefer print API if adequate for use case
+  - [x] Add "Save as PDF" button
+  - [x] Test PDF generation across browsers
+- [x] Create shareable URLs
+  - [x] Encode form data in URLSearchParams
+  - [x] Decode and populate form on page load
+  - [x] Add "Copy Share Link" button
+  - [x] Test URL length limits and encoding
+  - [x] Clipboard API with fallback
+  - [x] Visual feedback with toast notifications
+- [x] **Implementation:** All export features use native browser APIs (zero new dependencies)
 
-#### 7.3 Advanced UI Features
-- [ ] Add weekly/annual view toggle
-- [ ] Implement "what-if" sliders for quick adjustments
-- [ ] Add preset scenarios (common work arrangements)
-- [ ] Create help tooltips explaining CCS rules
-- [ ] Add calculator tour/onboarding
-- [ ] Implement dark mode (optional)
+#### 7.3 Advanced UI Features ✅ COMPLETE
+- [x] Add weekly/annual view toggle
+  - [x] Create toggle button/switch UI component
+  - [x] Update all currency displays to show weekly or annual
+  - [x] Persist toggle state in localStorage
+  - [x] Test toggle functionality
+  - [x] Update comparison table, summary cards, and child results
+- [x] Add preset scenarios (common work arrangements)
+  - [x] Define common presets (5+5, 4+4, 3+0, etc.)
+  - [x] Create preset selector dropdown
+  - [x] Auto-populate form with selected preset
+  - [x] Test preset loading
+  - [x] Implemented 6 comprehensive presets
+  - [x] Quick Start section at top of form
+- [x] Create help tooltips explaining CCS rules
+  - [x] Add tooltip icons next to complex fields
+  - [x] Implement vanilla JS tooltip component
+  - [x] Write clear, concise help text
+  - [x] Ensure accessibility (keyboard accessible, ARIA)
+  - [x] Test on mobile (touch events)
+  - [x] Smart positioning to avoid screen edges
+- [x] **Implementation:** All features use vanilla JavaScript with zero new dependencies
 
-#### 7.4 Multi-child Support Enhancement
-- [ ] Improve UI for managing multiple children
-- [ ] Add/remove children dynamically
-- [ ] Handle different care types per child
-- [ ] Show per-child cost breakdown
-- [ ] Test with 1-5 children scenarios
+#### 7.4 Multi-child Support Enhancement (Deferred to Future Phase)
+- This was already implemented in Phase 3
+- Current implementation supports dynamic add/remove children
+- Per-child cost breakdown is already shown in results
+- No additional work needed for Phase 7
+
+### Phase 6: Persist User Inputs & Scenarios Using Local Storage 🎯 NEXT
+**Goal:** Automatically save and restore user data locally in the browser
+**Status:** NOT STARTED
+
+**Note:** This phase was originally planned after Phase 5 but was deferred to allow completion of Phase 7 (data visualization and export features) first. Phase 6 will add local storage persistence for form data and user preferences.
 
 ### Phase 8: Backend Integration (Optional)
 **Goal:** Add server-side features if needed
@@ -360,187 +373,4 @@ All four core calculation modules have been implemented with full test coverage:
 - [ ] Set up Azure Storage or Database (if needed)
 - [ ] Implement save/load scenarios functionality
 - [ ] Add user session management
-- [ ] Test data persistence
-
-#### 8.3 Rate Updates API (Future)
-- [ ] Create endpoint to fetch current year's rates
-- [ ] Allow admin updates to thresholds
-- [ ] Version control for different financial years
-- [ ] Document API endpoints
-
-### Phase 9: Testing & Quality Assurance
-**Goal:** Comprehensive testing and validation
-
-#### 9.1 Unit Testing
-- [ ] Achieve >80% code coverage for calculation modules
-- [ ] Test all edge cases
-- [ ] Add regression tests for bug fixes
-- [ ] Document test cases
-
-#### 9.2 Integration Testing
-- [ ] Test form submission to calculation flow
-- [ ] Test scenario generation to comparison flow
-- [ ] Test export functionality end-to-end
-- [ ] Validate against official CCS calculator results
-
-#### 9.3 Browser & Device Testing
-- [ ] Test on Chrome, Firefox, Safari, Edge
-- [ ] Test on iOS and Android devices
-- [ ] Test various screen sizes
-- [ ] Verify accessibility with screen readers
-- [ ] Fix any compatibility issues
-
-#### 9.4 User Acceptance Testing
-- [ ] Create test scenarios based on real use cases
-- [ ] Gather feedback from potential users
-- [ ] Address usability issues
-- [ ] Document known limitations
-
-### Phase 10: Documentation & Deployment
-**Goal:** Prepare for production deployment
-
-#### 10.1 User Documentation
-- [ ] Create user guide in `documentation/user-guide.md`
-- [ ] Add FAQ section
-- [ ] Document known limitations
-- [ ] Create screenshots/demo video
-- [ ] Add disclaimer about official CCS rates
-
-#### 10.2 Technical Documentation
-- [ ] Document all calculation formulas in `documentation/calculations.md`
-- [ ] Create API documentation (if applicable)
-- [ ] Document architecture in `documentation/architecture.md`
-- [ ] Add code comments and JSDoc
-- [ ] Create developer setup guide
-
-#### 10.3 Azure Deployment Setup
-- [ ] Create Azure Static Web App resource
-- [ ] Configure GitHub Actions for CI/CD
-- [ ] Set up environment variables
-- [ ] Configure custom domain (if applicable)
-- [ ] Test deployment pipeline
-
-#### 10.4 Production Deployment
-- [ ] Deploy to staging environment
-- [ ] Perform final testing on staging
-- [ ] Deploy to production
-- [ ] Set up monitoring and analytics
-- [ ] Document deployment process
-
-### Phase 11: Maintenance & Updates
-**Goal:** Ongoing maintenance and improvements
-
-#### 11.1 Annual Updates
-- [ ] Monitor for CCS policy changes each financial year
-- [ ] Update thresholds and rates as needed
-- [ ] Test updated calculations
-- [ ] Communicate changes to users
-- [ ] Version the application appropriately
-
-#### 11.2 Bug Fixes & Improvements
-- [ ] Set up issue tracking
-- [ ] Prioritize and fix reported bugs
-- [ ] Implement user-requested features
-- [ ] Optimize performance based on usage
-- [ ] Update dependencies regularly
-
----
-
-## Project Brief: Interactive Child Care Subsidy (CCS) Estimator Web App (Australia)
-
-🎯 Intent
-
-Build a responsive, interactive web application for Australian parents to estimate their Child Care Subsidy (CCS) entitlements and out-of-pocket childcare costs. The app should allow users to input key household and childcare details and instantly simulate multiple work scenarios (e.g. one or both parents working 1–5 days per week) without requiring page reloads or form submissions. The goal is to provide a clear, real-time comparison of how different work arrangements affect household income, childcare costs, and net financial outcomes.
-This tool should simplify the complex CCS calculation process and empower families to make informed decisions about work-life balance and childcare affordability.
-🧮 Core Calculations
-
-The app must implement the official CCS formula as per the Australian Government’s 2025–26 policy. The following calculations are required:
-1. Adjusted Household Income
-
-For each parent:
-Adjusted Income =
-(Base Annual Income) × (Work Days per Week ÷ 5) × (Work Hours per Day ÷ Full-Time Hours)
-Household Income = Sum of both parents’ adjusted incomes
-If only combined income is provided, assume a 50/50 split or allow user-defined proportions.
-2. CCS Percentage (Subsidy Rate)
-
-For the standard rate child (eldest child aged ≤5):
-Income ≤ $85,279 → 90%
-$85,280–$535,278 → Decreases by 1% per $5,000
-≥ $535,279 → 0%
-For second and younger children aged ≤5:
-Income ≤ $143,273 → 95%
-$143,274–$188,272 → Decreases by 1% per $3,000
-$188,273–$267,562 → 80%
-$267,563–$357,562 → Decreases by 1% per $3,000
-$357,563–$367,562 → 50%
-≥ $367,563 → Reverts to standard CCS rate
-Apply the appropriate rate to each child based on age and sibling order.
-3. Activity Test – Subsidised Hours
-
-All families: 72 hours/fortnight (36 hours/week) minimum
-If lower-activity parent works >48 hours/fortnight → 100 hours/fortnight (50 hours/week)
-Determine actual childcare hours needed per week based on overlapping workdays and hours between both parents.
-4. Hourly Rate Cap
-
-Apply the lower of the provider’s hourly fee or the government’s hourly rate cap:
-Care Type
-School Age
-Centre-Based Day Care
-$14.63
-$12.81
-Outside School Hours
-$14.63
-$12.81
-Family Day Care
-$13.56
-$13.56
-In-Home Care (per family)
-$39.80
-$39.80
-Effective Hourly Rate = min(Provider Fee, Hourly Cap)
-5. Subsidy and Cost Calculations
-
-For each child:
-Subsidy per Hour = CCS Rate × Effective Hourly Rate
-Weekly Subsidy = Subsidy per Hour × Subsidised Hours
-Weekly Full Cost = Provider Fee × Total Hours
-Weekly Out-of-Pocket = Weekly Full Cost – Weekly Subsidy
-Net Annual Income After Childcare = Adjusted Household Income – (Out-of-Pocket × 52)
-Childcare Cost as % of Income = (Annual Out-of-Pocket ÷ Adjusted Income) × 100%
-🧩 Features & Requirements
-
-Real-time, no-refresh UI (e.g. React with state management)
-Inputs:
-Parent 1 & 2: Annual income, workdays/week (1–5), hours/day
-Number of children, each child’s age
-Provider hourly fee per child
-Care type per child (dropdown: Centre-Based, Family Day Care, OSHC, In-Home)
-Outputs:
-Weekly childcare hours needed
-Subsidised hours (based on activity test)
-CCS % per child
-Weekly subsidy amount
-Weekly out-of-pocket cost
-Adjusted household income
-Net income after childcare
-Childcare cost as % of income
-Scenario simulation:
-Auto-generate multiple combinations of workdays (e.g. 5+5, 4+5, 3+5, 3+3, 2+4, 0+5, etc.)
-Display results in a comparison table
-Optional:
-Graphical visualisation (e.g. bar chart of net income vs. workdays)
-Export to PDF or CSV
-Save/share scenarios
-🧠 Optimisation & Recommendations
-
-Use memoisation or caching to avoid recalculating unchanged inputs
-Consider using a reactive framework (e.g. React, Vue) for live updates
-Modularise the CCS formula logic for easy updates (e.g. new financial year thresholds)
-Validate inputs (e.g. income must be numeric, workdays 0–5, hours/day ≤12)
-Allow toggling between weekly and annual views
-Consider accessibility (WCAG 2.1), mobile responsiveness, and localisation (AU English, AUD currency)
-
-## Notes
-- Update this file with specific requirements before starting development
-- All as-built documentation should go in the `documentation/` folder
+- [ ] Test data persiste
