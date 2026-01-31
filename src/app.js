@@ -11,6 +11,7 @@ import {
   generateAllScenarios, 
   generateCommonScenarios 
 } from './js/scenarios/generator.js';
+import { loadState, saveState, clearState } from './js/storage/persistence.js';
 
 // Global state for scenarios
 let currentScenarios = [];
@@ -25,10 +26,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize comparison controls
     initializeComparisonControls();
     
+    // Setup clear data button
+    setupClearDataButton();
+    
+    // Try to restore saved scenarios
+    restoreSavedScenarios();
+    
     // Listen for form calculation success to enable scenario generation
     document.addEventListener('calculationComplete', (event) => {
       currentFormData = event.detail.formData;
       showScenarioGenerationOption();
+      
+      // Save scenarios state when form data changes
+      saveCurrentState();
     });
     
     // Generate all scenarios button
@@ -71,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('scenarioRemoved', (event) => {
       const scenarioId = event.detail.scenarioId;
       currentScenarios = currentScenarios.filter(s => s.id !== scenarioId);
+      saveCurrentState();
     });
 });
 
@@ -126,6 +137,59 @@ function generateAndDisplayScenarios(mode = 'common') {
     countMsg.className = 'scenario-count';
     countMsg.textContent = `Showing ${scenarios.length} scenario${scenarios.length > 1 ? 's' : ''}`;
     container.insertBefore(countMsg, container.firstChild);
+  }
+  
+  // Save state after generating scenarios
+  saveCurrentState();
+}
+
+/**
+ * Save current application state
+ */
+function saveCurrentState() {
+  try {
+    const state = loadState() || {};
+    state.scenarios = currentScenarios;
+    state.timestamp = new Date().toISOString();
+    saveState(state);
+  } catch (error) {
+    console.error('Error saving application state:', error);
+  }
+}
+
+/**
+ * Restore saved scenarios
+ */
+function restoreSavedScenarios() {
+  try {
+    const savedState = loadState();
+    if (savedState && savedState.scenarios && Array.isArray(savedState.scenarios) && savedState.scenarios.length > 0) {
+      currentScenarios = savedState.scenarios;
+      displayComparisonTable(currentScenarios);
+      showScenarioGenerationOption();
+      console.log('Scenarios restored from localStorage');
+    }
+  } catch (error) {
+    console.error('Error restoring scenarios:', error);
+  }
+}
+
+/**
+ * Setup clear data button functionality
+ */
+function setupClearDataButton() {
+  const clearDataBtn = document.getElementById('clear-data-btn');
+  if (clearDataBtn) {
+    clearDataBtn.addEventListener('click', () => {
+      // Show confirmation dialog
+      if (confirm('Are you sure you want to clear all saved data? This will reset the calculator and cannot be undone.')) {
+        // Clear localStorage
+        clearState();
+        
+        // Reload the page to reset the form
+        window.location.reload();
+      }
+    });
   }
 }
 

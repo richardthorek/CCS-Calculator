@@ -415,12 +415,38 @@ select.error:focus {
     background-color: var(--color-border);
 }
 
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background-color: #c82333;
+}
+
 .form-actions {
     display: flex;
     gap: var(--spacing-sm);
     margin-top: var(--spacing-md);
     padding-top: var(--spacing-sm);
     justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Privacy Notice */
+.privacy-notice {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm);
+    background-color: #f8f9fa;
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--border-radius);
+}
+
+.privacy-notice p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #495057;
+    line-height: 1.5;
 }
 
 /* ===== Child Input Cards ===== */
