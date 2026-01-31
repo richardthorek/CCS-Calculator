@@ -39,6 +39,9 @@ import {
   getPeriodSuffix,
   onPeriodChange
 } from './js/ui/period-selector.js';
+import {
+  initFormattedIncomeInputs
+} from './js/utils/format-input.js';
 
 // Global state for scenarios
 let currentScenarios = [];
@@ -64,6 +67,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize the calculator form
     initializeForm();
+    
+    // Initialize formatted income inputs (with thousand separators)
+    initFormattedIncomeInputs();
     
     // Initialize comparison controls
     initializeComparisonControls();

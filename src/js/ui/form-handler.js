@@ -22,6 +22,7 @@ import {
 } from '../calculations/parent-schedule.js';
 import { debounce } from '../utils/debounce.js';
 import { loadState, saveState } from '../storage/persistence.js';
+import { stripCommas, formatWithCommas } from '../utils/format-input.js';
 
 // Cache for calculation results to optimize performance
 let lastFormData = null;
@@ -136,8 +137,9 @@ function updateParentAdjustedIncome(parentId) {
   const valueElement = document.getElementById(`${parentId}-adjusted-income-value`);
   const percentageElement = document.getElementById(`${parentId}-income-percentage`);
   
-  // Get values
-  const income = parseFloat(incomeInput.value) || 0;
+  // Get values (strip commas from income)
+  const incomeRaw = incomeInput.value || '0';
+  const income = parseFloat(stripCommas(incomeRaw)) || 0;
   const days = parseFloat(daysInput.value) || 0;
   const hours = parseFloat(hoursInput.value) || 0;
   
@@ -436,8 +438,9 @@ function handleFormSubmit(event) {
  * Collect all form data
  */
 function collectFormData() {
-  // Parent 1 data
-  const parent1Income = parseFloat(document.getElementById('parent1-income').value) || 0;
+  // Parent 1 data (strip commas from income for numeric parsing)
+  const parent1IncomeRaw = document.getElementById('parent1-income').value || '0';
+  const parent1Income = parseFloat(stripCommas(parent1IncomeRaw)) || 0;
   const parent1Days = parseFloat(document.getElementById('parent1-days').value) || 0;
   const parent1Hours = parseFloat(document.getElementById('parent1-hours').value) || 0;
   
@@ -445,8 +448,9 @@ function collectFormData() {
   const parent1WorkDaysCheckboxes = document.querySelectorAll('input[name="parent1-workday"]:checked');
   const parent1WorkDays = Array.from(parent1WorkDaysCheckboxes).map(cb => cb.value);
   
-  // Parent 2 data (optional)
-  const parent2Income = parseFloat(document.getElementById('parent2-income').value) || 0;
+  // Parent 2 data (optional, strip commas from income)
+  const parent2IncomeRaw = document.getElementById('parent2-income').value || '0';
+  const parent2Income = parseFloat(stripCommas(parent2IncomeRaw)) || 0;
   const parent2Days = parseFloat(document.getElementById('parent2-days').value) || 0;
   const parent2Hours = parseFloat(document.getElementById('parent2-hours').value) || 0;
   
@@ -1403,7 +1407,7 @@ function restoreFormData(formData) {
       const parent1Hours = document.getElementById('parent1-hours');
       
       if (parent1Income && formData.parent1.income) {
-        parent1Income.value = formData.parent1.income;
+        parent1Income.value = formatWithCommas(formData.parent1.income);
       }
       if (parent1Days && formData.parent1.days !== undefined) {
         parent1Days.value = formData.parent1.days;
@@ -1430,7 +1434,7 @@ function restoreFormData(formData) {
       const parent2Hours = document.getElementById('parent2-hours');
       
       if (parent2Income && formData.parent2.income) {
-        parent2Income.value = formData.parent2.income;
+        parent2Income.value = formatWithCommas(formData.parent2.income);
       }
       if (parent2Days && formData.parent2.days !== undefined) {
         parent2Days.value = formData.parent2.days;
