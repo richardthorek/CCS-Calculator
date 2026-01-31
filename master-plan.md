@@ -17,9 +17,27 @@ An interactive Child Care Subsidy (CCS) Estimator for Australian parents, deploy
 - **Philosophy**: Keep it simple, lightweight, and maintainable with native web technologies
 
 ## Current Status
-✅ Phase 5 Complete - Real-Time Interactivity & Event-Driven Updates implemented
+🎯 Phase 7 IN PROGRESS - Data Visualization & Enhanced Export Features
 
-### Phase 5 Summary
+**Started**: January 31, 2026
+**Phase 7.1 Complete**: Charts implemented with Chart.js
+
+### Phase 7 Progress
+Implementation of data visualization and enhanced export features:
+- [x] Charting library evaluation and selection (Chart.js v4.4.1 selected)
+- [x] Data visualization implementation (bar charts, doughnut charts with Chart.js)
+  - Professional bar chart comparing net income across scenarios
+  - Compelling doughnut chart showing cost breakdown
+  - Smooth animations and professional styling
+  - Fully responsive and accessible
+- [ ] Export features (PDF, CSV, print-friendly)
+- [ ] Shareable URLs with URLSearchParams
+- [ ] Advanced UI controls (weekly/annual toggle, presets, help tooltips)
+- [ ] Comprehensive testing and documentation
+
+**Key Decision:** Implemented charts with Chart.js library (18KB gzipped) per user requirement for "compelling, simple, and easy to manage" visualizations. This represents a pragmatic shift from vanilla-first approach specifically for data visualization.
+
+### Phase 5 Summary (Previously Completed)
 Real-time interactivity has been fully implemented using pure Vanilla JavaScript:
 - ✅ Event-driven updates with debouncing (500ms delay)
 - ✅ Automatic calculation on input changes (no button click required)
@@ -291,40 +309,110 @@ All four core calculation modules have been implemented with full test coverage:
 - localStorage quota is generous (~5-10MB) for our use case, but document known limits
 - Private browsing mode may disable localStorage in some browsers
 
-### Phase 7: Enhanced Features
-**Goal:** Add optional but valuable features
+### Phase 7: Enhanced Features 🎯 NEXT
+**Goal:** Add data visualization and enhanced export/sharing features
+**Status:** IN PROGRESS (Started: January 31, 2026)
 
-#### 7.1 Data Visualization
-- [ ] Evaluate lightweight charting options (Chart.js as minimal option, or vanilla JS SVG/Canvas)
-- [ ] Create bar chart comparing net income across scenarios
-- [ ] Create pie chart showing cost breakdown
-- [ ] Add interactive tooltips (vanilla JS)
-- [ ] Make charts responsive
-- [ ] Test accessibility of visualizations
-- [ ] **Note:** Only add charting library if native SVG/Canvas is too complex
+#### 7.1 Data Visualization ✅ COMPLETE (with Chart.js v4.4.1)
+- [x] Evaluate lightweight charting options
+  - [x] Initial research: Chart.js vs vanilla SVG/Canvas
+  - [x] **Decision**: Chart.js selected per user requirement for compelling, simple, manageable charts
+  - [x] Document decision and rationale in Phase 7 documentation
+- [x] Integrate Chart.js library
+  - [x] Install Chart.js v4.4.1 via npm
+  - [x] Include UMD build in src/lib/ (204KB, ~18KB gzipped)
+  - [x] Add Chart.js script tag to HTML
+  - [x] Document library version and update process
+- [x] Create bar chart comparing net income across scenarios
+  - [x] Design professional chart layout with gradient colors
+  - [x] Implement responsive design (10 scenarios mobile, 15 desktop)
+  - [x] Add smooth animations (750ms with easing)
+  - [x] Create interactive tooltips with AUD formatting
+  - [x] Highlight best scenario in green, others in blue
+  - [x] Test on mobile and desktop
+- [x] Create doughnut chart showing cost breakdown
+  - [x] Design chart with clear labels and percentages
+  - [x] Implement 60% cutout for modern donut style
+  - [x] Add legend and hover effects (10px offset)
+  - [x] Animate rotation and scale (1000ms)
+  - [x] Add summary text below chart
+  - [x] Test on mobile and desktop
+- [x] Make charts accessible
+  - [x] Add ARIA labels and roles to canvas elements
+  - [x] Ensure keyboard navigation works
+  - [x] Add descriptive chart titles
+  - [x] Verify color contrast meets WCAG 2.1 AA
+- [x] Integrate with comparison table
+  - [x] Charts update when scenarios are generated
+  - [x] Charts reflect sorted scenario data
+  - [x] Toggle button to show/hide charts
+  - [x] Proper chart instance cleanup
+- [x] Add CSS styling for chart containers
+  - [x] Responsive grid layout (1 or 2 columns)
+  - [x] Proper spacing and shadows
+  - [x] Print media queries
+- [x] Test implementation
+  - [x] All 242 existing tests still pass
+  - [x] Manual testing of chart rendering
+  - [x] Accessibility testing
+  - [x] Responsive design testing
+- [x] Documentation
+  - [x] Create comprehensive Phase 7 documentation
+  - [x] Document Chart.js integration approach
+  - [x] Add library README in src/lib/
+  - [x] Update master plan
 
 #### 7.2 Export & Sharing
-- [ ] Implement PDF export (consider browser print API or minimal library like jsPDF)
-- [ ] Add CSV export using vanilla JS (Blob and URL.createObjectURL)
-- [ ] Create shareable URL with URLSearchParams for encoding parameters
-- [ ] Add "print-friendly" view with CSS @media print
-- [ ] Test export features across browsers
+- [ ] Implement print-friendly view
+  - [ ] Create CSS @media print styles
+  - [ ] Hide unnecessary UI elements (nav, buttons)
+  - [ ] Optimize layout for paper (portrait/landscape)
+  - [ ] Test browser print functionality
+- [ ] Add CSV export using vanilla JS
+  - [ ] Create export module using Blob and URL.createObjectURL
+  - [ ] Export scenario comparison table
+  - [ ] Export individual scenario details
+  - [ ] Test CSV format in Excel/Google Sheets
+- [ ] Implement PDF export
+  - [ ] Evaluate browser print API (window.print()) vs jsPDF
+  - [ ] Prefer print API if adequate for use case
+  - [ ] Add "Save as PDF" button if needed
+  - [ ] Test PDF generation across browsers
+- [ ] Create shareable URLs
+  - [ ] Encode form data in URLSearchParams
+  - [ ] Decode and populate form on page load
+  - [ ] Add "Copy Share Link" button
+  - [ ] Test URL length limits and encoding
 - [ ] **Note:** Prefer native browser APIs over libraries where possible
 
 #### 7.3 Advanced UI Features
 - [ ] Add weekly/annual view toggle
-- [ ] Implement "what-if" sliders for quick adjustments
+  - [ ] Create toggle button/switch UI component
+  - [ ] Update all currency displays to show weekly or annual
+  - [ ] Persist toggle state in localStorage
+  - [ ] Test toggle functionality
 - [ ] Add preset scenarios (common work arrangements)
+  - [ ] Define common presets (5+5, 4+4, 3+0, etc.)
+  - [ ] Create preset selector dropdown
+  - [ ] Auto-populate form with selected preset
+  - [ ] Test preset loading
 - [ ] Create help tooltips explaining CCS rules
-- [ ] Add calculator tour/onboarding
-- [ ] Implement dark mode (optional)
+  - [ ] Add tooltip icons next to complex fields
+  - [ ] Implement vanilla JS tooltip component
+  - [ ] Write clear, concise help text
+  - [ ] Ensure accessibility (keyboard accessible, ARIA)
+  - [ ] Test on mobile (touch events)
+- [ ] Add calculator tour/onboarding (optional)
+  - [ ] Create step-by-step tour using vanilla JS
+  - [ ] Highlight key features and inputs
+  - [ ] Allow skip/dismiss functionality
+  - [ ] Test first-time user experience
 
-#### 7.4 Multi-child Support Enhancement
-- [ ] Improve UI for managing multiple children
-- [ ] Add/remove children dynamically
-- [ ] Handle different care types per child
-- [ ] Show per-child cost breakdown
-- [ ] Test with 1-5 children scenarios
+#### 7.4 Multi-child Support Enhancement (Deferred to Future Phase)
+- This was already implemented in Phase 3
+- Current implementation supports dynamic add/remove children
+- Per-child cost breakdown is already shown in results
+- No additional work needed for Phase 7
 
 ### Phase 8: Backend Integration (Optional)
 **Goal:** Add server-side features if needed
