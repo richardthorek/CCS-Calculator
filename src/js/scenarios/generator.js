@@ -47,6 +47,103 @@ export function generateAllScenarios(baseData) {
 }
 
 /**
+ * Generate simplified scenarios based on user's current settings
+ * Shows: current settings, swap scenario, both full-time, and lower earner at 0 days
+ * @param {Object} baseData - Base family and childcare data (includes parent1Days and parent2Days)
+ * @returns {Array} Array of scenario objects
+ */
+export function generateSimplifiedScenarios(baseData) {
+  const { 
+    parent1BaseIncome, 
+    parent2BaseIncome = 0, 
+    parent1Days, 
+    parent2Days = 0,
+    parent1HoursPerDay, 
+    parent2HoursPerDay = 0, 
+    children 
+  } = baseData;
+  
+  const scenarios = [];
+  const scenariosToCreate = [];
+  
+  // 1. User's current settings
+  scenariosToCreate.push({
+    parent1Days,
+    parent2Days,
+    name: 'Your Current Settings',
+    description: `Parent 1: ${parent1Days} days, Parent 2: ${parent2Days} days`
+  });
+  
+  // 2. Swap scenario (only if parents have different days and both have income)
+  if (parent2BaseIncome > 0 && parent1Days !== parent2Days) {
+    scenariosToCreate.push({
+      parent1Days: parent2Days,
+      parent2Days: parent1Days,
+      name: 'Swapped Work Days',
+      description: `Parent 1: ${parent2Days} days, Parent 2: ${parent1Days} days`
+    });
+  }
+  
+  // 3. Both parents full-time (only if different from current and both parents have income)
+  if (parent2BaseIncome > 0) {
+    const alreadyFullTime = parent1Days === 5 && parent2Days === 5;
+    if (!alreadyFullTime) {
+      scenariosToCreate.push({
+        parent1Days: 5,
+        parent2Days: 5,
+        name: 'Both Full-Time',
+        description: 'Both parents working 5 days/week'
+      });
+    }
+  }
+  
+  // 4. Lower earner at 0 days (only if both parents have income)
+  if (parent2BaseIncome > 0) {
+    const lowerEarnerIsParent2 = parent2BaseIncome <= parent1BaseIncome;
+    
+    if (lowerEarnerIsParent2) {
+      // Parent 2 is lower earner - set to 0 days
+      const alreadyAtZero = parent2Days === 0;
+      if (!alreadyAtZero) {
+        scenariosToCreate.push({
+          parent1Days: 5,
+          parent2Days: 0,
+          name: 'Lower Earner Home',
+          description: 'Parent 2 (lower earner) stays home'
+        });
+      }
+    } else {
+      // Parent 1 is lower earner - set to 0 days
+      const alreadyAtZero = parent1Days === 0;
+      if (!alreadyAtZero) {
+        scenariosToCreate.push({
+          parent1Days: 0,
+          parent2Days: 5,
+          name: 'Lower Earner Home',
+          description: 'Parent 1 (lower earner) stays home'
+        });
+      }
+    }
+  }
+  
+  // Create scenarios from the combinations
+  scenariosToCreate.forEach(combo => {
+    const scenario = createScenario({
+      ...baseData,
+      parent1Days: combo.parent1Days,
+      parent2Days: combo.parent2Days,
+      scenarioName: combo.name,
+    });
+    
+    if (scenario) {
+      scenarios.push(scenario);
+    }
+  });
+  
+  return scenarios;
+}
+
+/**
  * Generate common work scenario combinations (subset of most typical arrangements)
  * @param {Object} baseData - Base family and childcare data
  * @returns {Array} Array of scenario objects

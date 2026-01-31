@@ -9,7 +9,8 @@ import {
 } from './js/ui/comparison-table.js';
 import { 
   generateAllScenarios, 
-  generateCommonScenarios 
+  generateCommonScenarios,
+  generateSimplifiedScenarios 
 } from './js/scenarios/generator.js';
 import { loadState, saveState, clearState } from './js/storage/persistence.js';
 import { 
@@ -90,6 +91,16 @@ document.addEventListener('DOMContentLoaded', function() {
       storeFormDataForExport(currentFormData);
     });
     
+    // Generate simplified scenarios button (NEW - default)
+    const generateSimplifiedBtn = document.getElementById('generate-simplified-scenarios-btn');
+    if (generateSimplifiedBtn) {
+      generateSimplifiedBtn.addEventListener('click', () => {
+        if (currentFormData) {
+          generateAndDisplayScenarios('simplified');
+        }
+      });
+    }
+    
     // Generate all scenarios button
     const generateAllBtn = document.getElementById('generate-all-scenarios-btn');
     if (generateAllBtn) {
@@ -148,29 +159,58 @@ function showScenarioGenerationOption() {
 
 /**
  * Generate and display scenarios
- * @param {string} mode - 'all' or 'common'
+ * @param {string} mode - 'all', 'common', or 'simplified'
  */
-function generateAndDisplayScenarios(mode = 'common') {
+function generateAndDisplayScenarios(mode = 'simplified') {
   if (!currentFormData) {
     console.error('No form data available');
     return;
   }
   
+  // Transform children data to the format expected by scenario generator
+  const transformedChildren = currentFormData.children.map(child => {
+    // If using daily rate, convert to hourly
+    if (child.feeType === 'daily') {
+      const hourlyRate = child.hoursPerDay > 0 ? child.dailyFee / child.hoursPerDay : 0;
+      const hoursPerWeek = child.daysOfCare * child.hoursPerDay;
+      
+      return {
+        age: child.age,
+        careType: child.careType,
+        providerFee: hourlyRate,
+        hoursPerWeek: hoursPerWeek
+      };
+    } else {
+      // Already in hourly format
+      return {
+        age: child.age,
+        careType: child.careType,
+        providerFee: child.providerFee,
+        hoursPerWeek: child.hoursPerWeek
+      };
+    }
+  });
+  
   // Prepare base data for scenario generation
   const baseData = {
     parent1BaseIncome: currentFormData.parent1.income,
     parent2BaseIncome: currentFormData.parent2.income || 0,
+    parent1Days: currentFormData.parent1.days,
+    parent2Days: currentFormData.parent2.days || 0,
     parent1HoursPerDay: currentFormData.parent1.hours,
     parent2HoursPerDay: currentFormData.parent2.hours || 0,
-    children: currentFormData.children
+    children: transformedChildren
   };
   
   // Generate scenarios
   let scenarios;
   if (mode === 'all') {
     scenarios = generateAllScenarios(baseData);
-  } else {
+  } else if (mode === 'common') {
     scenarios = generateCommonScenarios(baseData);
+  } else {
+    // Default to simplified scenarios
+    scenarios = generateSimplifiedScenarios(baseData);
   }
   
   // Store scenarios

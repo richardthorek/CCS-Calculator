@@ -62,12 +62,154 @@ export function displayComparisonTable(scenarios, containerSelector = '#comparis
     return;
   }
   
-  // Create table
-  const table = createComparisonTableElement(scenarios, options);
-  container.appendChild(table);
+  // Use card layout for 4 or fewer scenarios (simplified view), table for more
+  let displayElement;
+  if (scenarios.length <= 4) {
+    displayElement = createComparisonCardsElement(scenarios, options);
+  } else {
+    displayElement = createComparisonTableElement(scenarios, options);
+  }
+  
+  container.appendChild(displayElement);
   
   // Add event listeners for interactions
   attachTableEventListeners(container, scenarios);
+}
+
+/**
+ * Create a card-based comparison layout (for simplified scenarios)
+ * @param {Array} scenarios - Array of scenarios
+ * @param {Object} options - Display options
+ * @returns {HTMLElement} Cards container element
+ */
+function createComparisonCardsElement(scenarios, options = {}) {
+  const { highlightBest = true } = options;
+  
+  // Find best scenario for highlighting
+  const bestScenario = highlightBest ? findBestScenario(scenarios, 'netIncomeAfterChildcare') : null;
+  
+  // Create cards wrapper
+  const wrapper = document.createElement('div');
+  wrapper.className = 'comparison-cards-wrapper';
+  
+  // Create cards container
+  const cardsContainer = document.createElement('div');
+  cardsContainer.className = 'comparison-cards';
+  cardsContainer.setAttribute('role', 'list');
+  cardsContainer.setAttribute('aria-label', 'Scenario Comparison Cards');
+  
+  // Create a card for each scenario
+  scenarios.forEach((scenario, index) => {
+    const card = document.createElement('div');
+    card.className = 'scenario-card';
+    card.setAttribute('role', 'listitem');
+    
+    if (scenario.id === bestScenario?.id) {
+      card.classList.add('best-scenario');
+    }
+    
+    // Card header
+    const cardHeader = document.createElement('div');
+    cardHeader.className = 'scenario-card-header';
+    
+    const title = document.createElement('h3');
+    title.className = 'scenario-card-title';
+    title.textContent = scenario.name;
+    cardHeader.appendChild(title);
+    
+    if (scenario.id === bestScenario?.id) {
+      const badge = document.createElement('span');
+      badge.className = 'best-badge';
+      badge.textContent = 'Best Option';
+      badge.setAttribute('aria-label', 'Best net income');
+      cardHeader.appendChild(badge);
+    }
+    
+    const workDays = document.createElement('p');
+    workDays.className = 'scenario-work-days';
+    workDays.textContent = `${scenario.parent1Days} + ${scenario.parent2Days} work days/week`;
+    cardHeader.appendChild(workDays);
+    
+    card.appendChild(cardHeader);
+    
+    // Card body with key metrics
+    const cardBody = document.createElement('div');
+    cardBody.className = 'scenario-card-body';
+    
+    // Create metric items
+    const metrics = [
+      {
+        label: 'Household Income',
+        value: formatCurrency(scenario.householdIncome),
+        className: 'metric-income'
+      },
+      {
+        label: 'Annual Subsidy',
+        value: formatCurrency(scenario.annualSubsidy),
+        className: 'metric-subsidy',
+        highlight: true
+      },
+      {
+        label: 'Your Out-of-Pocket',
+        value: formatCurrency(scenario.annualOutOfPocket),
+        className: 'metric-out-of-pocket',
+        highlight: true
+      },
+      {
+        label: 'Net Income After Childcare',
+        value: formatCurrency(scenario.netIncomeAfterChildcare),
+        className: 'metric-net-income',
+        highlight: true,
+        primary: scenario.id === bestScenario?.id
+      }
+    ];
+    
+    metrics.forEach(metric => {
+      const metricItem = document.createElement('div');
+      metricItem.className = `scenario-metric ${metric.className}`;
+      if (metric.highlight) {
+        metricItem.classList.add('metric-highlight');
+      }
+      if (metric.primary) {
+        metricItem.classList.add('metric-primary');
+      }
+      
+      const label = document.createElement('div');
+      label.className = 'metric-label';
+      label.textContent = metric.label;
+      
+      const value = document.createElement('div');
+      value.className = 'metric-value';
+      value.textContent = metric.value;
+      
+      metricItem.appendChild(label);
+      metricItem.appendChild(value);
+      cardBody.appendChild(metricItem);
+    });
+    
+    card.appendChild(cardBody);
+    
+    // Card actions (optional - can be hidden for simplified view)
+    const cardActions = document.createElement('div');
+    cardActions.className = 'scenario-card-actions';
+    cardActions.style.display = 'none'; // Hide for simplified view
+    
+    // Favorite button
+    const favoriteBtn = document.createElement('button');
+    favoriteBtn.className = `favorite-btn ${scenario.isFavorite ? 'active' : ''}`;
+    favoriteBtn.setAttribute('aria-label', scenario.isFavorite ? 'Remove from favorites' : 'Add to favorites');
+    favoriteBtn.setAttribute('data-scenario-id', scenario.id);
+    favoriteBtn.innerHTML = scenario.isFavorite ? '★ Favorited' : '☆ Favorite';
+    cardActions.appendChild(favoriteBtn);
+    
+    card.appendChild(cardActions);
+    
+    cardsContainer.appendChild(card);
+  });
+  
+  wrapper.appendChild(cardsContainer);
+  
+  return wrapper;
 }
 
 /**

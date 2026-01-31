@@ -1178,6 +1178,166 @@ footer {
   text-transform: uppercase;
 }
 
+/* ===== Comparison Cards Layout (for simplified scenarios) ===== */
+
+.comparison-cards-wrapper {
+  margin-top: var(--spacing-lg);
+}
+
+.comparison-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .comparison-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .comparison-cards {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.scenario-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.scenario-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.scenario-card.best-scenario {
+  border-color: var(--color-success);
+}
+
+.scenario-card-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: white;
+  padding: var(--spacing-lg);
+  text-align: center;
+}
+
+.scenario-card.best-scenario .scenario-card-header {
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
+}
+
+.scenario-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-xs);
+}
+
+.scenario-work-days {
+  font-size: 0.85rem;
+  opacity: 0.95;
+  margin: var(--spacing-xs) 0 0 0;
+}
+
+.scenario-card-header .best-badge {
+  margin-top: var(--spacing-sm);
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  padding: 4px 12px;
+  font-size: 0.7rem;
+}
+
+.scenario-card-body {
+  padding: var(--spacing-lg);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.scenario-metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) 0;
+}
+
+.scenario-metric.metric-highlight {
+  padding: var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-primary);
+}
+
+.scenario-metric.metric-primary {
+  background: var(--color-bg-tertiary);
+  border-left-color: var(--color-success);
+  font-weight: 600;
+}
+
+.metric-label {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.metric-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.scenario-metric.metric-subsidy .metric-value {
+  color: var(--color-success);
+}
+
+.scenario-metric.metric-out-of-pocket .metric-value {
+  color: var(--color-secondary);
+}
+
+.scenario-metric.metric-primary .metric-value {
+  font-size: 1.4rem;
+  color: var(--color-success);
+}
+
+.scenario-card-actions {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: center;
+}
+
+.scenario-card-actions .favorite-btn {
+  color: var(--color-secondary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.9rem;
+  border: 1px solid var(--color-border);
+  background: white;
+  border-radius: var(--radius-md);
+}
+
+.scenario-card-actions .favorite-btn:hover {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.scenario-card-actions .favorite-btn.active {
+  color: #ffd700;
+  border-color: #ffd700;
+}
+
 .no-scenarios {
   text-align: center;
   padding: var(--spacing-2xl);
