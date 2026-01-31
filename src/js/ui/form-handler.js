@@ -831,9 +831,11 @@ function updateMobileStickyHeader(results) {
     totalCostEl.dataset.weeklyValue = results.totalWeeklyCost;
   }
   
-  // Show sticky header if we have valid results
+  // Show sticky header if we have valid results, hide if invalid
   if (results.totalWeeklyCost > 0) {
     stickyHeader.classList.remove('hidden');
+  } else {
+    stickyHeader.classList.add('hidden');
   }
 }
 
