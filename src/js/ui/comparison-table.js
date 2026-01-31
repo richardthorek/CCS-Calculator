@@ -11,6 +11,14 @@ import {
   findBestScenario
 } from '../scenarios/generator.js';
 
+import {
+  getCurrentPeriod,
+  convertToPeriod,
+  getPeriodSuffix,
+  PERIOD_LABELS,
+  onPeriodChange
+} from './period-selector.js';
+
 /**
  * Format currency value
  * @param {number} value - Value to format
@@ -40,6 +48,18 @@ function formatPercentage(value) {
   return `${value.toFixed(1)}%`;
 }
 
+// Store current scenarios for re-rendering on period change
+let currentScenarios = [];
+let currentContainerSelector = '#comparison-table-container';
+let currentOptions = {};
+
+// Listen for period changes
+onPeriodChange((period) => {
+  if (currentScenarios.length > 0) {
+    displayComparisonTable(currentScenarios, currentContainerSelector, currentOptions);
+  }
+});
+
 /**
  * Create and display the comparison table
  * @param {Array} scenarios - Array of scenario objects
@@ -47,6 +67,11 @@ function formatPercentage(value) {
  * @param {Object} options - Display options
  */
 export function displayComparisonTable(scenarios, containerSelector = '#comparison-table-container', options = {}) {
+  // Store for period change re-renders
+  currentScenarios = scenarios;
+  currentContainerSelector = containerSelector;
+  currentOptions = options;
+  
   const container = document.querySelector(containerSelector);
   
   if (!container) {
@@ -136,31 +161,45 @@ function createComparisonCardsElement(scenarios, options = {}) {
     const cardBody = document.createElement('div');
     cardBody.className = 'scenario-card-body';
     
+    // Get current period for display
+    const period = getCurrentPeriod();
+    const periodLabel = PERIOD_LABELS[period];
+    const suffix = getPeriodSuffix(period);
+    
+    // Calculate period values (scenarios store weekly values internally)
+    const periodSubsidy = convertToPeriod(scenario.totalWeeklySubsidy || scenario.annualSubsidy / 52, period);
+    const periodOutOfPocket = convertToPeriod(scenario.totalWeeklyOutOfPocket || scenario.annualOutOfPocket / 52, period);
+    const periodFullCost = convertToPeriod(scenario.totalWeeklyCost || scenario.annualCost / 52, period);
+    
     // Create metric items
     const metrics = [
       {
         label: 'Household Income',
         value: formatCurrency(scenario.householdIncome),
-        className: 'metric-income'
+        className: 'metric-income',
+        isAnnual: true
       },
       {
-        label: 'Annual Subsidy',
-        value: formatCurrency(scenario.annualSubsidy),
+        label: `Subsidy ${suffix}`,
+        value: formatCurrency(periodSubsidy),
         className: 'metric-subsidy',
-        highlight: true
+        highlight: true,
+        weeklyValue: scenario.totalWeeklySubsidy || scenario.annualSubsidy / 52
       },
       {
-        label: 'Your Out-of-Pocket',
-        value: formatCurrency(scenario.annualOutOfPocket),
+        label: `Out-of-Pocket ${suffix}`,
+        value: formatCurrency(periodOutOfPocket),
         className: 'metric-out-of-pocket',
-        highlight: true
+        highlight: true,
+        weeklyValue: scenario.totalWeeklyOutOfPocket || scenario.annualOutOfPocket / 52
       },
       {
-        label: 'Net Income After Childcare',
+        label: 'Net Income (Annual)',
         value: formatCurrency(scenario.netIncomeAfterChildcare),
         className: 'metric-net-income',
         highlight: true,
-        primary: scenario.id === bestScenario?.id
+        primary: scenario.id === bestScenario?.id,
+        isAnnual: true
       }
     ];
     

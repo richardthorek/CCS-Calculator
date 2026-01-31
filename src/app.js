@@ -31,6 +31,14 @@ import {
 import {
   initializeTooltips
 } from './js/ui/tooltips.js';
+import {
+  createPeriodSelector,
+  initializePeriodSelector,
+  getCurrentPeriod,
+  convertToPeriod,
+  getPeriodSuffix,
+  onPeriodChange
+} from './js/ui/period-selector.js';
 
 // Global state for scenarios
 let currentScenarios = [];
@@ -38,6 +46,21 @@ let currentFormData = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('CCS Calculator initialized');
+    
+    // Initialize period selector first
+    initializePeriodSelector();
+    
+    // Create and insert the period selector
+    const periodContainer = document.getElementById('global-period-selector');
+    if (periodContainer) {
+      const periodSelector = createPeriodSelector({ showLabel: true });
+      periodContainer.appendChild(periodSelector);
+    }
+    
+    // Listen for period changes to update displays
+    onPeriodChange((period) => {
+      updateResultsDisplayForPeriod();
+    });
     
     // Initialize the calculator form
     initializeForm();
@@ -77,7 +100,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Listen for form calculation success to enable scenario generation
     document.addEventListener('calculationComplete', (event) => {
       currentFormData = event.detail.formData;
-      showScenarioGenerationOption();
+      
+      // Auto-generate simplified scenarios when form changes
+      autoGenerateScenarios();
+      
+      // Show the detailed results section
+      showDetailedResults();
       
       // Save scenarios state when form data changes (Phase 6)
       saveCurrentState();
@@ -152,9 +180,69 @@ function showScenarioGenerationOption() {
   const comparisonSection = document.getElementById('comparison-section');
   if (comparisonSection) {
     comparisonSection.style.display = 'block';
-    // Scroll to the section
-    comparisonSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+}
+
+/**
+ * Show detailed results section
+ */
+function showDetailedResults() {
+  const detailedSection = document.getElementById('detailed-results-section');
+  if (detailedSection) {
+    detailedSection.style.display = 'block';
+  }
+  
+  const chartsSection = document.getElementById('charts-section');
+  if (chartsSection) {
+    chartsSection.style.display = 'block';
+  }
+}
+
+/**
+ * Auto-generate simplified scenarios when form data changes
+ */
+function autoGenerateScenarios() {
+  if (!currentFormData) return;
+  
+  // Generate simplified scenarios automatically
+  generateAndDisplayScenarios('simplified');
+}
+
+/**
+ * Update results display for the current period
+ */
+function updateResultsDisplayForPeriod() {
+  const period = getCurrentPeriod();
+  const suffix = getPeriodSuffix(period);
+  
+  // Update all period suffix labels
+  document.querySelectorAll('[data-period-suffix]').forEach(el => {
+    el.textContent = suffix;
+  });
+  
+  // Update all period-aware values
+  document.querySelectorAll('[data-weekly-value]').forEach(el => {
+    const weeklyValue = parseFloat(el.dataset.weeklyValue);
+    if (!isNaN(weeklyValue)) {
+      const periodValue = convertToPeriod(weeklyValue, period);
+      el.textContent = formatCurrencySimple(periodValue);
+    }
+  });
+}
+
+/**
+ * Simple currency formatter
+ */
+function formatCurrencySimple(value) {
+  if (value === null || value === undefined || isNaN(value)) {
+    return '$0';
+  }
+  return new Intl.NumberFormat('en-AU', {
+    style: 'currency',
+    currency: 'AUD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(value);
 }
 
 /**

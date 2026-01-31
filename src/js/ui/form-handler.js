@@ -765,22 +765,61 @@ function calculateCCS(formData) {
 function displayResults(results) {
   const resultsSection = document.getElementById('results-section');
   
-  // Update summary cards
-  document.getElementById('result-household-income').textContent = formatCurrency(results.householdIncome);
+  // Update summary cards - key figures
+  const householdIncomeEl = document.getElementById('result-household-income');
+  if (householdIncomeEl) {
+    householdIncomeEl.textContent = formatCurrency(results.householdIncome);
+  }
   
   const weeklySubsidyEl = document.getElementById('result-weekly-subsidy');
-  weeklySubsidyEl.textContent = formatCurrency(results.totalWeeklySubsidy);
-  weeklySubsidyEl.dataset.weeklyValue = results.totalWeeklySubsidy;
+  if (weeklySubsidyEl) {
+    weeklySubsidyEl.textContent = formatCurrency(results.totalWeeklySubsidy);
+    weeklySubsidyEl.dataset.weeklyValue = results.totalWeeklySubsidy;
+  }
   
   const weeklyGapEl = document.getElementById('result-weekly-gap');
-  weeklyGapEl.textContent = formatCurrency(results.totalWeeklyGap);
-  weeklyGapEl.dataset.weeklyValue = results.totalWeeklyGap;
+  if (weeklyGapEl) {
+    weeklyGapEl.textContent = formatCurrency(results.totalWeeklyGap);
+    weeklyGapEl.dataset.weeklyValue = results.totalWeeklyGap;
+  }
   
-  document.getElementById('result-net-income').textContent = formatCurrency(results.netAnnualIncome);
+  // Weekly full cost
+  const weeklyCostEl = document.getElementById('result-weekly-cost');
+  if (weeklyCostEl) {
+    weeklyCostEl.textContent = formatCurrency(results.totalWeeklyCost);
+    weeklyCostEl.dataset.weeklyValue = results.totalWeeklyCost;
+  }
   
-  // Update activity test info
-  document.getElementById('result-subsidised-hours').textContent = results.subsidisedHoursPerWeek.toFixed(0);
-  document.getElementById('result-cost-percentage').textContent = formatPercentage(results.costAsPercentageOfIncome);
+  // Net income
+  const netIncomeEl = document.getElementById('result-net-income');
+  if (netIncomeEl) {
+    netIncomeEl.textContent = formatCurrency(results.netAnnualIncome);
+  }
+  
+  // CCS rate (use first child's rate as representative)
+  const ccsRateEl = document.getElementById('result-ccs-rate');
+  if (ccsRateEl && results.childrenResults.length > 0) {
+    ccsRateEl.textContent = formatPercentage(results.childrenResults[0].subsidyRate);
+  }
+  
+  // Activity test info
+  const subsidisedHoursEl = document.getElementById('result-subsidised-hours');
+  if (subsidisedHoursEl) {
+    subsidisedHoursEl.textContent = results.subsidisedHoursPerWeek.toFixed(0);
+  }
+  
+  const costPercentageEl = document.getElementById('result-cost-percentage');
+  if (costPercentageEl) {
+    costPercentageEl.textContent = formatPercentage(results.costAsPercentageOfIncome);
+  }
+  
+  // Care days needed - calculate from schedule breakdown
+  const careDaysEl = document.getElementById('result-care-days');
+  if (careDaysEl && results.scheduleBreakdown) {
+    // Extract number from childcare days string
+    const match = results.scheduleBreakdown.childcareDays.match(/(\d+)/);
+    careDaysEl.textContent = match ? match[1] + ' days' : results.scheduleBreakdown.childcareDays;
+  }
   
   // Display schedule breakdown if available
   if (results.scheduleBreakdown) {
@@ -789,95 +828,76 @@ function displayResults(results) {
   
   // Display children results
   const childrenResultsContainer = document.getElementById('children-results');
-  childrenResultsContainer.innerHTML = results.childrenResults.map(child => {
-    if (child.feeType === 'daily') {
-      return `
-        <div class="child-result-card">
-          <div class="child-result-header">
-            Child ${child.childNumber} (${child.age} years old, ${formatCareType(child.careType)})
-          </div>
-          <div class="result-grid">
-            <div class="result-item">
-              <span class="result-label">CCS Rate:</span>
-              <span class="result-value highlight">${formatPercentage(child.subsidyRate)}</span>
+  if (childrenResultsContainer) {
+    childrenResultsContainer.innerHTML = results.childrenResults.map(child => {
+      if (child.feeType === 'daily') {
+        return `
+          <div class="child-result-card">
+            <div class="child-result-header">
+              Child ${child.childNumber} (${child.age} years old, ${formatCareType(child.careType)})
             </div>
-            <div class="result-item">
-              <span class="result-label">Daily Fee:</span>
-              <span class="result-value">${formatCurrency(child.dailyFee)}/day</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">Hours per Day:</span>
-              <span class="result-value">${child.hoursPerDay}</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">Days of Care Needed:</span>
-              <span class="result-value">${child.actualDaysNeeded} days/week</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">Days Without Care:</span>
-              <span class="result-value success">${child.daysWithoutCare} days/week</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">Weekly Savings:</span>
-              <span class="result-value success">${formatCurrency(child.savings.weeklySavings)}</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">Weekly Subsidy:</span>
-              <span class="result-value">${formatCurrency(child.weeklySubsidy)}</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">Weekly Full Cost:</span>
-              <span class="result-value">${formatCurrency(child.weeklyFullCost)}</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">Weekly Out-of-Pocket:</span>
-              <span class="result-value highlight">${formatCurrency(child.weeklyOutOfPocket)}</span>
+            <div class="result-grid">
+              <div class="result-item">
+                <span class="result-label">CCS Rate:</span>
+                <span class="result-value highlight">${formatPercentage(child.subsidyRate)}</span>
+              </div>
+              <div class="result-item">
+                <span class="result-label">Daily Fee:</span>
+                <span class="result-value">${formatCurrency(child.dailyFee)}/day</span>
+              </div>
+              <div class="result-item">
+                <span class="result-label">Days of Care:</span>
+                <span class="result-value">${child.actualDaysNeeded} days/week</span>
+              </div>
+              <div class="result-item">
+                <span class="result-label">Weekly Subsidy:</span>
+                <span class="result-value" data-weekly-value="${child.weeklySubsidy}">${formatCurrency(child.weeklySubsidy)}</span>
+              </div>
+              <div class="result-item">
+                <span class="result-label">Weekly Out-of-Pocket:</span>
+                <span class="result-value highlight" data-weekly-value="${child.weeklyOutOfPocket}">${formatCurrency(child.weeklyOutOfPocket)}</span>
+              </div>
             </div>
           </div>
-        </div>
-      `;
-    } else {
-      return `
-        <div class="child-result-card">
-          <div class="child-result-header">
-            Child ${child.childNumber} (${child.age} years old, ${formatCareType(child.careType)})
-          </div>
-          <div class="result-grid">
-            <div class="result-item">
-              <span class="result-label">CCS Rate:</span>
-              <span class="result-value highlight">${formatPercentage(child.subsidyRate)}</span>
+        `;
+      } else {
+        return `
+          <div class="child-result-card">
+            <div class="child-result-header">
+              Child ${child.childNumber} (${child.age} years old, ${formatCareType(child.careType)})
             </div>
-            <div class="result-item">
-              <span class="result-label">Hours per Week:</span>
-              <span class="result-value">${child.hoursPerWeek}</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">Provider Fee:</span>
-              <span class="result-value">${formatCurrency(child.providerFee)}/hr</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">Weekly Subsidy:</span>
-              <span class="result-value">${formatCurrency(child.weeklySubsidy)}</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">Weekly Full Cost:</span>
-              <span class="result-value">${formatCurrency(child.weeklyFullCost)}</span>
-            </div>
-            <div class="result-item">
-              <span class="result-label">Weekly Out-of-Pocket:</span>
-              <span class="result-value highlight">${formatCurrency(child.weeklyOutOfPocket)}</span>
+            <div class="result-grid">
+              <div class="result-item">
+                <span class="result-label">CCS Rate:</span>
+                <span class="result-value highlight">${formatPercentage(child.subsidyRate)}</span>
+              </div>
+              <div class="result-item">
+                <span class="result-label">Hours per Week:</span>
+                <span class="result-value">${child.hoursPerWeek}</span>
+              </div>
+              <div class="result-item">
+                <span class="result-label">Provider Fee:</span>
+                <span class="result-value">${formatCurrency(child.providerFee)}/hr</span>
+              </div>
+              <div class="result-item">
+                <span class="result-label">Weekly Subsidy:</span>
+                <span class="result-value" data-weekly-value="${child.weeklySubsidy}">${formatCurrency(child.weeklySubsidy)}</span>
+              </div>
+              <div class="result-item">
+                <span class="result-label">Weekly Out-of-Pocket:</span>
+                <span class="result-value highlight" data-weekly-value="${child.weeklyOutOfPocket}">${formatCurrency(child.weeklyOutOfPocket)}</span>
+              </div>
             </div>
           </div>
-        </div>
-      `;
-    }
-  }).join('');
+        `;
+      }
+    }).join('');
+  }
   
-  // Show results section
-  resultsSection.hidden = false;
-  
-  // Scroll to results
-  resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // Show results section (no longer hidden by default)
+  if (resultsSection) {
+    resultsSection.hidden = false;
+  }
 }
 
 /**
@@ -888,36 +908,40 @@ function displayScheduleBreakdown(scheduleBreakdown) {
   let scheduleSection = document.getElementById('schedule-breakdown-section');
   
   if (!scheduleSection) {
-    // Create it if it doesn't exist - insert after activity test info
-    const activityTestInfo = document.querySelector('.activity-test-info');
-    scheduleSection = document.createElement('div');
-    scheduleSection.id = 'schedule-breakdown-section';
-    scheduleSection.className = 'schedule-breakdown';
-    activityTestInfo.parentNode.insertBefore(scheduleSection, activityTestInfo.nextSibling);
+    // Create it if it doesn't exist
+    const detailedSection = document.getElementById('detailed-results-section');
+    if (detailedSection) {
+      scheduleSection = document.createElement('div');
+      scheduleSection.id = 'schedule-breakdown-section';
+      scheduleSection.className = 'schedule-breakdown-detail';
+      detailedSection.querySelector('.detail-panel-content')?.appendChild(scheduleSection);
+    }
   }
   
-  scheduleSection.innerHTML = `
-    <h3>Work & Childcare Schedule</h3>
-    <div class="info-grid">
-      <div class="info-item">
-        <span class="info-label">Parent 1 Works:</span>
-        <span class="info-value">${scheduleBreakdown.parent1Days}</span>
+  if (scheduleSection) {
+    scheduleSection.innerHTML = `
+      <h4>Work & Childcare Schedule</h4>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">Parent 1 Works:</span>
+          <span class="detail-value">${scheduleBreakdown.parent1Days}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Parent 2 Works:</span>
+          <span class="detail-value">${scheduleBreakdown.parent2Days}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Childcare Needed:</span>
+          <span class="detail-value highlight">${scheduleBreakdown.childcareDays}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Days Without Care:</span>
+          <span class="detail-value success">${scheduleBreakdown.daysWithoutCare}</span>
+        </div>
       </div>
-      <div class="info-item">
-        <span class="info-label">Parent 2 Works:</span>
-        <span class="info-value">${scheduleBreakdown.parent2Days}</span>
-      </div>
-      <div class="info-item">
-        <span class="info-label">Childcare Needed:</span>
-        <span class="info-value highlight">${scheduleBreakdown.childcareDays}</span>
-      </div>
-      <div class="info-item">
-        <span class="info-label">Days Without Care:</span>
-        <span class="info-value success">${scheduleBreakdown.daysWithoutCare}</span>
-      </div>
-    </div>
-    <p class="schedule-explanation">${scheduleBreakdown.explanation}</p>
-  `;
+      <p class="schedule-explanation">${scheduleBreakdown.explanation}</p>
+    `;
+  }
 }
 
 /**

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Child Care Subsidy Calculator - Australia</title>
+    <meta name="description" content="Calculate your Child Care Subsidy (CCS) entitlements and out-of-pocket childcare costs in Australia">
+    <link rel="stylesheet" href="styles.css">
+    <script src="lib/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Child Care Subsidy Calculator</h1>
+            <p class="subtitle">Estimate your CCS entitlements and childcare costs</p>
+            <p class="disclaimer">Based on 2025-26 Australian Government rates</p>
+        </div>
+    </header>
+    
+    <main>
+        <div class="calculator-layout">
+            <!-- LEFT COLUMN: Inputs -->
+            <div class="inputs-column">
+                <!-- Preset Selector -->
+                <section class="preset-section compact">
+                    <div class="preset-header">
+                        <h2 class="preset-title">Quick Start</h2>
+                    </div>
+                    <div class="preset-selector">
+                        <select id="scenario-preset" class="form-control">
+                            <option value="">-- Custom --</option>
+                            <option value="full-time-both">Both Full-time (5+5)</option>
+                            <option value="full-time-one">One Full-time (5+0)</option>
+                            <option value="part-time-both">Both Part-time (3+3)</option>
+                            <option value="full-part">Full + Part (5+3)</option>
+                            <option value="four-four">Four Each (4+4)</option>
+                            <option value="compressed">Compressed (4+0)</option>
+                        </select>
+                    </div>
+                </section>
+                
+                <!-- Calculator Form -->
+                <form id="ccs-calculator-form" class="calculator-form compact" novalidate>
+                    
+                    <!-- Parent 1 Section - Compact -->
+                    <section class="form-section compact-section" id="parent1-section">
+                        <h2 class="section-title compact-title">
+                            <span class="section-number">1</span>
+                            Parent 1
+                        </h2>
+                        
+                        <div class="compact-grid">
+                            <div class="form-group">
+                                <label for="parent1-income">Annual Income (FTE) <span class="required">*</span></label>
+                                <div class="input-wrapper">
+                                    <span class="input-prefix">$</span>
+                                    <input type="number" id="parent1-income" name="parent1-income" min="0" max="10000000" step="1000" required placeholder="100,000">
+                                </div>
+                                <div id="parent1-adjusted-income-display" class="adjusted-income-mini" style="display: none;">
+                                    Adjusted: <span id="parent1-adjusted-income-value"></span>
+                                    <span id="parent1-income-percentage"></span>
+                                </div>
+                                <span class="error-message" id="parent1-income-error" role="alert"></span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="parent1-days">Days/Week <span class="required">*</span></label>
+                                <input type="number" id="parent1-days" name="parent1-days" min="0" max="5" step="1" value="5" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="parent1-hours">Hours/Day <span class="required">*</span></label>
+                                <input type="number" id="parent1-hours" name="parent1-hours" min="0" max="24" step="0.5" value="7.6" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Work Days Selection - Compact -->
+                        <div class="form-group work-days-compact">
+                            <label>Work Days:</label>
+                            <div class="checkbox-group work-days-group compact-days" id="parent1-work-days">
+                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="monday" checked><span>M</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="tuesday" checked><span>T</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="wednesday" checked><span>W</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="thursday" checked><span>T</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="friday" checked><span>F</span></label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Parent 2 Section - Compact -->
+                    <section class="form-section compact-section" id="parent2-section">
+                        <h2 class="section-title compact-title">
+                            <span class="section-number">2</span>
+                            Parent 2 <span class="optional-label">(Optional)</span>
+                        </h2>
+                        
+                        <div class="compact-grid">
+                            <div class="form-group">
+                                <label for="parent2-income">Annual Income (FTE)</label>
+                                <div class="input-wrapper">
+                                    <span class="input-prefix">$</span>
+                                    <input type="number" id="parent2-income" name="parent2-income" min="0" max="10000000" step="1000" placeholder="80,000">
+                                </div>
+                                <div id="parent2-adjusted-income-display" class="adjusted-income-mini" style="display: none;">
+                                    Adjusted: <span id="parent2-adjusted-income-value"></span>
+                                    <span id="parent2-income-percentage"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="parent2-days">Days/Week</label>
+                                <input type="number" id="parent2-days" name="parent2-days" min="0" max="5" step="1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="parent2-hours">Hours/Day</label>
+                                <input type="number" id="parent2-hours" name="parent2-hours" min="0" max="24" step="0.5">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group work-days-compact" id="parent2-workdays-container">
+                            <label>Work Days:</label>
+                            <div class="checkbox-group work-days-group compact-days" id="parent2-work-days">
+                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="monday"><span>M</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="tuesday"><span>T</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="wednesday"><span>W</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="thursday"><span>T</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="friday"><span>F</span></label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Children Section - Compact -->
+                    <section class="form-section compact-section" id="children-section">
+                        <h2 class="section-title compact-title">
+                            <span class="section-number">3</span>
+                            Children
+                        </h2>
+                        
+                        <div id="children-container" role="list">
+                            <!-- Child inputs will be added dynamically -->
+                        </div>
+                        
+                        <button type="button" id="add-child-btn" class="btn btn-secondary btn-small">
+                            + Add Child
+                        </button>
+                    </section>
+
+                    <!-- Form Actions - Minimal -->
+                    <div class="form-actions compact-actions">
+                        <button type="button" class="btn btn-secondary btn-small" id="reset-btn">Reset</button>
+                        <button type="button" class="btn btn-danger btn-small" id="clear-data-btn">Clear Data</button>
+                    </div>
+                    
+                    <!-- Hidden apply all control -->
+                    <div class="apply-all-control" id="apply-all-control" style="display: none;">
+                        <input type="number" id="apply-all-days" name="apply-all-days" min="0" max="5" step="1" class="form-control-small">
+                        <button type="button" id="apply-all-btn" class="btn btn-secondary btn-small">Apply to All</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- RIGHT COLUMN: Live Results & Scenarios -->
+            <div class="results-column">
+                <!-- Period Selector - Global -->
+                <div class="period-selector-container" id="global-period-selector">
+                    <!-- Period selector will be inserted here by JS -->
+                </div>
+                
+                <!-- Live Results Summary -->
+                <section class="live-results-section" id="results-section" aria-live="polite">
+                    <div class="live-results-header">
+                        <h2 class="live-results-title">Your Estimate</h2>
+                        <div class="calculating-indicator" id="calculating-indicator" style="display: none;">
+                            Calculating...
+                        </div>
+                    </div>
+                    
+                    <!-- Key Figures - Prominent -->
+                    <div class="key-figures">
+                        <div class="key-figure primary">
+                            <div class="figure-label">Out-of-Pocket <span class="period-suffix" data-period-suffix>/week</span></div>
+                            <div class="figure-value" id="result-weekly-gap" data-weekly-value="0">$0</div>
+                        </div>
+                        <div class="key-figure secondary">
+                            <div class="figure-label">Subsidy <span class="period-suffix" data-period-suffix>/week</span></div>
+                            <div class="figure-value" id="result-weekly-subsidy" data-weekly-value="0">$0</div>
+                        </div>
+                        <div class="key-figure">
+                            <div class="figure-label">Full Cost <span class="period-suffix" data-period-suffix>/week</span></div>
+                            <div class="figure-value" id="result-weekly-cost" data-weekly-value="0">$0</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Test & Schedule Summary -->
+                    <div class="summary-row">
+                        <div class="summary-item">
+                            <span class="summary-label">Household Income:</span>
+                            <span class="summary-value" id="result-household-income">$0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">CCS Rate:</span>
+                            <span class="summary-value" id="result-ccs-rate">0%</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Subsidised Hours:</span>
+                            <span class="summary-value"><span id="result-subsidised-hours">0</span>/wk</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Care Days Needed:</span>
+                            <span class="summary-value" id="result-care-days">0</span>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Live Scenario Comparison -->
+                <section class="live-scenarios-section" id="comparison-section" aria-live="polite">
+                    <div class="scenarios-header">
+                        <h3>Compare Scenarios</h3>
+                        <div class="scenario-controls-mini">
+                            <button type="button" id="generate-simplified-scenarios-btn" class="btn btn-primary btn-small active">Key</button>
+                            <button type="button" id="generate-common-scenarios-btn" class="btn btn-secondary btn-small">More</button>
+                            <button type="button" id="generate-all-scenarios-btn" class="btn btn-secondary btn-small">All</button>
+                        </div>
+                    </div>
+                    
+                    <div id="comparison-table-container" class="comparison-cards-container">
+                        <!-- Scenario cards will be inserted here -->
+                        <p class="scenarios-placeholder">Enter your details to see scenario comparisons</p>
+                    </div>
+                </section>
+                
+                <!-- Export Controls -->
+                <div class="export-controls-mini">
+                    <button type="button" id="export-csv-btn" class="btn btn-secondary btn-small">📊 CSV</button>
+                    <button type="button" id="print-btn" class="btn btn-secondary btn-small">🖨️ Print</button>
+                    <button type="button" id="share-link-btn" class="btn btn-secondary btn-small">🔗 Share</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DETAILED SECTION: Below the fold -->
+        <div class="details-section">
+            <!-- Detailed Child Results -->
+            <section class="detail-panel" id="detailed-results-section" style="display: none;">
+                <h3 class="detail-panel-title">Detailed Breakdown</h3>
+                
+                <div class="detail-panel-content">
+                    <!-- Children Results -->
+                    <div id="children-results" class="children-results-detail">
+                        <!-- Child results will be added dynamically -->
+                    </div>
+                    
+                    <!-- Schedule Breakdown -->
+                    <div id="schedule-breakdown-section" class="schedule-breakdown-detail">
+                        <!-- Schedule breakdown will be added dynamically -->
+                    </div>
+                    
+                    <!-- Activity Test Info -->
+                    <div class="activity-test-detail">
+                        <h4>Activity Test Results</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Childcare Cost as % of Income:</span>
+                                <span class="detail-value" id="result-cost-percentage">0%</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Net Annual Income (after childcare):</span>
+                                <span class="detail-value" id="result-net-income">$0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Charts Section -->
+            <section id="charts-section" class="detail-panel charts-panel" style="display: none;">
+                <div class="charts-header">
+                    <h3 class="detail-panel-title">Visual Comparison</h3>
+                    <button type="button" id="toggle-chart-btn" class="btn btn-secondary btn-small">
+                        Show Charts
+                    </button>
+                </div>
+                <div id="charts-container" class="charts-container" style="display: none;">
+                    <div class="chart-wrapper">
+                        <div id="bar-chart-container" class="chart-container"></div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <div id="pie-chart-container" class="chart-container"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Full Scenario Table (for "All Scenarios") -->
+            <section id="full-table-section" class="detail-panel" style="display: none;">
+                <h3 class="detail-panel-title">All Scenarios Comparison</h3>
+                <div class="table-controls">
+                    <label for="scenario-sort">Sort by:</label>
+                    <select id="scenario-sort" class="form-control">
+                        <option value="netIncome">Net Income (Highest)</option>
+                        <option value="outOfPocket">Out-of-Pocket (Lowest)</option>
+                        <option value="subsidy">Subsidy (Highest)</option>
+                        <option value="workDays">Work Days</option>
+                    </select>
+                </div>
+                <div id="full-comparison-table-container">
+                    <!-- Full table will be inserted here -->
+                </div>
+            </section>
+        </div>
+        
+        <!-- Privacy Notice -->
+        <div class="privacy-notice compact">
+            <p>🔒 Your data stays on your device (Local Storage). Never sold or stored on our servers.</p>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <p class="footer-disclaimer">
+                <strong>Disclaimer:</strong> Estimates only. Visit 
+                <a href="https://www.servicesaustralia.gov.au/child-care-subsidy" target="_blank" rel="noopener noreferrer">Services Australia</a> for official information.
+            </p>
+            <p class="footer-copyright">&copy; 2026 CCS Calculator</p>
+        </div>
+    </footer>
+    
+    <script type="module" src="app.js"></script>
+</body>
+</html>
