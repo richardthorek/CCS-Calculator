@@ -1,29 +1,253 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-AU">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCS Calculator</title>
-    <meta name="description" content="Carbon Capture and Storage Calculator">
+    <title>Child Care Subsidy Calculator - Australia</title>
+    <meta name="description" content="Calculate your Child Care Subsidy (CCS) entitlements and out-of-pocket childcare costs in Australia">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>CCS Calculator</h1>
-        <p>Carbon Capture and Storage Calculator</p>
+        <div class="header-content">
+            <h1>Child Care Subsidy Calculator</h1>
+            <p class="subtitle">Estimate your CCS entitlements and childcare costs</p>
+            <p class="disclaimer">Based on 2025-26 Australian Government rates</p>
+        </div>
     </header>
     
     <main>
         <div class="container">
-            <p>Welcome to the CCS Calculator. This application is currently under development.</p>
-            <p>Please check back soon for the full calculator functionality.</p>
+            <!-- Calculator Form -->
+            <form id="ccs-calculator-form" class="calculator-form" novalidate>
+                
+                <!-- Parent 1 Section -->
+                <section class="form-section" id="parent1-section">
+                    <h2 class="section-title">
+                        <span class="section-number">1</span>
+                        Parent 1 Income & Work Details
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label for="parent1-income">
+                            Annual Income (AUD)
+                            <span class="required" aria-label="required">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">$</span>
+                            <input 
+                                type="number" 
+                                id="parent1-income" 
+                                name="parent1-income"
+                                min="0" 
+                                max="10000000"
+                                step="1000"
+                                required
+                                aria-required="true"
+                                aria-describedby="parent1-income-error"
+                            >
+                        </div>
+                        <span class="error-message" id="parent1-income-error" role="alert"></span>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="parent1-days">
+                                Work Days per Week
+                                <span class="required" aria-label="required">*</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="parent1-days" 
+                                name="parent1-days"
+                                min="0" 
+                                max="5"
+                                step="1"
+                                required
+                                aria-required="true"
+                                aria-describedby="parent1-days-error"
+                            >
+                            <span class="error-message" id="parent1-days-error" role="alert"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="parent1-hours">
+                                Hours per Day
+                                <span class="required" aria-label="required">*</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="parent1-hours" 
+                                name="parent1-hours"
+                                min="0" 
+                                max="24"
+                                step="0.5"
+                                required
+                                aria-required="true"
+                                aria-describedby="parent1-hours-error"
+                            >
+                            <span class="error-message" id="parent1-hours-error" role="alert"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Parent 2 Section -->
+                <section class="form-section" id="parent2-section">
+                    <h2 class="section-title">
+                        <span class="section-number">2</span>
+                        Parent 2 Income & Work Details
+                        <span class="optional-label">(Optional)</span>
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label for="parent2-income">Annual Income (AUD)</label>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">$</span>
+                            <input 
+                                type="number" 
+                                id="parent2-income" 
+                                name="parent2-income"
+                                min="0" 
+                                max="10000000"
+                                step="1000"
+                                aria-describedby="parent2-income-error"
+                            >
+                        </div>
+                        <span class="error-message" id="parent2-income-error" role="alert"></span>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="parent2-days">Work Days per Week</label>
+                            <input 
+                                type="number" 
+                                id="parent2-days" 
+                                name="parent2-days"
+                                min="0" 
+                                max="5"
+                                step="1"
+                                aria-describedby="parent2-days-error"
+                            >
+                            <span class="error-message" id="parent2-days-error" role="alert"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="parent2-hours">Hours per Day</label>
+                            <input 
+                                type="number" 
+                                id="parent2-hours" 
+                                name="parent2-hours"
+                                min="0" 
+                                max="24"
+                                step="0.5"
+                                aria-describedby="parent2-hours-error"
+                            >
+                            <span class="error-message" id="parent2-hours-error" role="alert"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Children Section -->
+                <section class="form-section" id="children-section">
+                    <h2 class="section-title">
+                        <span class="section-number">3</span>
+                        Children & Childcare Details
+                    </h2>
+                    
+                    <div id="children-container" role="list">
+                        <!-- Child inputs will be added dynamically -->
+                    </div>
+                    
+                    <button 
+                        type="button" 
+                        id="add-child-btn" 
+                        class="btn btn-secondary"
+                        aria-label="Add another child"
+                    >
+                        + Add Child
+                    </button>
+                </section>
+
+                <!-- Calculate Button -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="calculate-btn">
+                        Calculate CCS
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="reset-btn">
+                        Reset Form
+                    </button>
+                </div>
+            </form>
+
+            <!-- Results Section -->
+            <section class="results-section" id="results-section" aria-live="polite" aria-atomic="true" hidden>
+                <h2 class="results-title">Your CCS Estimate</h2>
+                
+                <!-- Summary Cards -->
+                <div class="results-summary">
+                    <div class="summary-card">
+                        <div class="card-label">Household Income</div>
+                        <div class="card-value" id="result-household-income">$0</div>
+                        <div class="card-sublabel">Adjusted annual income</div>
+                    </div>
+                    
+                    <div class="summary-card highlight">
+                        <div class="card-label">Weekly Subsidy</div>
+                        <div class="card-value" id="result-weekly-subsidy">$0</div>
+                        <div class="card-sublabel">Government contribution</div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="card-label">Weekly Out-of-Pocket</div>
+                        <div class="card-value" id="result-weekly-gap">$0</div>
+                        <div class="card-sublabel">Your cost</div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="card-label">Net Annual Income</div>
+                        <div class="card-value" id="result-net-income">$0</div>
+                        <div class="card-sublabel">After childcare costs</div>
+                    </div>
+                </div>
+
+                <!-- Detailed Results -->
+                <div class="results-details">
+                    <h3>Breakdown by Child</h3>
+                    <div id="children-results" class="children-results">
+                        <!-- Child results will be added dynamically -->
+                    </div>
+                    
+                    <div class="activity-test-info">
+                        <h3>Activity Test Results</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Subsidised Hours per Week:</span>
+                                <span class="info-value" id="result-subsidised-hours">0</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Childcare Cost as % of Income:</span>
+                                <span class="info-value" id="result-cost-percentage">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
     
     <footer>
-        <p>&copy; 2026 CCS Calculator</p>
+        <div class="footer-content">
+            <p class="footer-disclaimer">
+                <strong>Disclaimer:</strong> This calculator provides estimates only. 
+                Actual subsidy amounts may vary. Please visit 
+                <a href="https://www.servicesaustralia.gov.au/child-care-subsidy" target="_blank" rel="noopener noreferrer">
+                    Services Australia
+                </a> for official information.
+            </p>
+            <p class="footer-copyright">&copy; 2026 CCS Calculator</p>
+        </div>
     </footer>
     
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
