@@ -274,6 +274,17 @@ main {
     }
 }
 
+/* Mobile sticky results - pins after header scroll */
+@media (max-width: 1023px) {
+    .live-results-section {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        /* Add subtle shadow when sticky to create depth */
+        box-shadow: var(--shadow-lg), 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+}
+
 /* ===== Card Styles - Clean & Modern ===== */
 .card {
     background: var(--color-bg-primary);
@@ -1811,4 +1822,47 @@ footer {
 .comparison-table-wrapper table {
     min-width: 100%;
     width: max-content;
+}
+
+/* ===== Toast Notifications ===== */
+/* Ensure notifications appear above sticky elements */
+.notification-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--color-success);
+    color: white;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xl);
+    z-index: 200; /* Above sticky results (100) */
+    opacity: 0;
+    transform: translateX(400px);
+    transition: all var(--transition-normal);
+    max-width: 320px;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+.notification-toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.notification-toast.notification-error {
+    background: var(--color-error);
+}
+
+.notification-toast.notification-info {
+    background: var(--color-primary);
+}
+
+/* Mobile notification positioning */
+@media (max-width: 768px) {
+    .notification-toast {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
 }
