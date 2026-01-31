@@ -2547,6 +2547,80 @@ footer {
     color: var(--color-success-light);
 }
 
+/* Key figures in dark mode - Fix accessibility issues */
+.dark-mode .key-figure {
+    background: var(--color-bg-tertiary);
+}
+
+.dark-mode .key-figure.primary {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.15) 100%);
+    border-color: var(--color-success);
+}
+
+.dark-mode .key-figure.primary::after {
+    background: var(--color-success);
+    color: var(--color-text-inverse);
+}
+
+.dark-mode .key-figure.secondary {
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(6, 182, 212, 0.15) 100%);
+    border-color: var(--color-primary);
+}
+
+.dark-mode .key-figure.primary .figure-value {
+    color: var(--color-success-light);
+}
+
+.dark-mode .key-figure.secondary .figure-value {
+    color: var(--color-primary);
+}
+
+.dark-mode .figure-label {
+    color: var(--color-text-secondary);
+}
+
+/* Live results header in dark mode */
+.dark-mode .live-results-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: var(--color-text-inverse);
+}
+
+/* Summary items in dark mode */
+.dark-mode .summary-item {
+    background: var(--color-bg-tertiary);
+}
+
+.dark-mode .summary-label {
+    color: var(--color-text-muted);
+}
+
+.dark-mode .summary-value {
+    color: var(--color-text-primary);
+}
+
+/* Subsidy breakdown in dark mode */
+.dark-mode .subsidy-breakdown {
+    background: var(--color-bg-tertiary);
+    border-left-color: var(--color-primary);
+}
+
+.dark-mode .breakdown-title {
+    color: var(--color-text-secondary);
+}
+
+.dark-mode .breakdown-label {
+    color: var(--color-text-secondary);
+}
+
+.dark-mode .breakdown-value {
+    color: var(--color-text-primary);
+}
+
+.dark-mode .breakdown-item.withholding {
+    border-top-color: var(--color-border);
+    border-bottom-color: var(--color-border);
+}
+
 /* ===== Accessibility: Reduced Motion ===== */
 /* Respect user's motion preferences for accessibility */
 @media (prefers-reduced-motion: reduce) {
