@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Generate common scenarios button
     const generateCommonBtn = document.getElementById('generate-common-scenarios-btn');
     if (generateCommonBtn) {
-      generateAllBtn.addEventListener('click', () => {
+      generateCommonBtn.addEventListener('click', () => {
         if (currentFormData) {
           generateAndDisplayScenarios('common');
         }
