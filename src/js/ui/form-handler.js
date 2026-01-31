@@ -1,12 +1,18 @@
 /**
  * Form Handler Module
  * Handles form interactions, validation, and calculation integration
+ * Includes real-time event-driven updates with debouncing
  */
 
 import { calculateAdjustedIncome, calculateHouseholdIncome } from '../calculations/income.js';
 import { calculateStandardRate, calculateHigherRate } from '../calculations/subsidy-rate.js';
 import { calculateSubsidisedHours } from '../calculations/activity-test.js';
 import { calculateEffectiveHourlyRate, calculateSubsidyPerHour, calculateWeeklyCosts } from '../calculations/costs.js';
+import { debounce } from '../utils/debounce.js';
+
+// Cache for calculation results to optimize performance
+let lastFormData = null;
+let lastResults = null;
 
 /**
  * Initialize the calculator form
@@ -19,12 +25,151 @@ export function initializeForm() {
   // Add first child by default
   addChild();
   
-  // Event listeners
+  // Event listeners for form submission
   addChildBtn.addEventListener('click', addChild);
   form.addEventListener('submit', handleFormSubmit);
   resetBtn.addEventListener('click', handleReset);
   
-  console.log('Form initialized');
+  // Add real-time event listeners to all inputs (debounced)
+  setupRealtimeUpdates();
+  
+  console.log('Form initialized with real-time updates');
+}
+
+/**
+ * Setup real-time event listeners for all form inputs
+ */
+function setupRealtimeUpdates() {
+  const form = document.getElementById('ccs-calculator-form');
+  
+  // Create debounced calculation function
+  const debouncedCalculate = debounce(handleRealtimeCalculation, 500);
+  
+  // Listen to input events on the form (using event delegation)
+  form.addEventListener('input', (event) => {
+    const target = event.target;
+    
+    // Only trigger for input fields, not buttons
+    if (target.tagName === 'INPUT' || target.tagName === 'SELECT') {
+      // Show calculating indicator
+      showCalculatingIndicator();
+      
+      // Trigger debounced calculation
+      debouncedCalculate();
+    }
+  });
+  
+  // Also listen to change events for select elements
+  form.addEventListener('change', (event) => {
+    const target = event.target;
+    
+    if (target.tagName === 'SELECT') {
+      showCalculatingIndicator();
+      debouncedCalculate();
+    }
+  });
+}
+
+/**
+ * Handle real-time calculation (called by debounced event handler)
+ */
+function handleRealtimeCalculation() {
+  // Clear previous errors
+  clearErrors();
+  
+  // Collect form data
+  const formData = collectFormData();
+  
+  // Only calculate if data has changed
+  if (isFormDataEqual(formData, lastFormData)) {
+    hideCalculatingIndicator();
+    return;
+  }
+  
+  // Validate silently (don't show errors for incomplete forms during typing)
+  if (!isFormDataComplete(formData)) {
+    hideCalculatingIndicator();
+    return;
+  }
+  
+  // Full validation
+  if (!validateFormData(formData)) {
+    hideCalculatingIndicator();
+    return;
+  }
+  
+  // Calculate and display results
+  try {
+    const results = calculateCCS(formData);
+    
+    // Cache results
+    lastFormData = formData;
+    lastResults = results;
+    
+    displayResults(results);
+    
+    // Hide calculating indicator
+    hideCalculatingIndicator();
+    
+    // Dispatch event for scenario generation
+    document.dispatchEvent(new CustomEvent('calculationComplete', {
+      detail: { formData, results }
+    }));
+  } catch (error) {
+    console.error('Calculation error:', error);
+    hideCalculatingIndicator();
+  }
+}
+
+/**
+ * Check if form data is complete (has all required fields)
+ */
+function isFormDataComplete(formData) {
+  // Check parent 1 required fields
+  if (!formData.parent1.income || formData.parent1.income <= 0) return false;
+  if (formData.parent1.days === null || formData.parent1.days === undefined) return false;
+  if (formData.parent1.hours === null || formData.parent1.hours === undefined) return false;
+  
+  // Check if at least one child is added
+  if (formData.children.length === 0) return false;
+  
+  // Check all children have required fields
+  for (const child of formData.children) {
+    if (child.age === null || child.age === undefined) return false;
+    if (child.hoursPerWeek === null || child.hoursPerWeek === undefined) return false;
+    if (child.providerFee === null || child.providerFee === undefined) return false;
+  }
+  
+  return true;
+}
+
+/**
+ * Check if two form data objects are equal
+ */
+function isFormDataEqual(data1, data2) {
+  if (!data1 || !data2) return false;
+  
+  return JSON.stringify(data1) === JSON.stringify(data2);
+}
+
+/**
+ * Show calculating indicator
+ */
+function showCalculatingIndicator() {
+  const resultsSection = document.getElementById('results-section');
+  if (resultsSection && !resultsSection.hidden) {
+    resultsSection.classList.add('calculating');
+  }
+}
+
+/**
+ * Hide calculating indicator
+ */
+function hideCalculatingIndicator() {
+  const resultsSection = document.getElementById('results-section');
+  if (resultsSection) {
+    resultsSection.classList.remove('calculating');
+  }
 }
 
 /**
