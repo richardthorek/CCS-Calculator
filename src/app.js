@@ -20,6 +20,15 @@ import {
   initializeExportHandlers,
   loadFromURL
 } from './js/ui/export-handler.js';
+import {
+  initializeViewToggle
+} from './js/ui/view-toggle.js';
+import {
+  initializePresets
+} from './js/ui/presets.js';
+import {
+  initializeTooltips
+} from './js/ui/tooltips.js';
 
 // Global state for scenarios
 let currentScenarios = [];
@@ -39,6 +48,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize export handlers (print, PDF, share link)
     initializeExportHandlers();
+    
+    // Initialize view toggle (weekly/annual)
+    initializeViewToggle();
+    
+    // Initialize scenario presets
+    initializePresets();
+    
+    // Initialize help tooltips
+    initializeTooltips();
     
     // Check if URL contains shared data and load it
     const urlData = loadFromURL();

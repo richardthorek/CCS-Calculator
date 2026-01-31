@@ -574,8 +574,15 @@ function displayResults(results) {
   
   // Update summary cards
   document.getElementById('result-household-income').textContent = formatCurrency(results.householdIncome);
-  document.getElementById('result-weekly-subsidy').textContent = formatCurrency(results.totalWeeklySubsidy);
-  document.getElementById('result-weekly-gap').textContent = formatCurrency(results.totalWeeklyGap);
+  
+  const weeklySubsidyEl = document.getElementById('result-weekly-subsidy');
+  weeklySubsidyEl.textContent = formatCurrency(results.totalWeeklySubsidy);
+  weeklySubsidyEl.dataset.weeklyValue = results.totalWeeklySubsidy;
+  
+  const weeklyGapEl = document.getElementById('result-weekly-gap');
+  weeklyGapEl.textContent = formatCurrency(results.totalWeeklyGap);
+  weeklyGapEl.dataset.weeklyValue = results.totalWeeklyGap;
+  
   document.getElementById('result-net-income').textContent = formatCurrency(results.netAnnualIncome);
   
   // Update activity test info
