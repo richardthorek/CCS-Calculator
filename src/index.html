@@ -245,6 +245,31 @@
                         Children & Childcare Details
                     </h2>
                     
+                    <div class="children-controls">
+                        <div class="apply-all-control" id="apply-all-control" style="display: none;">
+                            <label for="apply-all-days">Apply same days of care to all children:</label>
+                            <div class="apply-all-row">
+                                <input 
+                                    type="number" 
+                                    id="apply-all-days" 
+                                    name="apply-all-days"
+                                    min="0" 
+                                    max="5"
+                                    step="1"
+                                    placeholder="e.g., 4"
+                                    class="form-control-small"
+                                >
+                                <button 
+                                    type="button" 
+                                    id="apply-all-btn" 
+                                    class="btn btn-secondary btn-small"
+                                >
+                                    Apply to All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div id="children-container" role="list">
                         <!-- Child inputs will be added dynamically -->
                     </div>
