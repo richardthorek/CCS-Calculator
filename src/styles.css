@@ -1378,6 +1378,10 @@ select.valid:focus {
     padding: var(--spacing-lg);
 }
 
+.charts-container.hidden {
+    display: none;
+}
+
 .chart-wrapper {
     background: var(--color-bg-tertiary);
     border-radius: var(--radius-md);
@@ -1478,6 +1482,7 @@ footer {
     font-size: var(--font-size-xs);
     color: var(--color-text-secondary);
     margin-top: var(--spacing-md);
+    text-align: center;
 }
 
 .gov-source-badge::before {
@@ -1697,4 +1702,43 @@ footer {
 
 .pulse {
     animation: pulse 2s ease-in-out infinite;
+}
+
+/* ===== Utility Classes ===== */
+/* Visibility utilities - used instead of inline styles for CSP compliance */
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    display: block !important;
+}
+
+/* Scrollable container utilities */
+.scrollable-x {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.scrollable-y {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.scrollable {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Table wrapper for horizontal scrolling */
+.comparison-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: var(--spacing-md) 0;
+}
+
+/* Ensure tables don't break layout */
+.comparison-table-wrapper table {
+    min-width: 100%;
+    width: max-content;
 }

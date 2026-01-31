@@ -10,17 +10,19 @@
 export function printPage() {
   // Ensure all charts are visible before printing
   const chartsContainer = document.getElementById('charts-container');
-  if (chartsContainer && chartsContainer.style.display === 'none') {
+  if (chartsContainer && chartsContainer.classList.contains('hidden')) {
     // Temporarily show charts for printing
-    const originalDisplay = chartsContainer.style.display;
-    chartsContainer.style.display = 'grid';
+    const wasHidden = true;
+    chartsContainer.classList.remove('hidden');
     
     // Print
     window.print();
     
     // Restore original state after a delay
     setTimeout(() => {
-      chartsContainer.style.display = originalDisplay;
+      if (wasHidden) {
+        chartsContainer.classList.add('hidden');
+      }
     }, 100);
   } else {
     window.print();

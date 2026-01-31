@@ -78,7 +78,7 @@
                                     <span class="input-prefix">$</span>
                                     <input type="number" id="parent1-income" name="parent1-income" min="0" max="10000000" step="1000" required placeholder="100,000">
                                 </div>
-                                <div id="parent1-adjusted-income-display" class="adjusted-income-mini" style="display: none;">
+                                <div id="parent1-adjusted-income-display" class="adjusted-income-mini hidden">
                                     Adjusted: <span id="parent1-adjusted-income-value"></span>
                                     <span id="parent1-income-percentage"></span>
                                 </div>
@@ -123,7 +123,7 @@
                                     <span class="input-prefix">$</span>
                                     <input type="number" id="parent2-income" name="parent2-income" min="0" max="10000000" step="1000" placeholder="80,000">
                                 </div>
-                                <div id="parent2-adjusted-income-display" class="adjusted-income-mini" style="display: none;">
+                                <div id="parent2-adjusted-income-display" class="adjusted-income-mini hidden">
                                     Adjusted: <span id="parent2-adjusted-income-value"></span>
                                     <span id="parent2-income-percentage"></span>
                                 </div>
@@ -175,7 +175,7 @@
                     </div>
                     
                     <!-- Override days of care for all children -->
-                    <div class="apply-all-control" id="apply-all-control" style="display: none;">
+                    <div class="apply-all-control hidden" id="apply-all-control">
                         <label for="apply-all-days" class="apply-all-label">
                             <strong>Override all children's care days:</strong>
                             <span class="help-text">Set the same number of care days for all children</span>
@@ -268,7 +268,7 @@
         <!-- DETAILED SECTION: Below the fold -->
         <div class="details-section">
             <!-- Detailed Child Results -->
-            <section class="detail-panel" id="detailed-results-section" style="display: none;">
+            <section class="detail-panel hidden" id="detailed-results-section">
                 <h3 class="detail-panel-title">Detailed Breakdown</h3>
                 
                 <div class="detail-panel-content">
@@ -300,14 +300,14 @@
             </section>
             
             <!-- Charts Section -->
-            <section id="charts-section" class="detail-panel charts-panel" style="display: none;">
+            <section id="charts-section" class="detail-panel charts-panel hidden">
                 <div class="charts-header">
                     <h3 class="detail-panel-title">Visual Comparison</h3>
                     <button type="button" id="toggle-chart-btn" class="btn btn-secondary btn-small">
                         Show Charts
                     </button>
                 </div>
-                <div id="charts-container" class="charts-container" style="display: none;">
+                <div id="charts-container" class="charts-container hidden">
                     <div class="chart-wrapper">
                         <div id="bar-chart-container" class="chart-container"></div>
                     </div>
@@ -318,7 +318,7 @@
             </section>
             
             <!-- Full Scenario Table (for "All Scenarios") -->
-            <section id="full-table-section" class="detail-panel" style="display: none;">
+            <section id="full-table-section" class="detail-panel hidden">
                 <h3 class="detail-panel-title">All Scenarios Comparison</h3>
                 <div class="table-controls">
                     <label for="scenario-sort">Sort by:</label>
@@ -341,7 +341,7 @@
         </div>
         
         <!-- Government Source Badge -->
-        <div class="gov-source-badge" style="text-align: center; margin-top: var(--spacing-md);">
+        <div class="gov-source-badge">
             Rates verified against <a href="https://www.education.gov.au/early-childhood/child-care-subsidy" target="_blank" rel="noopener noreferrer">Department of Education</a>
         </div>
     </main>

@@ -148,7 +148,7 @@ function updateParentAdjustedIncome(parentId) {
   
   // Only show if income is entered
   if (income <= 0) {
-    displayElement.style.display = 'none';
+    displayElement.classList.add('hidden');
     return;
   }
   
@@ -172,7 +172,7 @@ function updateParentAdjustedIncome(parentId) {
   }
   
   // Show the display
-  displayElement.style.display = 'block';
+  displayElement.classList.remove('hidden');
 }
 
 /**
@@ -1159,7 +1159,7 @@ function addChild() {
     </div>
     
     <!-- Hourly Rate Fields (hidden by default) -->
-    <div class="hourly-rate-fields" data-child-index="${childIndex}" style="display: none;">
+    <div class="hourly-rate-fields hidden" data-child-index="${childIndex}">
       <div class="form-row">
         <div class="form-group">
           <label for="child-${childIndex}-hourly-fee">
@@ -1233,8 +1233,8 @@ function toggleFeeTypeFields(childIndex) {
   const selectedType = document.querySelector(`input[name="child-${childIndex}-fee-type"]:checked`).value;
   
   if (selectedType === 'daily') {
-    dailyFields.style.display = 'block';
-    hourlyFields.style.display = 'none';
+    dailyFields.classList.remove('hidden');
+    hourlyFields.classList.add('hidden');
     
     // Make daily fields required, hourly optional
     dailyFields.querySelectorAll('input').forEach(input => {
@@ -1246,8 +1246,8 @@ function toggleFeeTypeFields(childIndex) {
       input.required = false;
     });
   } else {
-    dailyFields.style.display = 'none';
-    hourlyFields.style.display = 'block';
+    dailyFields.classList.add('hidden');
+    hourlyFields.classList.remove('hidden');
     
     // Make hourly fields required, daily optional
     hourlyFields.querySelectorAll('input').forEach(input => {
@@ -1303,9 +1303,9 @@ function updateApplyAllControlVisibility() {
   const applyAllControl = document.getElementById('apply-all-control');
   
   if (childCards.length > 1) {
-    applyAllControl.style.display = 'block';
+    applyAllControl.classList.remove('hidden');
   } else {
-    applyAllControl.style.display = 'none';
+    applyAllControl.classList.add('hidden');
   }
 }
 
