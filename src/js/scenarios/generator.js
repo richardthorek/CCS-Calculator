@@ -323,7 +323,27 @@ function createScenario(data) {
     
     // Calculate costs for each child
     const childResults = children.map((child, index) => {
-      const { age, careType, hoursPerWeek, providerFee } = child;
+      const { age, careType } = child;
+      
+      // Normalize child data - convert daily fees to hourly if needed
+      let providerFee, hoursPerWeek;
+      if (child.feeType === 'daily') {
+        // Convert daily fee to hourly (using hours per day)
+        const hoursPerDay = child.hoursPerDay || 10;
+        providerFee = child.dailyFee / hoursPerDay;
+        // Convert days of care to hours per week
+        const daysOfCare = child.daysOfCare || 5;
+        hoursPerWeek = daysOfCare * hoursPerDay;
+      } else {
+        // Hourly mode - use values directly
+        providerFee = child.providerFee;
+        hoursPerWeek = child.hoursPerWeek;
+      }
+      
+      // Skip if we don't have valid fee data
+      if (typeof providerFee !== 'number' || isNaN(providerFee) || providerFee <= 0) {
+        return null;
+      }
       
       // Calculate actual childcare hours needed based on parent availability
       const actualHoursNeeded = calculateChildcareHoursNeeded(
@@ -384,7 +404,12 @@ function createScenario(data) {
         subsidyPerHour,
         ...weeklyCosts,
       };
-    });
+    }).filter(result => result !== null);
+    
+    // If no valid children data, return null scenario
+    if (childResults.length === 0) {
+      return null;
+    }
     
     // Aggregate total costs
     const totalWeeklySubsidy = childResults.reduce((sum, child) => sum + child.weeklySubsidy, 0);

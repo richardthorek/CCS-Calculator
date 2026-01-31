@@ -1,0 +1,14 @@
+{
+  "name": "ccs-calculator-api",
+  "version": "1.0.0",
+  "description": "Azure Functions API for CCS Calculator",
+  "main": "src/functions/*.js",
+  "scripts": {
+    "start": "func start",
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.5.1"
+  },
+  "devDependencies": {}
+}
