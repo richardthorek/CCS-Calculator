@@ -2013,6 +2013,185 @@ footer {
     -webkit-overflow-scrolling: touch;
 }
 
+/* Screen reader only text */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ===== Collapsible Sections ===== */
+/* Collapse/expand toggle button */
+.collapse-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-left: auto; /* Push to right */
+    min-height: 32px; /* Touch-friendly */
+}
+
+.collapse-toggle-btn:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.collapse-toggle-btn:focus {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: 2px;
+}
+
+.collapse-toggle-btn:active {
+    transform: translateY(0);
+}
+
+.collapse-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* Section summary (shown when collapsed) */
+.section-summary {
+    padding: var(--spacing-md);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+    margin-top: var(--spacing-md);
+    animation: fadeIn var(--transition-normal);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+}
+
+/* On mobile, stack summary items */
+@media (max-width: 480px) {
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.summary-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+}
+
+.summary-label {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+.summary-value {
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.summary-value-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 120px;
+}
+
+.summary-empty {
+    color: var(--color-text-muted);
+    font-style: italic;
+    font-size: var(--font-size-sm);
+}
+
+/* Collapsed state styling */
+.form-section.collapsed,
+.child-card.collapsed {
+    opacity: 0.9;
+}
+
+.form-section.collapsed:hover,
+.child-card.collapsed:hover {
+    opacity: 1;
+}
+
+/* Section content wrapper */
+.section-content,
+.child-card-content {
+    animation: expandSection var(--transition-normal) ease-out;
+}
+
+@keyframes expandSection {
+    from {
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+    }
+    to {
+        opacity: 1;
+        max-height: 2000px;
+        overflow: visible;
+    }
+}
+
+/* Desktop: Always show collapse buttons but don't auto-collapse */
+@media (min-width: 1024px) {
+    .collapse-toggle-btn {
+        opacity: 0.8;
+    }
+    
+    .collapse-toggle-btn:hover {
+        opacity: 1;
+    }
+}
+
+/* Mobile/Tablet: Make collapse buttons more prominent */
+@media (max-width: 1023px) {
+    .collapse-toggle-btn {
+        opacity: 1;
+        font-size: var(--font-size-xs);
+        padding: 6px 10px;
+    }
+    
+    .summary-grid {
+        gap: var(--spacing-xs);
+    }
+    
+    .summary-item {
+        font-size: 0.8125rem;
+    }
+}
+
 /* ===== Comparison Table Styles ===== */
 /* Table wrapper for horizontal scrolling */
 .comparison-table-wrapper {

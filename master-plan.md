@@ -496,6 +496,41 @@ All four core calculation modules have been implemented with full test coverage:
 - Consistent badge design for "Best" indicators
 - Same button styling patterns throughout
 
+### Enhancement: Collapsible UI for Mobile/Tablet (January 2026) ✅ COMPLETE
+**Goal:** Reduce vertical scrolling on mobile/tablet by collapsing parent and child sections after data entry
+**Status:** COMPLETE (Completed: January 31, 2026)
+
+- [x] Create collapsible sections module
+  - [x] Toggle buttons with clear labels ("Collapse" / "Edit")
+  - [x] ARIA attributes for accessibility
+  - [x] Keyboard navigation support (Enter/Space)
+  - [x] Screen reader announcements
+- [x] Implement parent section collapse
+  - [x] Auto-collapse on mobile/tablet after income entry
+  - [x] Compact summary showing income and schedule
+  - [x] Manual collapse option on desktop
+- [x] Implement child card collapse
+  - [x] Auto-collapse on mobile/tablet after age entry
+  - [x] Compact summary showing age, type, fee, days
+  - [x] Manual collapse option on desktop
+- [x] Responsive behavior
+  - [x] Mobile (≤1023px): Auto-collapse after data entry
+  - [x] Desktop (≥1024px): Always expanded, optional collapse
+- [x] Accessibility features
+  - [x] Full keyboard navigation
+  - [x] ARIA live regions for state changes
+  - [x] Touch-friendly button sizes (32px min)
+- [x] Documentation
+  - [x] Feature documentation with screenshots
+  - [x] Mobile, tablet, and desktop views captured
+
+**Files Modified:**
+- `src/js/ui/collapsible-sections.js` - New module for collapse functionality
+- `src/app.js` - Initialize collapsible sections
+- `src/styles.css` - Added CSS for collapsible UI (170+ lines)
+
+**Result:** Significantly reduced vertical scrolling on mobile/tablet while maintaining full accessibility
+
 ### Phase 6: Persist User Inputs & Scenarios Using Local Storage 🎯 NEXT
 **Goal:** Automatically save and restore user data locally in the browser
 **Status:** NOT STARTED
