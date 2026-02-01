@@ -108,9 +108,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize collapsible sections for mobile/tablet
     initializeAllCollapses();
     
-    // Initialize theme toggle (Dark Mode)
-    initializeThemeToggle();
-    
     // Check if URL contains shared data and load it (Phase 7)
     const urlData = loadFromURL();
     if (urlData) {
