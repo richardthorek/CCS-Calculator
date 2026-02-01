@@ -160,10 +160,10 @@ function isChildCardComplete(childIndex) {
   // Parse basic values
   const age = parseInt(ageInput.value) || 0;
   const careType = careTypeSelect.value;
-  const daysOfCare = parseFloat(daysOfCareInput.value);
+  const daysOfCare = parseFloat(daysOfCareInput.value) || 0;
   
   // Age must be > 0, care type must be selected, days must be 0-5
-  if (age <= 0 || !careType || isNaN(daysOfCare) || daysOfCare < 0 || daysOfCare > 5) {
+  if (age <= 0 || !careType || daysOfCare < 0 || daysOfCare > 5) {
     return false;
   }
   
@@ -357,18 +357,15 @@ export function initializeParentCollapse(parentNumber) {
     }
   });
   
-  // Listen for input changes to update summary
-  const inputs = section.querySelectorAll('input, select');
-  inputs.forEach(input => {
+  // Listen for input changes to update summary and handle auto-collapse
+  const allInputs = section.querySelectorAll('input, select');
+  allInputs.forEach(input => {
+    // Update summary on change
     input.addEventListener('change', () => {
       summary.innerHTML = getParentSummary(parentNumber);
     });
-  });
-  
-  // Auto-collapse on mobile/tablet after all required data is entered
-  // Listen to all inputs in the parent section
-  const allInputs = section.querySelectorAll('input, select');
-  allInputs.forEach(input => {
+    
+    // Auto-collapse on mobile/tablet after all required data is entered
     input.addEventListener('blur', () => {
       // Only auto-collapse if section is complete and on mobile/tablet
       if (isParentSectionComplete(parentNumber) && isMobileOrTablet()) {
@@ -444,18 +441,15 @@ export function initializeChildCollapse(childCard) {
     }
   });
   
-  // Listen for input changes to update summary
-  const inputs = childCard.querySelectorAll('input, select');
-  inputs.forEach(input => {
+  // Listen for input changes to update summary and handle auto-collapse
+  const allInputs = childCard.querySelectorAll('input, select');
+  allInputs.forEach(input => {
+    // Update summary on change
     input.addEventListener('change', () => {
       summary.innerHTML = getChildSummary(childIndex);
     });
-  });
-  
-  // Auto-collapse on mobile/tablet after all required data is entered
-  // Listen to all inputs in the child card
-  const allInputs = childCard.querySelectorAll('input, select');
-  allInputs.forEach(input => {
+    
+    // Auto-collapse on mobile/tablet after all required data is entered
     input.addEventListener('blur', () => {
       // Only auto-collapse if card is complete and on mobile/tablet
       if (isChildCardComplete(childIndex) && isMobileOrTablet()) {
