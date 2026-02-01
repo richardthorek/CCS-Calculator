@@ -2027,28 +2027,25 @@ footer {
 }
 
 /* ===== Collapsible Sections ===== */
-/* Collapse/expand toggle button */
+/* Collapse/expand toggle button - small twisty icon */
 .collapse-toggle-btn {
     display: inline-flex;
     align-items: center;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    background: var(--color-primary);
-    color: var(--color-text-inverse);
+    justify-content: center;
+    padding: 4px;
+    background: transparent;
+    color: var(--color-text-secondary);
     border: none;
     border-radius: var(--radius-sm);
-    font-size: var(--font-size-sm);
-    font-weight: 600;
     cursor: pointer;
-    transition: all var(--transition-fast);
-    margin-left: auto; /* Push to right */
-    min-height: 32px; /* Touch-friendly */
+    transition: color var(--transition-fast), transform var(--transition-fast);
+    margin-left: auto;
+    min-width: 24px;
+    min-height: 24px;
 }
 
 .collapse-toggle-btn:hover {
-    background: var(--color-primary-dark);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
+    color: var(--color-primary);
 }
 
 .collapse-toggle-btn:focus {
@@ -2056,19 +2053,20 @@ footer {
     outline-offset: 2px;
 }
 
-.collapse-toggle-btn:active {
-    transform: translateY(0);
+.collapse-toggle-btn:focus:not(:focus-visible) {
+    outline: none;
 }
 
-.collapse-btn-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    font-size: var(--font-size-lg);
-    font-weight: 700;
-    line-height: 1;
+/* Chevron icon with rotation */
+.collapse-chevron {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+}
+
+/* Rotate chevron when collapsed */
+.collapse-toggle-btn[aria-expanded="false"] .collapse-chevron {
+    transform: rotate(-90deg);
 }
 
 /* Section summary (shown when collapsed) */
@@ -2164,10 +2162,10 @@ footer {
     }
 }
 
-/* Desktop: Always show collapse buttons but don't auto-collapse */
+/* Desktop: Subtle chevron */
 @media (min-width: 1024px) {
     .collapse-toggle-btn {
-        opacity: 0.8;
+        opacity: 0.6;
     }
     
     .collapse-toggle-btn:hover {
@@ -2175,12 +2173,17 @@ footer {
     }
 }
 
-/* Mobile/Tablet: Make collapse buttons more prominent */
+/* Mobile/Tablet: Slightly larger touch target */
 @media (max-width: 1023px) {
     .collapse-toggle-btn {
-        opacity: 1;
-        font-size: var(--font-size-xs);
-        padding: 6px 10px;
+        opacity: 0.8;
+        min-width: 32px;
+        min-height: 32px;
+    }
+    
+    .collapse-chevron {
+        width: 18px;
+        height: 18px;
     }
     
     .summary-grid {
