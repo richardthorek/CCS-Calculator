@@ -121,6 +121,88 @@ function parseNumericValue(input) {
 }
 
 /**
+ * Check if all required fields in a parent section are filled and valid
+ * @param {number} parentNumber - Parent number (1 or 2)
+ * @returns {boolean} True if all required fields are valid
+ */
+function isParentSectionComplete(parentNumber) {
+  const incomeInput = document.getElementById(`parent${parentNumber}-income`);
+  const daysInput = document.getElementById(`parent${parentNumber}-days`);
+  const hoursInput = document.getElementById(`parent${parentNumber}-hours`);
+  
+  // Check that all required inputs exist
+  if (!incomeInput || !daysInput || !hoursInput) return false;
+  
+  // Parse values
+  const income = parseNumericValue(incomeInput);
+  const days = parseFloat(daysInput.value) || 0;
+  const hours = parseFloat(hoursInput.value) || 0;
+  
+  // All fields must be filled with valid values
+  // Income must be > 0, days can be 0-5, hours must be > 0
+  return income > 0 && days >= 0 && days <= 5 && hours > 0;
+}
+
+/**
+ * Check if all required fields in a child card are filled and valid
+ * @param {number} childIndex - Child index
+ * @returns {boolean} True if all required fields are valid
+ */
+function isChildCardComplete(childIndex) {
+  const ageInput = document.getElementById(`child-${childIndex}-age`);
+  const careTypeSelect = document.getElementById(`child-${childIndex}-care-type`);
+  const feeTypeRadios = document.querySelectorAll(`input[name="child-${childIndex}-fee-type"]`);
+  const daysOfCareInput = document.getElementById(`child-${childIndex}-days-of-care`);
+  
+  // Check that all required inputs exist
+  if (!ageInput || !careTypeSelect || !daysOfCareInput) return false;
+  
+  // Parse basic values
+  const age = parseInt(ageInput.value) || 0;
+  const careType = careTypeSelect.value;
+  const daysOfCare = parseFloat(daysOfCareInput.value);
+  
+  // Age must be > 0, care type must be selected, days must be 0-5
+  if (age <= 0 || !careType || isNaN(daysOfCare) || daysOfCare < 0 || daysOfCare > 5) {
+    return false;
+  }
+  
+  // Determine which fee type is selected
+  let feeType = 'daily';
+  feeTypeRadios.forEach(radio => {
+    if (radio.checked) {
+      feeType = radio.value;
+    }
+  });
+  
+  // Check fee-specific fields based on fee type
+  if (feeType === 'daily') {
+    const dailyFeeInput = document.getElementById(`child-${childIndex}-daily-fee`);
+    const hoursPerDayInput = document.getElementById(`child-${childIndex}-hours-per-day`);
+    
+    if (!dailyFeeInput || !hoursPerDayInput) return false;
+    
+    const dailyFee = parseNumericValue(dailyFeeInput);
+    const hoursPerDay = parseFloat(hoursPerDayInput.value) || 0;
+    
+    // Daily fee must be > 0, hours per day must be > 0
+    return dailyFee > 0 && hoursPerDay > 0;
+  } else {
+    // Hourly fee type
+    const hourlyFeeInput = document.getElementById(`child-${childIndex}-hourly-fee`);
+    const hoursPerWeekInput = document.getElementById(`child-${childIndex}-hours-per-week`);
+    
+    if (!hourlyFeeInput || !hoursPerWeekInput) return false;
+    
+    const hourlyFee = parseNumericValue(hourlyFeeInput);
+    const hoursPerWeek = parseFloat(hoursPerWeekInput.value) || 0;
+    
+    // Hourly fee must be > 0, hours per week must be > 0
+    return hourlyFee > 0 && hoursPerWeek > 0;
+  }
+}
+
+/**
  * Get summary data for a parent section
  * @param {number} parentNumber - Parent number (1 or 2)
  * @returns {string} Summary HTML
@@ -283,22 +365,23 @@ export function initializeParentCollapse(parentNumber) {
     });
   });
   
-  // Auto-collapse on mobile/tablet after data entry (but only if inputs have values)
-  const incomeInput = document.getElementById(`parent${parentNumber}-income`);
-  if (incomeInput) {
-    incomeInput.addEventListener('blur', () => {
-      const hasValue = parseFloat(incomeInput.value) > 0;
-      if (hasValue && isMobileOrTablet()) {
+  // Auto-collapse on mobile/tablet after all required data is entered
+  // Listen to all inputs in the parent section
+  const allInputs = section.querySelectorAll('input, select');
+  allInputs.forEach(input => {
+    input.addEventListener('blur', () => {
+      // Only auto-collapse if section is complete and on mobile/tablet
+      if (isParentSectionComplete(parentNumber) && isMobileOrTablet()) {
         // Delay collapse slightly to allow user to continue entering data
         setTimeout(() => {
           const isExpanded = button.getAttribute('aria-expanded') === 'true';
           if (isExpanded) {
             toggleSection(section, button, content, summary);
           }
-        }, 500);
+        }, 800);
       }
     });
-  }
+  });
 }
 
 /**
@@ -369,22 +452,23 @@ export function initializeChildCollapse(childCard) {
     });
   });
   
-  // Auto-collapse on mobile/tablet after age is entered
-  const ageInput = document.getElementById(`child-${childIndex}-age`);
-  if (ageInput) {
-    ageInput.addEventListener('blur', () => {
-      const hasValue = parseInt(ageInput.value) > 0;
-      if (hasValue && isMobileOrTablet()) {
+  // Auto-collapse on mobile/tablet after all required data is entered
+  // Listen to all inputs in the child card
+  const allInputs = childCard.querySelectorAll('input, select');
+  allInputs.forEach(input => {
+    input.addEventListener('blur', () => {
+      // Only auto-collapse if card is complete and on mobile/tablet
+      if (isChildCardComplete(childIndex) && isMobileOrTablet()) {
         // Delay collapse to allow user to continue entering data
         setTimeout(() => {
           const isExpanded = button.getAttribute('aria-expanded') === 'true';
           if (isExpanded) {
             toggleSection(childCard, button, content, summary);
           }
-        }, 1000);
+        }, 800);
       }
     });
-  }
+  });
 }
 
 /**
