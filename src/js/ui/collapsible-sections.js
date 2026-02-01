@@ -26,9 +26,11 @@ function createCollapseButton(sectionId, labelCollapsed = 'Edit', labelExpanded 
   button.className = 'collapse-toggle-btn';
   button.setAttribute('aria-controls', sectionId);
   button.setAttribute('aria-expanded', 'true');
+  button.setAttribute('aria-label', 'Collapse section');
   button.dataset.labelCollapsed = labelCollapsed;
   button.dataset.labelExpanded = labelExpanded;
-  button.innerHTML = `<span class="collapse-btn-text">${labelExpanded}</span><span class="collapse-btn-icon">−</span>`;
+  // Chevron SVG icon that rotates
+  button.innerHTML = `<svg class="collapse-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   
   return button;
 }
@@ -60,20 +62,15 @@ function toggleSection(section, button, content, summary) {
   
   // Update button
   button.setAttribute('aria-expanded', newState.toString());
-  const text = button.querySelector('.collapse-btn-text');
-  const icon = button.querySelector('.collapse-btn-icon');
+  button.setAttribute('aria-label', newState ? 'Collapse section' : 'Expand section');
   
   if (newState) {
     // Expanding
-    text.textContent = button.dataset.labelExpanded;
-    icon.textContent = '−';
     content.classList.remove('hidden');
     summary.classList.add('hidden');
     section.classList.remove('collapsed');
   } else {
     // Collapsing
-    text.textContent = button.dataset.labelCollapsed;
-    icon.textContent = '+';
     content.classList.add('hidden');
     summary.classList.remove('hidden');
     section.classList.add('collapsed');

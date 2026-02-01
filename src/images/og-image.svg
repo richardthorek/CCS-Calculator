@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0891b2"/>
+      <stop offset="100%" style="stop-color:#0e7490"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+  <!-- Pattern overlay -->
+  <rect width="1200" height="630" fill="url(#bgGrad)" opacity="0.1"/>
+  <!-- Icon area -->
+  <circle cx="200" cy="315" r="120" fill="#ffffff" opacity="0.15"/>
+  <text x="200" y="365" text-anchor="middle" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="140" font-weight="700" fill="#ffffff">$</text>
+  <!-- Title -->
+  <text x="380" y="260" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="64" font-weight="700" fill="#ffffff">Child Care Subsidy</text>
+  <text x="380" y="340" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="64" font-weight="700" fill="#ffffff">Calculator</text>
+  <!-- Subtitle -->
+  <text x="380" y="420" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="32" fill="#ffffff" opacity="0.9">Australia 2025-26 · Free and Accurate</text>
+  <!-- Bottom tagline -->
+  <text x="380" y="520" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="26" fill="#ffffff" opacity="0.8">Estimate your subsidy, compare scenarios, plan your budget</text>
+  <!-- Decorative elements -->
+  <circle cx="1100" cy="100" r="60" fill="#ffffff" opacity="0.1"/>
+  <circle cx="1050" cy="530" r="80" fill="#ffffff" opacity="0.08"/>
+</svg>

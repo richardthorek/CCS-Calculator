@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0891b2"/>
+      <stop offset="100%" style="stop-color:#0e7490"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bgGrad)"/>
+  <!-- Dollar sign -->
+  <text x="256" y="320" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="280" font-weight="700" fill="#ffffff">$</text>
+  <!-- Child silhouette (simplified) -->
+  <circle cx="380" cy="140" r="45" fill="#ffffff" opacity="0.9"/>
+  <ellipse cx="380" cy="220" rx="35" ry="45" fill="#ffffff" opacity="0.9"/>
+</svg>
