@@ -19,6 +19,11 @@ All four core calculation modules have been implemented with full test coverage:
 
 ## Completed Features (Post-Phase 7)
 
+### Period Selector Styling Fix (2026-03)
+- ✅ Added CSS styles for button-based period selector controls (`.period-selector-buttons`, `.period-btn`)
+- ✅ Replaced outdated radio-input selectors with active/hover/focus-visible button states
+- ✅ Added responsive wrapping/layout behavior for smaller screens
+
 ### Real-Time Recalculation Reliability Fix (2026-03)
 - ✅ Expanded form-change comparison to include all calculation-relevant fields
   (childcare days, fee type values, withholding rate, and work day selections)
