@@ -19,6 +19,13 @@ All four core calculation modules have been implemented with full test coverage:
 
 ## Completed Features (Post-Phase 7)
 
+### Real-Time Recalculation Reliability Fix (2026-03)
+- ✅ Expanded form-change comparison to include all calculation-relevant fields
+  (childcare days, fee type values, withholding rate, and work day selections)
+- ✅ Updated event handling to trigger debounced recalculation on both `input` and `change`
+  for all form controls
+- ✅ Verified fix with full test suite (280 tests passing)
+
 ### Per-Person Effective Rate Analysis (2026-01)
 - ✅ Per-person effective childcare rate calculations (daily, weekly, monthly, annual)
 - ✅ Percentage of income comparison per parent

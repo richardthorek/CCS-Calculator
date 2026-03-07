@@ -87,35 +87,44 @@ function setupRealtimeUpdates() {
   
   // Create debounced save function
   const debouncedSave = debounce(saveCurrentState, 500);
+
+  const shouldHandleFieldChange = (target) => {
+    if (!target || !target.tagName) {
+      return false;
+    }
+
+    const tagName = target.tagName;
+    if (tagName === 'INPUT') {
+      const type = (target.type || '').toLowerCase();
+      return !['button', 'submit', 'reset'].includes(type);
+    }
+
+    return tagName === 'SELECT' || tagName === 'TEXTAREA';
+  };
+
+  const triggerRealtimeUpdate = () => {
+    // Update adjusted income displays immediately (no debounce for better UX)
+    updateAdjustedIncomeDisplays();
+
+    // Show calculating indicator
+    showCalculatingIndicator();
+
+    // Trigger debounced calculation and save
+    debouncedCalculate();
+    debouncedSave();
+  };
   
   // Listen to input events on the form (using event delegation)
   form.addEventListener('input', (event) => {
-    const target = event.target;
-    
-    // Only trigger for input fields, not buttons
-    if (target.tagName === 'INPUT' || target.tagName === 'SELECT') {
-      // Update adjusted income displays immediately (no debounce for better UX)
-      updateAdjustedIncomeDisplays();
-      
-      // Show calculating indicator
-      showCalculatingIndicator();
-      
-      // Trigger debounced calculation
-      debouncedCalculate();
-      
-      // Trigger debounced save
-      debouncedSave();
+    if (shouldHandleFieldChange(event.target)) {
+      triggerRealtimeUpdate();
     }
   });
   
-  // Also listen to change events for select elements
+  // Also listen to change events to catch fields that don't emit input consistently.
   form.addEventListener('change', (event) => {
-    const target = event.target;
-    
-    if (target.tagName === 'SELECT') {
-      showCalculatingIndicator();
-      debouncedCalculate();
-      debouncedSave();
+    if (shouldHandleFieldChange(event.target)) {
+      triggerRealtimeUpdate();
     }
   });
 }
@@ -383,32 +392,53 @@ function isFormDataComplete(formData) {
  */
 function isFormDataEqual(data1, data2) {
   if (!data1 || !data2) return false;
-  
-  // Compare parent 1
-  if (data1.parent1.income !== data2.parent1.income) return false;
-  if (data1.parent1.days !== data2.parent1.days) return false;
-  if (data1.parent1.hours !== data2.parent1.hours) return false;
-  
-  // Compare parent 2
-  if (data1.parent2.income !== data2.parent2.income) return false;
-  if (data1.parent2.days !== data2.parent2.days) return false;
-  if (data1.parent2.hours !== data2.parent2.hours) return false;
-  
-  // Compare children count
-  if (data1.children.length !== data2.children.length) return false;
-  
-  // Compare each child
-  for (let i = 0; i < data1.children.length; i++) {
-    const child1 = data1.children[i];
-    const child2 = data2.children[i];
-    
-    if (child1.age !== child2.age) return false;
-    if (child1.careType !== child2.careType) return false;
-    if (child1.hoursPerWeek !== child2.hoursPerWeek) return false;
-    if (child1.providerFee !== child2.providerFee) return false;
-  }
-  
-  return true;
+
+  const normalizedData1 = normalizeFormDataForComparison(data1);
+  const normalizedData2 = normalizeFormDataForComparison(data2);
+
+  return JSON.stringify(normalizedData1) === JSON.stringify(normalizedData2);
+}
+
+/**
+ * Normalize form data for stable equality checks across all calculation-relevant fields.
+ */
+function normalizeFormDataForComparison(formData) {
+  const normalizeNumber = (value) => {
+    if (value === undefined || value === null || Number.isNaN(value)) {
+      return null;
+    }
+    return value;
+  };
+
+  const normalizeWorkDays = (workDays) => [...(workDays || [])].sort();
+
+  const normalizeChild = (child) => ({
+    age: normalizeNumber(child.age),
+    careType: child.careType || null,
+    feeType: child.feeType || 'daily',
+    dailyFee: normalizeNumber(child.dailyFee),
+    hoursPerDay: normalizeNumber(child.hoursPerDay),
+    daysOfCare: normalizeNumber(child.daysOfCare),
+    hoursPerWeek: normalizeNumber(child.hoursPerWeek),
+    providerFee: normalizeNumber(child.providerFee)
+  });
+
+  return {
+    parent1: {
+      income: normalizeNumber(formData.parent1?.income),
+      days: normalizeNumber(formData.parent1?.days),
+      hours: normalizeNumber(formData.parent1?.hours),
+      workDays: normalizeWorkDays(formData.parent1?.workDays)
+    },
+    parent2: {
+      income: normalizeNumber(formData.parent2?.income),
+      days: normalizeNumber(formData.parent2?.days),
+      hours: normalizeNumber(formData.parent2?.hours),
+      workDays: normalizeWorkDays(formData.parent2?.workDays)
+    },
+    withholdingRate: normalizeNumber(formData.withholdingRate),
+    children: (formData.children || []).map(normalizeChild)
+  };
 }
 
 /**
