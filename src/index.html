@@ -53,15 +53,15 @@
 <body>
     <header>
         <div class="header-content">
-            <div class="header-top">
-                <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">
-                    <span class="theme-toggle-icon" aria-hidden="true">☀️</span>
-                    <span class="theme-toggle-label">Auto</span>
-                </button>
+            <div class="header-title-group">
+                <h1>🧒 Child Care Subsidy Calculator</h1>
+                <p class="subtitle">Know exactly what childcare will cost your family</p>
+                <p class="disclaimer">Based on official 2025-26 Australian Government rates</p>
             </div>
-            <h1>🧒 Child Care Subsidy Calculator</h1>
-            <p class="subtitle">Know exactly what childcare will cost your family</p>
-            <p class="disclaimer">Based on official 2025-26 Australian Government rates</p>
+            <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">
+                <span class="theme-toggle-icon" aria-hidden="true">☀️</span>
+                <span class="theme-toggle-label">Auto</span>
+            </button>
         </div>
     </header>
     
@@ -102,19 +102,19 @@
             <div class="inputs-column">
                 <!-- Preset Selector -->
                 <section class="preset-section compact">
-                    <div class="preset-header">
+                    <div class="preset-inline">
                         <h2 class="preset-title">Quick Start</h2>
-                    </div>
-                    <div class="preset-selector">
-                        <select id="scenario-preset" class="form-control">
-                            <option value="">-- Custom --</option>
-                            <option value="full-time-both">Both Full-time (5+5)</option>
-                            <option value="full-time-one">One Full-time (5+0)</option>
-                            <option value="part-time-both">Both Part-time (3+3)</option>
-                            <option value="full-part">Full + Part (5+3)</option>
-                            <option value="four-four">Four Each (4+4)</option>
-                            <option value="compressed">Compressed (4+0)</option>
-                        </select>
+                        <div class="preset-selector">
+                            <select id="scenario-preset" class="form-control">
+                                <option value="">-- Custom --</option>
+                                <option value="full-time-both">Both Full-time (5+5)</option>
+                                <option value="full-time-one">One Full-time (5+0)</option>
+                                <option value="part-time-both">Both Part-time (3+3)</option>
+                                <option value="full-part">Full + Part (5+3)</option>
+                                <option value="four-four">Four Each (4+4)</option>
+                                <option value="compressed">Compressed (4+0)</option>
+                            </select>
+                        </div>
                     </div>
                 </section>
                 
