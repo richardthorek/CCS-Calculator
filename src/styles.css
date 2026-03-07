@@ -1064,7 +1064,8 @@ select.valid:focus {
 
 /* ===== Period Selector ===== */
 .period-selector-container {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 0;
+    flex-shrink: 0;
 }
 
 .period-selector {
@@ -1126,14 +1127,138 @@ select.valid:focus {
     color: var(--color-text-inverse);
 }
 
-@media (max-width: 640px) {
-    .period-selector-buttons {
-        width: 100%;
+/* ===== Controls Bar ===== */
+.controls-bar {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: flex-start;
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+/* ===== Adjustable Variables Panel ===== */
+.adjustable-variables-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    flex: 1;
+    min-width: 0;
+}
+
+.adjustable-variables-panel::before {
+    content: 'Adjust days per week (work/care)';
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.panel-controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.panel-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+}
+
+.panel-parent-row {
+    gap: var(--spacing-md);
+}
+
+.panel-input-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 80px;
+}
+
+.panel-input-label-compact {
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+}
+
+.panel-input-field-compact {
+    padding: 0.375rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-text-primary);
+    background: var(--color-bg-primary);
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.panel-input-field-compact:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+}
+
+.panel-input-field-compact::placeholder {
+    color: var(--color-text-tertiary);
+}
+
+.panel-global-child-control {
+    background: rgba(8, 145, 178, 0.05);
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+}
+
+.panel-global-child-control .panel-input-label-compact {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+@media (max-width: 960px) {
+    .controls-bar {
+        flex-direction: column;
+        gap: var(--spacing-md);
     }
 
-    .period-btn {
-        flex: 1 1 calc(50% - 2px);
-        text-align: center;
+    .panel-row {
+        gap: var(--spacing-sm);
+    }
+}
+
+@media (max-width: 640px) {
+    .controls-bar {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        padding: var(--spacing-sm);
+    }
+
+    .adjustable-variables-panel {
+        gap: var(--spacing-xs);
+    }
+
+    .panel-row {
+        gap: var(--spacing-xs);
+    }
+
+    .panel-input-compact {
+        min-width: 70px;
+    }
+
+    .panel-input-label-compact {
+        font-size: var(--font-size-xs);
+    }
+
+    .panel-input-field-compact {
+        font-size: var(--font-size-xs);
+        padding: 0.3rem 0.4rem;
     }
 }
 

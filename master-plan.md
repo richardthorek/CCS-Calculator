@@ -19,6 +19,30 @@ All four core calculation modules have been implemented with full test coverage:
 
 ## Completed Features (Post-Phase 7)
 
+### Adjustable Variables Panel (2026-03)
+- ✅ Created compact panel next to period selector for quick access to adjustable parameters
+- ✅ Panel displays linked inputs for:
+  - Parent 1 days per week
+  - Parent 2 days per week (conditionally shown when income > 0)  
+  - Child days per week in care (dynamically updated when children added/removed)
+- ✅ Bidirectional sync between panel controls and main form fields
+- ✅ Real-time value synchronization with debouncing
+- ✅ Responsive layout: vertical on mobile, horizontal on desktop
+- ✅ Handles dynamic parent counts and child addition/removal
+- ✅ Includes MutationObserver for detecting structural changes
+
+**Modules Added:**
+- `src/js/ui/adjustable-variables-panel.js` - Panel initialization, control creation, event listeners, syncing
+- HTML container in `src/index.html` with controls-bar layout
+- CSS styling for `.controls-bar`, `.adjustable-variables-panel`, `.panel-input`, etc.
+- Updated `src/app.js` to initialize and import the new module
+
+**Features:**
+- Parent 2 control appears/disappears based on income input
+- Panel controls automatically update when form fields change
+- Form fields automatically update when panel controls change
+- All 280 tests passing with new module integrated
+
 ### Results Column Layout Fix (2026-03)
 - ✅ Removed fixed height constraints from results column on desktop
 - ✅ Removed internal scrolling from "Your Estimate" section (`.live-results-section`)

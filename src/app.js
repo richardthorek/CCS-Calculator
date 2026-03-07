@@ -49,6 +49,9 @@ import {
   initializeTheme,
   initializeThemeToggle
 } from './js/ui/theme-toggle.js';
+import {
+  initializeAdjustableVariablesPanel
+} from './js/ui/adjustable-variables-panel.js';
 
 // Global state for scenarios
 let currentScenarios = [];
@@ -77,6 +80,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize the calculator form
     initializeForm();
+    
+    // Initialize adjustable variables panel
+    initializeAdjustableVariablesPanel();
     
     // Initialize formatted income inputs (with thousand separators)
     initFormattedIncomeInputs();
