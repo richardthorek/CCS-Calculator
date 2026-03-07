@@ -19,6 +19,13 @@ All four core calculation modules have been implemented with full test coverage:
 
 ## Completed Features (Post-Phase 7)
 
+### Period-Aware Display Update Fix (2026-03)
+- ✅ Fixed subsidy and all period-aware values not updating when parameters change
+- ✅ Imported period selector utilities into form-handler to respect current period selection
+- ✅ Updated formatCurrency to optionally convert values based on selected period (weekly/fortnightly/monthly/annual)
+- ✅ Applied period conversion to all display updates: subsidy, out-of-pocket, costs, withholding amounts
+- ✅ Verified fix with full test suite (280 tests passing)
+
 ### Period Selector Styling Fix (2026-03)
 - ✅ Added CSS styles for button-based period selector controls (`.period-selector-buttons`, `.period-btn`)
 - ✅ Replaced outdated radio-input selectors with active/hover/focus-visible button states

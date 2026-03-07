@@ -27,6 +27,7 @@ import {
 import { debounce } from '../utils/debounce.js';
 import { loadState, saveState } from '../storage/persistence.js';
 import { stripCommas, formatWithCommas } from '../utils/format-input.js';
+import { getCurrentPeriod, convertToPeriod } from './period-selector.js';
 
 // Cache for calculation results to optimize performance
 let lastFormData = null;
@@ -279,15 +280,17 @@ function handleApplyToAll() {
 /**
  * Format currency value
  * @param {number} value - Value to format
+ * @param {boolean} respectPeriod - Whether to convert based on current period
  * @returns {string} Formatted currency string
  */
-function formatCurrency(value) {
+function formatCurrency(value, respectPeriod = false) {
+  const displayValue = respectPeriod ? convertToPeriod(value) : value;
   return new Intl.NumberFormat('en-AU', {
     style: 'currency',
     currency: 'AUD',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
-  }).format(value);
+  }).format(displayValue);
 }
 
 /**
@@ -856,25 +859,25 @@ function updateMobileStickyHeader(results) {
   // Update values
   const outOfPocketEl = document.getElementById('sticky-out-of-pocket');
   if (outOfPocketEl) {
-    outOfPocketEl.textContent = formatCurrency(results.totalWeeklyGap);
+    outOfPocketEl.textContent = formatCurrency(results.totalWeeklyGap, true);
     outOfPocketEl.dataset.weeklyValue = results.totalWeeklyGap;
   }
   
   const subsidyEl = document.getElementById('sticky-subsidy');
   if (subsidyEl) {
-    subsidyEl.textContent = formatCurrency(results.totalWeeklySubsidy);
+    subsidyEl.textContent = formatCurrency(results.totalWeeklySubsidy, true);
     subsidyEl.dataset.weeklyValue = results.totalWeeklySubsidy;
   }
   
   const withholdingEl = document.getElementById('sticky-withholding');
   if (withholdingEl) {
-    withholdingEl.textContent = formatCurrency(results.totalWeeklyWithheld);
+    withholdingEl.textContent = formatCurrency(results.totalWeeklyWithheld, true);
     withholdingEl.dataset.weeklyValue = results.totalWeeklyWithheld;
   }
   
   const totalCostEl = document.getElementById('sticky-total-cost');
   if (totalCostEl) {
-    totalCostEl.textContent = formatCurrency(results.totalWeeklyCost);
+    totalCostEl.textContent = formatCurrency(results.totalWeeklyCost, true);
     totalCostEl.dataset.weeklyValue = results.totalWeeklyCost;
   }
   
@@ -903,39 +906,39 @@ function displayResults(results) {
   
   const weeklySubsidyEl = document.getElementById('result-weekly-subsidy');
   if (weeklySubsidyEl) {
-    weeklySubsidyEl.textContent = formatCurrency(results.totalWeeklySubsidy);
+    weeklySubsidyEl.textContent = formatCurrency(results.totalWeeklySubsidy, true);
     weeklySubsidyEl.dataset.weeklyValue = results.totalWeeklySubsidy;
   }
   
   const weeklyGapEl = document.getElementById('result-weekly-gap');
   if (weeklyGapEl) {
-    weeklyGapEl.textContent = formatCurrency(results.totalWeeklyGap);
+    weeklyGapEl.textContent = formatCurrency(results.totalWeeklyGap, true);
     weeklyGapEl.dataset.weeklyValue = results.totalWeeklyGap;
   }
   
   // Weekly full cost
   const weeklyCostEl = document.getElementById('result-weekly-cost');
   if (weeklyCostEl) {
-    weeklyCostEl.textContent = formatCurrency(results.totalWeeklyCost);
+    weeklyCostEl.textContent = formatCurrency(results.totalWeeklyCost, true);
     weeklyCostEl.dataset.weeklyValue = results.totalWeeklyCost;
   }
   
   // Subsidy breakdown
   const grossSubsidyEl = document.getElementById('result-gross-subsidy');
   if (grossSubsidyEl) {
-    grossSubsidyEl.textContent = formatCurrency(results.totalWeeklyGrossSubsidy);
+    grossSubsidyEl.textContent = formatCurrency(results.totalWeeklyGrossSubsidy, true);
     grossSubsidyEl.dataset.weeklyValue = results.totalWeeklyGrossSubsidy;
   }
   
   const withheldAmountEl = document.getElementById('result-withheld-amount');
   if (withheldAmountEl) {
-    withheldAmountEl.textContent = '-' + formatCurrency(results.totalWeeklyWithheld);
+    withheldAmountEl.textContent = '-' + formatCurrency(results.totalWeeklyWithheld, true);
     withheldAmountEl.dataset.weeklyValue = results.totalWeeklyWithheld;
   }
   
   const paidSubsidyEl = document.getElementById('result-paid-subsidy');
   if (paidSubsidyEl) {
-    paidSubsidyEl.textContent = formatCurrency(results.totalWeeklySubsidy);
+    paidSubsidyEl.textContent = formatCurrency(results.totalWeeklySubsidy, true);
     paidSubsidyEl.dataset.weeklyValue = results.totalWeeklySubsidy;
   }
   
@@ -1010,11 +1013,11 @@ function displayResults(results) {
               </div>
               <div class="result-item">
                 <span class="result-label">Weekly Subsidy:</span>
-                <span class="result-value" data-weekly-value="${child.weeklySubsidy}">${formatCurrency(child.weeklySubsidy)}</span>
+                <span class="result-value" data-weekly-value="${child.weeklySubsidy}">${formatCurrency(child.weeklySubsidy, true)}</span>
               </div>
               <div class="result-item">
                 <span class="result-label">Weekly Out-of-Pocket:</span>
-                <span class="result-value highlight" data-weekly-value="${child.weeklyOutOfPocket}">${formatCurrency(child.weeklyOutOfPocket)}</span>
+                <span class="result-value highlight" data-weekly-value="${child.weeklyOutOfPocket}">${formatCurrency(child.weeklyOutOfPocket, true)}</span>
               </div>
             </div>
           </div>
@@ -1040,11 +1043,11 @@ function displayResults(results) {
               </div>
               <div class="result-item">
                 <span class="result-label">Weekly Subsidy:</span>
-                <span class="result-value" data-weekly-value="${child.weeklySubsidy}">${formatCurrency(child.weeklySubsidy)}</span>
+                <span class="result-value" data-weekly-value="${child.weeklySubsidy}">${formatCurrency(child.weeklySubsidy, true)}</span>
               </div>
               <div class="result-item">
                 <span class="result-label">Weekly Out-of-Pocket:</span>
-                <span class="result-value highlight" data-weekly-value="${child.weeklyOutOfPocket}">${formatCurrency(child.weeklyOutOfPocket)}</span>
+                <span class="result-value highlight" data-weekly-value="${child.weeklyOutOfPocket}">${formatCurrency(child.weeklyOutOfPocket, true)}</span>
               </div>
             </div>
           </div>
