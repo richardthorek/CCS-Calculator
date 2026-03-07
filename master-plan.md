@@ -19,6 +19,12 @@ All four core calculation modules have been implemented with full test coverage:
 
 ## Completed Features (Post-Phase 7)
 
+### Results Column Layout Fix (2026-03)
+- ✅ Removed fixed height constraints from results column on desktop
+- ✅ Removed internal scrolling from "Your Estimate" section (`.live-results-section`)
+- ✅ Removed overflow hidden from "Compare Scenarios" section (`.live-scenarios-section`)
+- ✅ Sections now expand naturally to fit content without internal scrollbars
+
 ### Period-Aware Display Update Fix (2026-03)
 - ✅ Fixed subsidy and all period-aware values not updating when parameters change
 - ✅ Imported period selector utilities into form-handler to respect current period selection
