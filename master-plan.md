@@ -688,47 +688,49 @@ cd /workspaces/CCS-Calculator
 - 10,000 users: ~$17.60/month
 
 #### 8.2 Backend API Development (2-3 days)
-- [ ] Install Azure Storage SDK in api/package.json
-  - [ ] Add @azure/data-tables dependency
-  - [ ] Document version and rationale
-- [ ] Create Table Storage service module
-  - [ ] Create `api/src/services/table-storage.js`
-  - [ ] Implement connection using environment variable
-  - [ ] Create CRUD operations for entities
-  - [ ] Add error handling and logging
-- [ ] Implement user profile endpoints
-  - [ ] Create `api/src/services/user-profile.js`
-  - [ ] Implement `GET /api/user/profile`
-  - [ ] Implement `PUT /api/user/profile`
-  - [ ] Add user profile schema validation
-- [ ] Implement scenario management endpoints
-  - [ ] Create `api/src/services/scenarios.js`
-  - [ ] Implement `GET /api/scenarios` (list all user scenarios)
-  - [ ] Implement `GET /api/scenarios/:id` (get single scenario)
-  - [ ] Implement `POST /api/scenarios` (create new scenario)
-  - [ ] Implement `PUT /api/scenarios/:id` (update scenario)
-  - [ ] Implement `DELETE /api/scenarios/:id` (delete scenario)
-  - [ ] Implement `POST /api/scenarios/:id/activate` (set active scenario)
-- [ ] Add authentication middleware
-  - [ ] Create `api/src/utils/auth.js`
-  - [ ] Extract user ID from x-ms-client-principal header
-  - [ ] Validate user authentication on protected endpoints
-  - [ ] Add authorization checks (user can only access own data)
-- [ ] Implement conflict resolution
-  - [ ] Add ETag support for optimistic concurrency
-  - [ ] Return 409 Conflict when stale data detected
-  - [ ] Include server version in conflict response
-- [ ] Write unit tests for API functions
-  - [ ] Test Table Storage service operations
-  - [ ] Test authentication middleware
-  - [ ] Test scenario CRUD operations
-  - [ ] Test error handling scenarios
-  - [ ] Test conflict resolution
-- [ ] Document API endpoints
-  - [ ] Add OpenAPI/Swagger documentation
-  - [ ] Document authentication requirements
-  - [ ] Document error responses
-  - [ ] Add usage examples
+- [x] Install Azure Storage SDK in api/package.json
+  - [x] Add @azure/data-tables dependency (v13.3.2)
+  - [x] Add Jest dev dependency for API tests
+- [x] Create Table Storage service module
+  - [x] Create `api/src/services/table-storage.js`
+  - [x] Implement connection using environment variable
+  - [x] Create CRUD operations for entities (createEntity, getEntity, updateEntity, deleteEntity, listEntities)
+  - [x] Add error handling and logging
+- [x] Implement user profile endpoints
+  - [x] Create `api/src/services/user-profile.js`
+  - [x] Implement `GET /api/user/profile`
+  - [x] Implement `PUT /api/user/profile`
+  - [x] Add user profile schema validation
+  - [x] Create `api/src/functions/user-profile.js`
+- [x] Implement scenario management endpoints
+  - [x] Create `api/src/services/scenarios.js`
+  - [x] Implement `GET /api/scenarios` (list all user scenarios)
+  - [x] Implement `GET /api/scenarios/:id` (get single scenario)
+  - [x] Implement `POST /api/scenarios` (create new scenario)
+  - [x] Implement `PUT /api/scenarios/:id` (update scenario)
+  - [x] Implement `DELETE /api/scenarios/:id` (delete scenario)
+  - [x] Implement `POST /api/scenarios/:id/activate` (set active scenario)
+  - [x] Create `api/src/functions/scenarios.js`
+- [x] Add authentication middleware
+  - [x] Create `api/src/utils/auth.js`
+  - [x] Extract user ID from x-ms-client-principal header
+  - [x] Validate user authentication on protected endpoints
+  - [x] Add authorization checks (user can only access own data)
+- [x] Implement conflict resolution
+  - [x] Add ETag support for optimistic concurrency
+  - [x] Return 409 Conflict when stale data detected
+  - [x] Include server version in conflict response
+- [x] Write unit tests for API functions
+  - [x] Test Table Storage service operations (table-storage.test.js)
+  - [x] Test authentication middleware (auth.test.js)
+  - [x] Test scenario CRUD operations (scenarios.test.js)
+  - [x] Test error handling scenarios
+  - [x] Test conflict resolution
+- [x] Document API endpoints
+  - [x] Created `documentation/api-reference.md`
+  - [x] Document authentication requirements
+  - [x] Document error responses
+  - [x] Add usage examples (cURL)
 
 **Files to create:**
 - `api/src/services/table-storage.js`

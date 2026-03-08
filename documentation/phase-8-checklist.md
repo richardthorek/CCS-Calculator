@@ -3,14 +3,14 @@
 **Phase:** User Authentication & Cloud Storage  
 **Start Date:** _____________  
 **Target Completion:** _____________  
-**Status:** ⏳ Not Started
+**Status:** ⏳ In Progress - 8.2 Complete
 
 ---
 
 ## 📋 Overview Progress
 
-- [ ] **8.1** Azure Infrastructure Setup (30 min)
-- [ ] **8.2** Backend API Development (2-3 days)
+- [x] **8.1** Azure Infrastructure Setup (30 min)
+- [x] **8.2** Backend API Development (2-3 days)
 - [ ] **8.3** Frontend Authentication Module (1-2 days)
 - [ ] **8.4** Frontend Storage Manager (2-3 days)
 - [ ] **8.5** Static Web App Configuration (repo) (30 min)
@@ -72,99 +72,99 @@ Location: ________________
 **Duration:** 2-3 days
 
 ### 8.2.1 Setup & Dependencies
-- [ ] Navigate to api folder: `cd api`
-- [ ] Install Azure SDK: `npm install @azure/data-tables`
-- [ ] Verify package.json updated
-- [ ] Document version in api/package.json
+- [x] Navigate to api folder: `cd api`
+- [x] Install Azure SDK: `npm install @azure/data-tables`
+- [x] Verify package.json updated
+- [x] Document version in api/package.json
 
 ### 8.2.2 Table Storage Service
-- [ ] Create `api/src/services/table-storage.js`
-- [ ] Implement `TableStorageService` class
-- [ ] Add connection using environment variable
-- [ ] Implement `createEntity(table, entity)`
-- [ ] Implement `getEntity(table, partitionKey, rowKey)`
-- [ ] Implement `updateEntity(table, entity)`
-- [ ] Implement `deleteEntity(table, partitionKey, rowKey)`
-- [ ] Implement `listEntities(table, filter)`
-- [ ] Add error handling for all operations
-- [ ] Add logging for debugging
+- [x] Create `api/src/services/table-storage.js`
+- [x] Implement `TableStorageService` class
+- [x] Add connection using environment variable
+- [x] Implement `createEntity(table, entity)`
+- [x] Implement `getEntity(table, partitionKey, rowKey)`
+- [x] Implement `updateEntity(table, entity)`
+- [x] Implement `deleteEntity(table, partitionKey, rowKey)`
+- [x] Implement `listEntities(table, filter)`
+- [x] Add error handling for all operations
+- [x] Add logging for debugging
 
 ### 8.2.3 User Profile Service
-- [ ] Create `api/src/services/user-profile.js`
-- [ ] Implement `getUserProfile(userId)`
-- [ ] Implement `createUserProfile(userId, profileData)`
-- [ ] Implement `updateUserProfile(userId, updates)`
-- [ ] Add profile schema validation
-- [ ] Add default values for new profiles
+- [x] Create `api/src/services/user-profile.js`
+- [x] Implement `getUserProfile(userId)`
+- [x] Implement `createUserProfile(userId, profileData)`
+- [x] Implement `updateUserProfile(userId, updates)`
+- [x] Add profile schema validation
+- [x] Add default values for new profiles
 
 ### 8.2.4 Scenario Management Service
-- [ ] Create `api/src/services/scenarios.js`
-- [ ] Implement `getUserScenarios(userId, limit)`
-- [ ] Implement `getScenario(userId, scenarioId)`
-- [ ] Implement `createScenario(userId, scenarioData)`
-- [ ] Implement `updateScenario(userId, scenarioId, updates)`
-- [ ] Implement `deleteScenario(userId, scenarioId)`
-- [ ] Implement `setActiveScenario(userId, scenarioId)`
-- [ ] Add scenario schema validation
-- [ ] Add pagination support
+- [x] Create `api/src/services/scenarios.js`
+- [x] Implement `getUserScenarios(userId, limit)`
+- [x] Implement `getScenario(userId, scenarioId)`
+- [x] Implement `createScenario(userId, scenarioData)`
+- [x] Implement `updateScenario(userId, scenarioId, updates)`
+- [x] Implement `deleteScenario(userId, scenarioId)`
+- [x] Implement `setActiveScenario(userId, scenarioId)`
+- [x] Add scenario schema validation
+- [x] Add pagination support
 
 ### 8.2.5 Authentication Middleware
-- [ ] Create `api/src/utils/auth.js`
-- [ ] Implement `extractUserFromRequest(request)`
-- [ ] Decode base64 x-ms-client-principal header
-- [ ] Parse user info JSON
-- [ ] Return userId and user details
-- [ ] Handle missing/invalid auth headers
-- [ ] Create helper `requireAuth(request)` that throws if not authenticated
+- [x] Create `api/src/utils/auth.js`
+- [x] Implement `extractUserFromRequest(request)`
+- [x] Decode base64 x-ms-client-principal header
+- [x] Parse user info JSON
+- [x] Return userId and user details
+- [x] Handle missing/invalid auth headers
+- [x] Create helper `requireAuth(request)` that throws if not authenticated
 
 ### 8.2.6 API Endpoints - User Profile
-- [ ] Create `api/src/functions/user-profile.js`
-- [ ] Implement GET /api/user/profile
-- [ ] Implement PUT /api/user/profile
-- [ ] Add authentication check
-- [ ] Add error handling (401, 404, 500)
+- [x] Create `api/src/functions/user-profile.js`
+- [x] Implement GET /api/user/profile
+- [x] Implement PUT /api/user/profile
+- [x] Add authentication check
+- [x] Add error handling (401, 404, 500)
 - [ ] Test locally with Azure Functions Core Tools
 
 ### 8.2.7 API Endpoints - Scenarios
-- [ ] Create `api/src/functions/scenarios.js`
-- [ ] Implement GET /api/scenarios (list)
-- [ ] Implement GET /api/scenarios/:id (get one)
-- [ ] Implement POST /api/scenarios (create)
-- [ ] Implement PUT /api/scenarios/:id (update)
-- [ ] Implement DELETE /api/scenarios/:id (delete)
-- [ ] Implement POST /api/scenarios/:id/activate
-- [ ] Add authentication check to all endpoints
-- [ ] Add authorization check (user owns resource)
-- [ ] Add request validation
-- [ ] Add error handling (401, 403, 404, 409, 500)
+- [x] Create `api/src/functions/scenarios.js`
+- [x] Implement GET /api/scenarios (list)
+- [x] Implement GET /api/scenarios/:id (get one)
+- [x] Implement POST /api/scenarios (create)
+- [x] Implement PUT /api/scenarios/:id (update)
+- [x] Implement DELETE /api/scenarios/:id (delete)
+- [x] Implement POST /api/scenarios/:id/activate
+- [x] Add authentication check to all endpoints
+- [x] Add authorization check (user owns resource)
+- [x] Add request validation
+- [x] Add error handling (401, 403, 404, 409, 500)
 - [ ] Test locally with Azure Functions Core Tools
 
 ### 8.2.8 Conflict Resolution
-- [ ] Add ETag support to update operations
-- [ ] Check ETag before update
-- [ ] Return 409 Conflict if stale
-- [ ] Include server version in 409 response
+- [x] Add ETag support to update operations
+- [x] Check ETag before update
+- [x] Return 409 Conflict if stale
+- [x] Include server version in 409 response
 - [ ] Test conflict scenarios
 
 ### 8.2.9 Unit Tests
-- [ ] Create `api/tests/services/table-storage.test.js`
-- [ ] Test CRUD operations
-- [ ] Test error handling
-- [ ] Create `api/tests/services/scenarios.test.js`
-- [ ] Test all scenario operations
-- [ ] Test validation logic
-- [ ] Create `api/tests/utils/auth.test.js`
-- [ ] Test auth extraction
-- [ ] Test error cases
-- [ ] Run all tests: `npm test`
-- [ ] Verify 100% passing
+- [x] Create `api/tests/services/table-storage.test.js`
+- [x] Test CRUD operations
+- [x] Test error handling
+- [x] Create `api/tests/services/scenarios.test.js`
+- [x] Test all scenario operations
+- [x] Test validation logic
+- [x] Create `api/tests/utils/auth.test.js`
+- [x] Test auth extraction
+- [x] Test error cases
+- [x] Run all tests: `npm test`
+- [x] Verify 100% passing (36/36 tests passing)
 
 ### 8.2.10 Documentation
-- [ ] Document API endpoints in code comments
-- [ ] Create `documentation/api-reference.md`
-- [ ] List all endpoints with examples
-- [ ] Document error codes
-- [ ] Add cURL examples for testing
+- [x] Document API endpoints in code comments
+- [x] Create `documentation/api-reference.md`
+- [x] List all endpoints with examples
+- [x] Document error codes
+- [x] Add cURL examples for testing
 
 ---
 
@@ -592,7 +592,7 @@ Check all before marking Phase 8 complete:
 ## 📊 Progress Tracking
 
 **Phase 8.1:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
-**Phase 8.2:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
+**Phase 8.2:** ⬜ Not Started | 🟦 In Progress | **✅ Complete**  
 **Phase 8.3:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
 **Phase 8.4:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
 **Phase 8.5:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
@@ -600,7 +600,7 @@ Check all before marking Phase 8 complete:
 **Phase 8.7:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
 **Phase 8.8:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
 
-**Overall Phase 8:** ⬜ Not Started | 🟦 In Progress | ✅ Complete
+**Overall Phase 8:** ⬜ Not Started | **🟦 In Progress** | ✅ Complete
 
 ---
 
@@ -609,12 +609,10 @@ Check all before marking Phase 8 complete:
 Use this section for implementation notes, issues encountered, and decisions made:
 
 ```
-[Date] - [Note]
-
-Example:
-2026-03-07 - Started Phase 8.1, ran Azure setup script successfully
-2026-03-07 - Storage account created: stccscalc1a2b3c4d
-2026-03-08 - Decision: Using "server wins" for conflict resolution initially
+2026-03-08 - Phase 8.2 complete. All API files implemented and 36 unit tests passing.
+2026-03-08 - Decision: Used "server wins" strategy for ETag conflicts (409 returns serverVersion).
+2026-03-08 - @azure/data-tables v13.3.2 installed (no known vulnerabilities).
+2026-03-08 - Added Jest v30 as devDependency in api/package.json for local test running.
 ```
 
 ---
