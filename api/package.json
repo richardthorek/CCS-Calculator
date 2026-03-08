@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.2",
-    "@azure/functions": "^4.5.1"
+    "@azure/functions": "^4.11.2"
   },
   "devDependencies": {
     "jest": "^30.0.0"
