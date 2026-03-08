@@ -2989,6 +2989,283 @@ footer {
     border-bottom-color: var(--color-border);
 }
 
+/* ===== Authentication UI ===== */
+
+/* Auth container sits in the header between the title group and theme toggle */
+.auth-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
+}
+
+/* Login prompt - shown when user is not authenticated */
+.auth-prompt {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--spacing-xs);
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    max-width: 280px;
+}
+
+.auth-prompt-text {
+    margin: 0;
+    color: var(--color-text-inverse);
+    font-size: var(--font-size-xs);
+    text-align: right;
+    line-height: var(--line-height-normal);
+}
+
+.auth-prompt-text strong {
+    font-size: var(--font-size-sm);
+}
+
+/* Provider buttons layout */
+.auth-providers {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    width: 100%;
+}
+
+/* Base auth button */
+.btn-auth {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.btn-auth:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-auth:active {
+    transform: translateY(0);
+}
+
+.btn-auth:focus-visible {
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: 2px;
+}
+
+/* Microsoft / Entra ID button */
+.btn-auth-microsoft {
+    background-color: #ffffff;
+    color: #1e293b;
+}
+
+.btn-auth-microsoft:hover {
+    background-color: #f1f5f9;
+}
+
+/* GitHub button */
+.btn-auth-github {
+    background-color: #24292e;
+    color: #ffffff;
+}
+
+.btn-auth-github:hover {
+    background-color: #1a1e22;
+}
+
+/* Small privacy notice below provider buttons */
+.auth-privacy-note {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: var(--font-size-xs);
+    text-align: right;
+}
+
+/* User info - shown when authenticated */
+.auth-user-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xs) var(--spacing-md);
+}
+
+/* User badge showing the logged-in user's email */
+.user-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--color-text-inverse);
+    font-size: var(--font-size-xs);
+}
+
+.user-icon {
+    font-size: var(--font-size-base);
+    line-height: 1;
+}
+
+.user-email {
+    font-weight: 600;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Sync status indicator */
+.sync-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xxs);
+    font-size: var(--font-size-xs);
+    color: rgba(255, 255, 255, 0.85);
+    transition: color var(--transition-normal);
+}
+
+.sync-status.saving .sync-icon::after {
+    content: '';
+    display: inline-block;
+    animation: spin 1s linear infinite;
+}
+
+.sync-status.error {
+    color: #f87171;
+}
+
+.sync-status.synced {
+    color: #86efac;
+}
+
+.sync-icon {
+    font-size: var(--font-size-sm);
+    line-height: 1;
+}
+
+/* Sign out button */
+.btn-logout {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-xxs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-text-inverse);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    white-space: nowrap;
+}
+
+.btn-logout:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-logout:focus-visible {
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: 2px;
+}
+
+/* Keyframe for sync spinner */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ===== Auth UI - Responsive ===== */
+
+/* On tablet and below, collapse prompt text and stack providers horizontally */
+@media (max-width: 768px) {
+    .auth-prompt {
+        max-width: 220px;
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+
+    .auth-prompt-text {
+        display: none; /* hide description text on small screens */
+    }
+
+    .auth-providers {
+        flex-direction: row;
+    }
+
+    .auth-privacy-note {
+        display: none;
+    }
+
+    .user-email {
+        max-width: 100px;
+    }
+}
+
+/* On mobile, show minimal auth UI */
+@media (max-width: 480px) {
+    .auth-container {
+        gap: var(--spacing-xs);
+    }
+
+    .auth-prompt {
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+
+    .auth-providers {
+        flex-direction: row;
+        gap: var(--spacing-xxs);
+    }
+
+    .btn-auth {
+        font-size: 0.65rem;
+        padding: var(--spacing-xxs) var(--spacing-xs);
+    }
+
+    .auth-user-info {
+        padding: var(--spacing-xxs) var(--spacing-sm);
+        gap: var(--spacing-xs);
+    }
+
+    .sync-status {
+        display: none; /* hide sync status on very small screens */
+    }
+
+    .user-email {
+        max-width: 70px;
+        font-size: 0.65rem;
+    }
+
+    .btn-logout {
+        font-size: 0.65rem;
+        padding: var(--spacing-xxs) var(--spacing-xs);
+    }
+}
+
+/* ===== Auth UI - Dark Mode ===== */
+
+.dark-mode .btn-auth-microsoft {
+    background-color: #e2e8f0;
+    color: #1e293b;
+}
+
+.dark-mode .btn-auth-microsoft:hover {
+    background-color: #cbd5e1;
+}
+
 /* ===== Accessibility: Reduced Motion ===== */
 /* Respect user's motion preferences for accessibility */
 @media (prefers-reduced-motion: reduce) {

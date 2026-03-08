@@ -173,51 +173,51 @@ Location: ________________
 **Duration:** 1-2 days
 
 ### 8.3.1 Authentication Manager
-- [ ] Create `src/js/auth/auth-manager.js`
-- [ ] Create AuthManager class
-- [ ] Implement `checkAuth()` - fetch /.auth/me
-- [ ] Implement `_fetchUserInfo()` - parse response
-- [ ] Implement `getUser()` - return current user
-- [ ] Implement `isAuthenticated()` - boolean check
-- [ ] Implement `login(provider, redirectUrl)` - redirect to OAuth
-- [ ] Implement `logout(redirectUrl)` - clear session
-- [ ] Implement `clearCache()` - reset auth state
-- [ ] Export singleton instance
-- [ ] Add JSDoc comments
+- [x] Create `src/js/auth/auth-manager.js`
+- [x] Create AuthManager class
+- [x] Implement `checkAuth()` - fetch /.auth/me
+- [x] Implement `_fetchUserInfo()` - parse response
+- [x] Implement `getUser()` - return current user
+- [x] Implement `isAuthenticated()` - boolean check
+- [x] Implement `login(provider, redirectUrl)` - redirect to OAuth
+- [x] Implement `logout(redirectUrl)` - clear session
+- [x] Implement `clearCache()` - reset auth state
+- [x] Export singleton instance
+- [x] Add JSDoc comments
 
 ### 8.3.2 Authentication UI - HTML
-- [ ] Open `src/index.html`
-- [ ] Add auth container div (near header)
-- [ ] Add auth-prompt section (when not logged in)
-- [ ] Add provider buttons (Microsoft, GitHub)
-- [ ] Add privacy notice text
-- [ ] Add auth-user-info section (when logged in)
-- [ ] Add user badge with email display
-- [ ] Add sign out button
-- [ ] Add sync status indicator
-- [ ] Verify HTML structure
+- [x] Open `src/index.html`
+- [x] Add auth container div (near header)
+- [x] Add auth-prompt section (when not logged in)
+- [x] Add provider buttons (Microsoft, GitHub)
+- [x] Add privacy notice text
+- [x] Add auth-user-info section (when logged in)
+- [x] Add user badge with email display
+- [x] Add sign out button
+- [x] Add sync status indicator
+- [x] Verify HTML structure
 
 ### 8.3.3 Authentication UI - CSS
-- [ ] Open `src/styles.css`
-- [ ] Add `.auth-container` styles
-- [ ] Add `.auth-prompt` styles
-- [ ] Add `.auth-providers` grid layout
-- [ ] Add `.btn-auth` button styles
-- [ ] Add provider-specific button colors
-- [ ] Add `.auth-user-info` styles
-- [ ] Add `.user-badge` styles
-- [ ] Add `.sync-status` styles
-- [ ] Add responsive breakpoints
+- [x] Open `src/styles.css`
+- [x] Add `.auth-container` styles
+- [x] Add `.auth-prompt` styles
+- [x] Add `.auth-providers` grid layout
+- [x] Add `.btn-auth` button styles
+- [x] Add provider-specific button colors
+- [x] Add `.auth-user-info` styles
+- [x] Add `.user-badge` styles
+- [x] Add `.sync-status` styles
+- [x] Add responsive breakpoints
 - [ ] Test on mobile and desktop
 
 ### 8.3.4 App Integration
-- [ ] Open `src/app.js`
-- [ ] Import authManager
-- [ ] Call `authManager.checkAuth()` on DOMContentLoaded
-- [ ] Show/hide auth UI based on auth state
-- [ ] Add login button click handlers
-- [ ] Add logout button click handler
-- [ ] Update UI when auth state changes
+- [x] Open `src/app.js`
+- [x] Import authManager
+- [x] Call `authManager.checkAuth()` on DOMContentLoaded
+- [x] Show/hide auth UI based on auth state
+- [x] Add login button click handlers
+- [x] Add logout button click handler
+- [x] Update UI when auth state changes
 - [ ] Test auth flow
 
 ### 8.3.5 Testing
