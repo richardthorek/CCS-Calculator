@@ -318,13 +318,13 @@ Location: ________________
 **Duration:** 30 minutes
 
 ### 8.5.1 Update Configuration File
-- [ ] Open `staticwebapp.config.json`
-- [ ] Add auth login routes (`/.auth/login/*`)
-- [ ] Set API routes to require `authenticated` role
-- [ ] Keep health check public (`anonymous`)
-- [ ] Add 401 redirect to login page
-- [ ] Update CSP header for auth endpoints
-- [ ] Verify JSON syntax
+- [x] Open `staticwebapp.config.json`
+- [x] Add auth login routes (`/.auth/login/*`, `/.auth/me`, `/.auth/logout`)
+- [x] Set API routes to require `authenticated` role
+- [x] Keep health check public (`anonymous`)
+- [x] Add 401 redirect to login page
+- [x] Update CSP header for auth endpoints
+- [x] Verify JSON syntax
 
 ### 8.5.2 Testing
 - [ ] Test authentication routes work
