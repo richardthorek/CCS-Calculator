@@ -54,6 +54,10 @@ import {
 } from './js/ui/adjustable-variables-panel.js';
 import { authManager } from './js/auth/auth-manager.js';
 import { storageManager } from './js/storage/storage-manager.js';
+import {
+  openDashboardModal,
+  wireDashboardModalHandlers
+} from './js/ui/dashboard-modal.js';
 
 // Global state for scenarios
 let currentScenarios = [];
@@ -121,6 +125,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize authentication (Phase 8.3)
     initializeAuth();
+
+    // Wire dashboard modal handlers (must run after DOM is ready)
+    wireDashboardModalHandlers();
     
     // Check if URL contains shared data and load it (Phase 7)
     const urlData = loadFromURL();
@@ -439,6 +446,13 @@ async function initializeAuth() {
 
   const user = await authManager.checkAuth();
   updateAuthUI(user);
+
+  // Initialize storage manager so cloud operations work immediately
+  if (user) {
+    console.log('[Auth] User authenticated — initialising storage manager.');
+    await storageManager.initialize();
+  }
+
   wireAuthHandlers();
 }
 
@@ -538,6 +552,9 @@ function showAuthPanelFeedback(message, isError = false) {
  * Wire up click handlers for login provider buttons and the logout button.
  */
 function wireAuthHandlers() {
+  // Wire New Scenario modal handlers once (must happen before first use)
+  wireNewScenarioModal();
+
   // Login buttons (one per provider via data-provider attribute)
   document.querySelectorAll('.btn-auth[data-provider]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -556,65 +573,37 @@ function wireAuthHandlers() {
     });
   }
 
-  // ── New Scenario flow ─────────────────────────────────────────────────────
+  // ── New Scenario – opens a modal dialog ───────────────────────────────────
 
   const newScenarioBtn = document.getElementById('btn-new-scenario');
-  const newScenarioForm = document.getElementById('new-scenario-form');
-  const newScenarioInput = document.getElementById('new-scenario-input');
-  const newScenarioConfirm = document.getElementById('btn-new-scenario-confirm');
-  const newScenarioCancel = document.getElementById('btn-new-scenario-cancel');
-
-  if (newScenarioBtn && newScenarioForm && newScenarioInput) {
-    // Show the inline form
+  if (newScenarioBtn) {
     newScenarioBtn.addEventListener('click', () => {
-      newScenarioForm.hidden = false;
-      newScenarioBtn.hidden = true;
-      newScenarioInput.value = '';
-      newScenarioInput.focus();
-    });
-
-    // Cancel – hide form, restore button
-    const cancelNewScenario = () => {
-      newScenarioForm.hidden = true;
-      newScenarioBtn.hidden = false;
-    };
-
-    newScenarioCancel?.addEventListener('click', cancelNewScenario);
-
-    // Confirm – create scenario
-    const confirmNewScenario = async () => {
-      const name = newScenarioInput.value.trim();
-      if (!name) {
-        newScenarioInput.focus();
-        return;
+      // Close the auth menu dropdown
+      const menu = document.getElementById('auth-menu');
+      if (menu) {
+        menu.classList.remove('is-open');
+        document.getElementById('auth-menu-trigger')?.setAttribute('aria-expanded', 'false');
       }
-      newScenarioConfirm.disabled = true;
-      try {
-        const scenario = await storageManager.createNewScenario(name);
-        if (scenario) {
-          storageManager.activeScenarioId = scenario.id;
-          storageManager.activeScenarioName = scenario.name;
-          updateScenarioNameDisplay(scenario.name);
-          cancelNewScenario();
-          // Clear localStorage so the new scenario starts fresh
-          clearState();
-          window.location.reload();
-        } else {
-          showAuthPanelFeedback('Could not create scenario. Please try again.', true);
-        }
-      } finally {
-        newScenarioConfirm.disabled = false;
-      }
-    };
-
-    newScenarioConfirm?.addEventListener('click', confirmNewScenario);
-    newScenarioInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') confirmNewScenario();
-      if (e.key === 'Escape') cancelNewScenario();
+      openNewScenarioModal(newScenarioBtn);
     });
   }
 
-  // ── Rename Scenario flow ──────────────────────────────────────────────────
+  // ── My Scenarios – opens the dashboard modal ──────────────────────────────
+
+  const myScenariosBtn = document.getElementById('btn-my-scenarios');
+  if (myScenariosBtn) {
+    myScenariosBtn.addEventListener('click', async () => {
+      // Close the auth menu dropdown
+      const menu = document.getElementById('auth-menu');
+      if (menu) {
+        menu.classList.remove('is-open');
+        document.getElementById('auth-menu-trigger')?.setAttribute('aria-expanded', 'false');
+      }
+      await openDashboardModal(myScenariosBtn);
+    });
+  }
+
+  // ── Rename Scenario flow (inline in auth panel) ───────────────────────────
 
   const renameBtn = document.getElementById('btn-rename-scenario');
   const renameForm = document.getElementById('scenario-rename-form');
@@ -681,4 +670,109 @@ function wireAuthHandlers() {
     }
   });
 }
+
+// ─── New Scenario modal ───────────────────────────────────────────────────────
+
+/** Element to restore focus to when the New Scenario modal closes */
+let _nsModalReturnFocus = null;
+
+/**
+ * Open the "New Scenario" modal dialog.
+ * @param {HTMLElement} [returnFocus] - Element to restore focus to when closed
+ */
+function openNewScenarioModal(returnFocus) {
+  const modal = document.getElementById('new-scenario-modal');
+  if (!modal) return;
+
+  _nsModalReturnFocus = returnFocus || document.activeElement;
+
+  const input = document.getElementById('ns-modal-input');
+  const errorEl = document.getElementById('ns-modal-error');
+  if (input) input.value = '';
+  if (errorEl) errorEl.hidden = true;
+
+  modal.hidden = false;
+  if (input) input.focus();
+}
+
+/**
+ * Close the "New Scenario" modal and restore focus.
+ */
+function closeNewScenarioModal() {
+  const modal = document.getElementById('new-scenario-modal');
+  if (modal) modal.hidden = true;
+  if (_nsModalReturnFocus && typeof _nsModalReturnFocus.focus === 'function') {
+    _nsModalReturnFocus.focus();
+  }
+  _nsModalReturnFocus = null;
+}
+
+/**
+ * Wire "New Scenario" modal handlers once.
+ * Called from wireAuthHandlers() to keep handlers on a stable reference.
+ */
+function wireNewScenarioModal() {
+  const modal = document.getElementById('new-scenario-modal');
+  if (!modal) return;
+
+  const cancelBtn = document.getElementById('ns-modal-cancel');
+  const confirmBtn = document.getElementById('ns-modal-confirm');
+  const input = document.getElementById('ns-modal-input');
+
+  const confirmCreate = async () => {
+    const err = document.getElementById('ns-modal-error');
+    const nameInput = document.getElementById('ns-modal-input');
+    const name = nameInput ? nameInput.value.trim() : '';
+    if (!name) {
+      if (err) { err.textContent = 'Please enter a scenario name.'; err.hidden = false; }
+      nameInput?.focus();
+      return;
+    }
+    if (name.length > 200) {
+      if (err) { err.textContent = 'Name must be 200 characters or fewer.'; err.hidden = false; }
+      return;
+    }
+    const btn = document.getElementById('ns-modal-confirm');
+    if (btn) btn.disabled = true;
+    try {
+      const scenario = await storageManager.createNewScenario(name);
+      if (scenario) {
+        storageManager.activeScenarioId = scenario.id;
+        storageManager.activeScenarioName = scenario.name;
+        updateScenarioNameDisplay(scenario.name);
+        modal.hidden = true;
+        // Clear localStorage and navigate to the new scenario
+        clearState();
+        window.location.href = `/?scenarioId=${encodeURIComponent(scenario.id)}`;
+      } else {
+        const err2 = document.getElementById('ns-modal-error');
+        if (err2) { err2.textContent = 'Could not create scenario. Please try again.'; err2.hidden = false; }
+      }
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  };
+
+  cancelBtn?.addEventListener('click', closeNewScenarioModal);
+  confirmBtn?.addEventListener('click', confirmCreate);
+  input?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') confirmCreate();
+    if (e.key === 'Escape') closeNewScenarioModal();
+  });
+  // Close on backdrop click
+  modal.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeNewScenarioModal();
+  });
+  // Close on global Escape (only when no other modal is open)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal && !modal.hidden) {
+      // Only handle if dashboard modal is not open (it handles its own Escape)
+      const dashModal = document.getElementById('dashboard-modal');
+      if (!dashModal || dashModal.hidden) {
+        closeNewScenarioModal();
+      }
+    }
+  });
+}
+
 

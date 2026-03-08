@@ -62,6 +62,13 @@
                 <span>Loading your scenarios…</span>
             </div>
 
+            <!-- Error state -->
+            <div id="scenarios-error" class="scenarios-error" hidden>
+                <p class="empty-icon" aria-hidden="true">⚠️</p>
+                <p>Could not load your scenarios. Please check your connection and try again.</p>
+                <a href="/dashboard" class="btn-go-to-calculator">Retry</a>
+            </div>
+
             <!-- Empty state -->
             <div id="scenarios-empty" class="scenarios-empty" hidden>
                 <p class="empty-icon" aria-hidden="true">📂</p>
