@@ -24,16 +24,31 @@ This project uses **native web technologies** as much as possible:
 CCS-Calculator/
 ├── src/                    # Frontend source code
 │   ├── index.html         # Main HTML entry point
+│   ├── privacy.html       # Privacy policy page
 │   ├── styles.css         # Global styles
 │   ├── app.js             # Main application JavaScript
 │   └── js/                # JavaScript modules
+│       ├── auth/          # Authentication (Azure SWA built-in OAuth)
 │       ├── calculations/  # Calculation engine modules
-│       ├── ui/            # UI handler modules
-│       └── scenarios/     # Scenario generation modules
-├── api/                    # Azure Functions backend (optional)
+│       ├── config/        # CCS rates & thresholds configuration
+│       ├── scenarios/     # Scenario generation modules
+│       ├── storage/       # Cloud storage manager
+│       └── ui/            # UI handler modules
+├── api/                    # Azure Functions backend
+│   └── src/
+│       ├── functions/     # HTTP-triggered functions (user profile, scenarios)
+│       ├── services/      # Table Storage, user profile, scenarios services
+│       └── utils/         # Authentication middleware
 ├── documentation/          # As-built documentation
+│   ├── api-reference.md   # REST API endpoint reference
+│   ├── oauth-setup.md     # OAuth provider registration guide
+│   ├── user-guide.md      # End-user guide
+│   └── ...                # Additional technical docs
+├── tests/                  # Unit, integration, and Playwright UI tests
+├── scripts/                # Azure infrastructure setup scripts
 ├── master-plan.md         # Project planning and phases
 ├── .github/               # GitHub configuration and Copilot instructions
+├── staticwebapp.config.json # Azure SWA routing and auth config
 └── package.json           # Node.js configuration (minimal dependencies)
 ```
 
@@ -77,20 +92,58 @@ CCS-Calculator/
 ## Documentation
 - **Master Plan**: See `master-plan.md` for phased development roadmap and current status
 - **Technical Docs**: See `documentation/` folder for detailed documentation
+- **API Reference**: See `documentation/api-reference.md` for REST endpoint specs
+- **OAuth Setup**: See `documentation/oauth-setup.md` for provider registration guide
+- **User Guide**: See `documentation/user-guide.md` for end-user instructions
+- **Privacy Policy**: See `src/privacy.html` for data handling details
 - **Copilot Instructions**: See `.github/copilot-instructions.md` for development guidelines
-- **Calculations**: See `documentation/calculations.md` (to be created) for CCS formula documentation
+- **Calculations**: See `documentation/calculations.md` for CCS formula documentation
+
+## Authentication Setup
+
+The calculator supports optional sign-in with Microsoft (Entra ID) or GitHub, powered by **Azure Static Web Apps built-in authentication**. Signing in is not required — the calculator works fully offline using browser local storage.
+
+### Quick Setup
+
+1. **Provision Azure resources**
+   ```bash
+   ./scripts/setup-azure-auth-storage.sh
+   ```
+
+2. **Register OAuth providers** (see [`documentation/oauth-setup.md`](documentation/oauth-setup.md) for step-by-step instructions):
+   - **Microsoft:** [Azure Portal App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps)
+   - **GitHub:** [GitHub Developer Settings → OAuth Apps](https://github.com/settings/developers)
+
+3. **Configure application settings** in your Azure Static Web App:
+   ```bash
+   az staticwebapp appsettings set \
+     --name <your-swa-name> \
+     --resource-group <your-resource-group> \
+     --setting-names \
+       AZURE_CLIENT_ID="<microsoft-client-id>" \
+       MICROSOFT_PROVIDER_AUTHENTICATION_SECRET="<microsoft-client-secret>" \
+       GITHUB_CLIENT_ID="<github-client-id>" \
+       GITHUB_PROVIDER_AUTHENTICATION_SECRET="<github-client-secret>" \
+       AZURE_STORAGE_CONNECTION_STRING="<storage-connection-string>"
+   ```
+
+4. **Deploy** — authentication will be active on the next deployment.
+
+> **Important:** Never commit OAuth secrets to source code. All secrets must be stored as Azure SWA application settings.
 
 ## Status
-🚀 Ready for Phase 2: Core Calculation Engine development
+🚀 Phase 8 In Progress: User Authentication & Cloud Storage
 
-Phase 1 is complete with:
-- ✅ Project structure established
-- ✅ Vanilla JavaScript approach defined
-- ✅ Development phases planned in master-plan.md
-- ✅ Node.js 20 LTS configured
-- ✅ Minimal dependencies philosophy established
+Phases 1–7 are complete. Phase 8 features:
+- ✅ Backend API (Azure Functions + Table Storage)
+- ✅ Frontend authentication module (Microsoft & GitHub OAuth)
+- ✅ Cloud storage manager with auto-save and conflict resolution
+- ✅ Azure SWA configuration
+- ✅ Integration testing
+- ✅ Documentation & privacy policy (Phase 8.7)
+- ⏳ Production deployment (Phase 8.8)
 
-**Next**: Begin Phase 2 - Build the CCS calculation engine modules
+**Next**: Phase 8.8 — Deploy to Azure Static Web Apps
 
 ## Key Features (Planned)
 - Real-time CCS subsidy calculations (no page refresh needed)
