@@ -19,6 +19,11 @@ test('UI displays the same result as known calculation scenario baseline', async
   await page.locator('#child-0-hours-per-day').fill(String(input.child.hoursPerDay));
   await page.locator('#child-0-days-of-care').fill(String(input.child.daysOfCare));
 
+  await page.waitForFunction((targetRate) => {
+    const ccsRate = document.getElementById('result-ccs-rate')?.textContent?.trim();
+    return ccsRate === targetRate;
+  }, expected.ui.ccsRate);
+
   await expect(page.locator('#result-weekly-gap')).toHaveText(expected.ui.weeklyOutOfPocket);
   await expect(page.locator('#result-weekly-subsidy')).toHaveText(expected.ui.weeklySubsidy);
   await expect(page.locator('#result-weekly-cost')).toHaveText(expected.ui.weeklyFullCost);

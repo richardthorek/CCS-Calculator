@@ -12,6 +12,6 @@ export default defineConfig({
     command: 'npm run start:frontend',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: true,
-    timeout: 120000
+    timeout: 30000
   }
 });
