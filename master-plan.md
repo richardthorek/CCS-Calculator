@@ -1047,3 +1047,39 @@ cd /workspaces/CCS-Calculator
 
 ### Phase 9.5 – Documentation ✅
 - [x] Updated master-plan.md with Phase 9 tasks and status
+
+---
+
+## Phase 9.6: Dashboard UX Fixes & SPA Modal Redesign ✅ COMPLETE
+
+**Goal:** Fix dashboard data loading bugs, make delete confirmation dismissable, and redesign dashboard/scenario-creation as in-app modal overlays matching SPA best practices.
+
+### Phase 9.6.1 – Bug Fixes ✅
+- [x] Fix CSS specificity bug: `.modal-overlay { display: flex }` was overriding `[hidden]` attribute, causing modals to always be visible. Fixed with `.modal-overlay[hidden] { display: none }`.
+- [x] Fix `storageManager.initialize()` never called in `app.js`: cloud storage operations (createNewScenario, listScenarios) silently returned null/[] because `cloudStorageAvailable` was always false. Fixed by calling `storageManager.initialize()` after auth check.
+- [x] Fix `textContent = escapeHtml(text)` double-encoding bug in `openDeleteModal`: `textContent` does not render HTML so escaping was unnecessary and broke special characters in names.
+- [x] Add error state to `dashboard.html` (was showing empty state on load failure, hiding the real error).
+- [x] Add clear console logging in `dashboard-manager.js` for auth/cloud misconfiguration.
+
+### Phase 9.6.2 – In-App Dashboard Modal ✅
+- [x] Create `src/js/ui/dashboard-modal.js`: full dashboard CRUD functionality (list, rename, delete, new scenario) as an in-page overlay.
+- [x] Add `#dashboard-modal` large overlay to `index.html` (85% viewport, scrollable, flex layout).
+- [x] Add inner modals to `index.html`: `#dm-rename-modal`, `#dm-delete-modal` for dashboard operations.
+- [x] Convert "My Scenarios" `<a href="/dashboard">` link to `<button id="btn-my-scenarios">` that opens the dashboard modal.
+- [x] Wire `openDashboardModal()` / `wireDashboardModalHandlers()` in `app.js`.
+
+### Phase 9.6.3 – New Scenario Modal ✅
+- [x] Add `#new-scenario-modal` to `index.html` (small modal with name input).
+- [x] Remove confusing inline `#new-scenario-form` from auth dropdown.
+- [x] Add `wireNewScenarioModal()` and `openNewScenarioModal()` in `app.js`.
+- [x] "New Scenario" button in auth panel now opens the dedicated modal.
+- [x] Focus management and Escape key handling for all modals.
+
+### Phase 9.6.4 – CSS ✅
+- [x] Add `.dashboard-modal-overlay`, `.dashboard-modal-card`, `.dashboard-modal-header`, `.dashboard-modal-body`, `.dashboard-modal-footer` styles.
+- [x] Add `.btn-modal-close` style.
+- [x] Add `.scenarios-error` style for error state display.
+
+### Phase 9.6.5 – Documentation ✅
+- [x] Updated master-plan.md with Phase 9.6 tasks and status
+- [x] 337 tests passing, no regressions
