@@ -191,8 +191,6 @@ describe('StorageManager', () => {
 
     test('should fallback to localStorage when cloud fetch throws', async () => {
       storageManager.cloudStorageAvailable = true;
-      fetchMock.setDefault({ ...mockResponse(false, 500, {}), json: () => Promise.reject(new Error('Network error')) });
-      // Actually throw on fetch itself
       global.fetch = () => Promise.reject(new Error('Network error'));
       localStorage.setItem('ccsCalculator', JSON.stringify({
         version: 1,

@@ -286,8 +286,9 @@ class StorageManager {
         this.updateSyncStatus('synced');
       } else if (cloudState && localState) {
         // Both exist — use most recent based on timestamp
-        const localTimestamp = new Date(localState.metadata?.lastModified || 0);
-        const cloudTimestamp = new Date(cloudState.metadata?.lastModified || 0);
+        // Check both top-level timestamp and metadata.lastModified for compatibility
+        const localTimestamp = new Date(localState.timestamp || localState.metadata?.lastModified || 0);
+        const cloudTimestamp = new Date(cloudState.timestamp || cloudState.metadata?.lastModified || 0);
 
         if (localTimestamp > cloudTimestamp) {
           // Local is newer, upload to cloud

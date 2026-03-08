@@ -46,7 +46,7 @@ export function initializeForm() {
   const resetBtn = document.getElementById('reset-btn');
   const applyAllBtn = document.getElementById('apply-all-btn');
 
-  // Restore state from localStorage immediately for fast initial render
+  // Restore state from localStorage immediately for fast initial render (local-first)
   const initialState = loadState();
   if (initialState && initialState.formData) {
     restoreFormData(initialState.formData);
@@ -55,15 +55,21 @@ export function initializeForm() {
     addChild();
   }
 
-  // Initialize storage manager in the background (checks auth, syncs cloud if authenticated)
-  // If cloud has a newer version, the form will be updated after sync completes
+  // Initialize storage manager in the background (checks auth, syncs cloud if authenticated).
+  // If the cloud has a newer version than localStorage, the form is silently updated once
+  // the async check resolves. This is intentional progressive enhancement: show local data
+  // immediately, then refresh with cloud data only when it differs.
   storageManager.initialize().then(() => {
     return storageManager.loadActiveScenario();
-  }).then((savedState) => {
-    if (savedState && savedState.formData) {
-      // Update form with cloud/active state (may differ from local)
-      restoreFormData(savedState.formData);
-      updateAdjustedIncomeDisplays();
+  }).then((cloudState) => {
+    if (cloudState && cloudState.formData) {
+      const localTimestamp = new Date(initialState?.timestamp || 0);
+      const cloudTimestamp = new Date(cloudState.timestamp || 0);
+      // Only re-render if cloud data is newer than what we already showed
+      if (cloudTimestamp > localTimestamp) {
+        restoreFormData(cloudState.formData);
+        updateAdjustedIncomeDisplays();
+      }
     }
   }).catch((error) => {
     console.error('Storage initialization error:', error);
