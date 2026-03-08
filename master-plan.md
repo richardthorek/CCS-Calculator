@@ -844,12 +844,12 @@ cd /workspaces/CCS-Calculator
 - `src/styles.css` (add sync status styling)
 
 #### 8.5 Update Static Web App Configuration (repo, 30 minutes)
-- [ ] Update `staticwebapp.config.json`
-  - [ ] Add authentication routes (/.auth/login/*, /.auth/me, /.auth/logout)
-  - [ ] Protect API routes (require authenticated role)
-  - [ ] Keep health check public
-  - [ ] Add 401 redirect to login page
-  - [ ] Update CSP for authentication endpoints
+- [x] Update `staticwebapp.config.json`
+  - [x] Add authentication routes (/.auth/login/*, /.auth/me, /.auth/logout)
+  - [x] Protect API routes (require authenticated role)
+  - [x] Keep health check public
+  - [x] Add 401 redirect to login page
+  - [x] Update CSP for authentication endpoints
 - [ ] Test configuration
   - [ ] Verify authentication routes work
   - [ ] Test route protection (API requires auth)
