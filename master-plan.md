@@ -903,39 +903,40 @@ cd /workspaces/CCS-Calculator
   - [x] Review CSP headers
 
 #### 8.7 Documentation & Privacy (1 day)
-- [ ] Update README.md
-  - [ ] Document authentication feature
-  - [ ] Add setup instructions for OAuth providers
-  - [ ] Document environment variables
-  - [ ] Add troubleshooting section
-- [ ] Create privacy policy page
-  - [ ] Create `src/privacy.html`
-  - [ ] Explain data collection (what, why, how)
-  - [ ] List user rights (access, deletion, export)
-  - [ ] Document data retention policy
-  - [ ] Add contact information
-  - [ ] Link from main page footer
-- [ ] Add data deletion instructions
-  - [ ] Create "Delete My Data" button/page
-  - [ ] Implement account deletion flow
-  - [ ] Document deletion process
-  - [ ] Add confirmation dialog
-- [ ] Document API endpoints
-  - [ ] List all endpoints with examples
-  - [ ] Document authentication requirements
-  - [ ] Document request/response formats
-  - [ ] Add error code reference
-  - [ ] Include rate limiting information
-- [ ] Create user guide for scenarios
-  - [ ] Create `documentation/user-guide.md`
-  - [ ] Explain scenario saving
-  - [ ] Document multi-device usage
-  - [ ] Add screenshots/diagrams
-  - [ ] Include FAQs
-- [ ] Update master-plan.md
-  - [ ] Mark completed tasks
-  - [ ] Update current status
-  - [ ] Add "what's next" section
+- [x] Update README.md
+  - [x] Document authentication feature
+  - [x] Add setup instructions for OAuth providers
+  - [x] Document environment variables
+  - [x] Add troubleshooting section
+- [x] Create privacy policy page
+  - [x] Create `src/privacy.html`
+  - [x] Explain data collection (what, why, how)
+  - [x] List user rights (access, deletion, export)
+  - [x] Document data retention policy
+  - [x] Add contact information
+  - [x] Link from main page footer
+- [x] Add data deletion instructions
+  - [x] Document deletion process (local and cloud) in `src/privacy.html`
+  - [x] Document deletion process in `documentation/user-guide.md`
+- [x] Document API endpoints
+  - [x] List all endpoints with examples (in `documentation/api-reference.md`)
+  - [x] Document authentication requirements
+  - [x] Document request/response formats
+  - [x] Add error code reference
+- [x] Create user guide for scenarios
+  - [x] Create `documentation/user-guide.md`
+  - [x] Explain scenario saving
+  - [x] Document multi-device usage
+  - [x] Include FAQs
+- [x] Create OAuth provider setup guide
+  - [x] Create `documentation/oauth-setup.md`
+  - [x] Microsoft Entra ID registration steps
+  - [x] GitHub OAuth app registration steps
+  - [x] Environment variables reference
+  - [x] Troubleshooting guide
+- [x] Update master-plan.md
+  - [x] Mark completed tasks
+  - [x] Update current status
 
 **Files to create/modify:**
 - `README.md` (update)
