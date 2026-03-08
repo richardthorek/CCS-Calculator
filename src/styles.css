@@ -1164,12 +1164,11 @@ select.valid:focus {
 /* ===== Adjustable Variables Panel ===== */
 .adjustable-variables-panel {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: var(--spacing-md);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
     width: 100%;
     min-width: 0;
-    flex-wrap: wrap;
 }
 
 .adjustable-variables-panel::before {
@@ -1179,8 +1178,6 @@ select.valid:focus {
     color: var(--color-text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    flex-shrink: 0;
-    white-space: nowrap;
 }
 
 .panel-controls {
@@ -1258,12 +1255,6 @@ select.valid:focus {
     .controls-bar {
         gap: var(--spacing-sm);
         padding: var(--spacing-sm);
-    }
-
-    .adjustable-variables-panel {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-xs);
     }
 
     .panel-row {
