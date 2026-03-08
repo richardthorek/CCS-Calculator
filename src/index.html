@@ -89,11 +89,33 @@
                             <span class="user-icon" aria-hidden="true">👤</span>
                             <span id="user-email" class="user-email"></span>
                         </div>
-                        <div class="auth-panel-scenario-name">
+                        <!-- Scenario name row (view mode) -->
+                        <div id="scenario-name-view" class="auth-panel-scenario-name">
                             <span class="scenario-name-label">Scenario:</span>
                             <span id="current-scenario-name" class="current-scenario-name" title="Current scenario name">My Scenario</span>
                             <button type="button" id="btn-rename-scenario" class="btn-rename-scenario" aria-label="Rename current scenario" title="Rename scenario">✏️</button>
                         </div>
+                        <!-- Scenario rename inline form (hidden by default) -->
+                        <div id="scenario-rename-form" class="auth-panel-inline-form" hidden>
+                            <label for="scenario-rename-input" class="visually-hidden">Scenario name</label>
+                            <input type="text" id="scenario-rename-input" class="auth-panel-inline-input"
+                                   maxlength="200" placeholder="Scenario name" autocomplete="off">
+                            <div class="auth-panel-inline-actions">
+                                <button type="button" id="btn-rename-confirm" class="btn-inline-confirm" aria-label="Save name">✓</button>
+                                <button type="button" id="btn-rename-cancel" class="btn-inline-cancel" aria-label="Cancel">✕</button>
+                            </div>
+                        </div>
+                        <!-- New scenario inline form (hidden by default) -->
+                        <div id="new-scenario-form" class="auth-panel-inline-form" hidden>
+                            <label for="new-scenario-input" class="visually-hidden">New scenario name</label>
+                            <input type="text" id="new-scenario-input" class="auth-panel-inline-input"
+                                   maxlength="200" placeholder="New scenario name" autocomplete="off">
+                            <div class="auth-panel-inline-actions">
+                                <button type="button" id="btn-new-scenario-confirm" class="btn-inline-confirm" aria-label="Create scenario">✓</button>
+                                <button type="button" id="btn-new-scenario-cancel" class="btn-inline-cancel" aria-label="Cancel">✕</button>
+                            </div>
+                        </div>
+                        <p id="auth-panel-feedback" class="auth-panel-feedback" hidden></p>
                         <span id="sync-status" class="sync-status" aria-label="Sync status">
                             <span class="sync-icon" aria-hidden="true">☁️</span>
                             <span class="sync-text">Synced</span>

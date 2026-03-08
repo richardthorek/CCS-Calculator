@@ -215,34 +215,48 @@ function wireDashboardNewButton() {
   const btn = document.getElementById('dashboard-new-scenario-btn');
   if (!btn) return;
 
-  btn.addEventListener('click', async () => {
-    const name = prompt('Enter a name for the new scenario:', 'New Scenario');
-    if (!name || !name.trim()) return;
-
-    btn.disabled = true;
-    try {
-      const scenario = await storageManager.createNewScenario(name.trim());
-      if (scenario) {
-        // Navigate to the calculator pre-loaded with the new (empty) scenario
-        window.location.href = `/?scenarioId=${encodeURIComponent(scenario.id)}`;
-      } else {
-        alert('Could not create a new scenario. Please try again.');
-      }
-    } finally {
-      btn.disabled = false;
-    }
+  btn.addEventListener('click', () => {
+    // Reuse the rename modal as a "name your new scenario" dialog
+    openNewScenarioModal();
   });
+}
+
+/** @type {boolean} Whether the rename modal is being used for a new scenario */
+let _isNewScenarioMode = false;
+
+function openNewScenarioModal() {
+  _isNewScenarioMode = true;
+  pendingRenameId = null;
+  const modal = document.getElementById('rename-modal');
+  const titleEl = document.getElementById('rename-modal-title');
+  const input = document.getElementById('rename-input');
+  const confirmBtn = document.getElementById('rename-confirm-btn');
+  const errorEl = document.getElementById('rename-error');
+  if (!modal || !input) return;
+
+  if (titleEl) titleEl.textContent = 'New Scenario';
+  if (confirmBtn) confirmBtn.textContent = 'Create';
+  input.value = 'New Scenario';
+  if (errorEl) errorEl.hidden = true;
+  modal.hidden = false;
+  input.focus();
+  input.select();
 }
 
 // ─── Rename modal ─────────────────────────────────────────────────────────────
 
 function openRenameModal(scenarioId, currentName) {
+  _isNewScenarioMode = false;
   pendingRenameId = scenarioId;
   const modal = document.getElementById('rename-modal');
+  const titleEl = document.getElementById('rename-modal-title');
   const input = document.getElementById('rename-input');
+  const confirmBtn = document.getElementById('rename-confirm-btn');
   const errorEl = document.getElementById('rename-error');
   if (!modal || !input) return;
 
+  if (titleEl) titleEl.textContent = 'Rename Scenario';
+  if (confirmBtn) confirmBtn.textContent = 'Rename';
   input.value = currentName;
   if (errorEl) errorEl.hidden = true;
   modal.hidden = false;
@@ -254,6 +268,12 @@ function closeRenameModal() {
   const modal = document.getElementById('rename-modal');
   if (modal) modal.hidden = true;
   pendingRenameId = null;
+  _isNewScenarioMode = false;
+  // Restore default button text
+  const confirmBtn = document.getElementById('rename-confirm-btn');
+  if (confirmBtn) confirmBtn.textContent = 'Rename';
+  const titleEl = document.getElementById('rename-modal-title');
+  if (titleEl) titleEl.textContent = 'Rename Scenario';
 }
 
 async function confirmRename() {
@@ -274,17 +294,28 @@ async function confirmRename() {
   if (confirmBtn) confirmBtn.disabled = true;
 
   try {
-    const ok = await storageManager.renameScenario(pendingRenameId, newName);
-    if (ok) {
-      // Update the card name in the DOM
-      const card = document.querySelector(`[data-scenario-id="${CSS.escape(pendingRenameId)}"]`);
-      if (card) {
-        const nameEl = card.querySelector('.scenario-card-name');
-        if (nameEl) nameEl.textContent = newName;
+    if (_isNewScenarioMode) {
+      // Creating a new scenario
+      const scenario = await storageManager.createNewScenario(newName);
+      if (scenario) {
+        closeRenameModal();
+        window.location.href = `/?scenarioId=${encodeURIComponent(scenario.id)}`;
+      } else {
+        if (errorEl) { errorEl.textContent = 'Could not create scenario. Please try again.'; errorEl.hidden = false; }
       }
-      closeRenameModal();
     } else {
-      if (errorEl) { errorEl.textContent = 'Rename failed. Please try again.'; errorEl.hidden = false; }
+      // Renaming an existing scenario
+      const ok = await storageManager.renameScenario(pendingRenameId, newName);
+      if (ok) {
+        const card = document.querySelector(`[data-scenario-id="${CSS.escape(pendingRenameId)}"]`);
+        if (card) {
+          const nameEl = card.querySelector('.scenario-card-name');
+          if (nameEl) nameEl.textContent = newName;
+        }
+        closeRenameModal();
+      } else {
+        if (errorEl) { errorEl.textContent = 'Rename failed. Please try again.'; errorEl.hidden = false; }
+      }
     }
   } finally {
     if (confirmBtn) confirmBtn.disabled = false;
@@ -328,7 +359,12 @@ async function confirmDelete() {
       }
       closeDeleteModal();
     } else {
-      alert('Could not delete scenario. Please try again.');
+      // Show inline error in the modal instead of alert()
+      const warningEl = document.querySelector('#delete-modal .modal-warning');
+      if (warningEl) {
+        warningEl.textContent = 'Could not delete scenario. Please try again.';
+        warningEl.style.color = 'var(--color-error, #dc2626)';
+      }
     }
   } finally {
     if (confirmBtn) confirmBtn.disabled = false;

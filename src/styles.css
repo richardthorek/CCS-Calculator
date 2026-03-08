@@ -3373,6 +3373,110 @@ footer {
     outline-offset: 2px;
 }
 
+/* Inline form for rename/new-scenario within the auth panel */
+.auth-panel-inline-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.auth-panel-inline-input {
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    font-family: var(--font-family);
+    color: var(--color-text-primary);
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.auth-panel-inline-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(8, 145, 178, 0.15);
+}
+
+.auth-panel-inline-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    justify-content: flex-end;
+}
+
+.btn-inline-confirm,
+.btn-inline-cancel {
+    padding: 2px var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: var(--font-family);
+    transition: background-color var(--transition-fast);
+    line-height: 1.6;
+}
+
+.btn-inline-confirm:focus-visible,
+.btn-inline-cancel:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.btn-inline-confirm {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+}
+
+.btn-inline-confirm:hover {
+    background: var(--color-primary-dark);
+}
+
+.btn-inline-confirm:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-inline-cancel {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-secondary);
+    border-color: var(--color-border);
+}
+
+.btn-inline-cancel:hover {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+}
+
+/* Inline feedback message in auth panel */
+.auth-panel-feedback {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    padding: 0 var(--spacing-sm);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.auth-panel-feedback--error {
+    color: var(--color-error, #dc2626);
+}
+
+/* Visually hidden (accessible screen-reader label) */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* Action buttons row (New Scenario + My Scenarios) */
 .auth-panel-actions {
     display: flex;
