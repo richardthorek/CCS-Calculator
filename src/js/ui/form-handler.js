@@ -36,6 +36,9 @@ let lastResults = null;
 // Default values for child inputs
 const DEFAULT_HOURS_PER_DAY = '10';
 
+// Duration (ms) before the global error notification auto-dismisses
+const NOTIFICATION_AUTO_DISMISS_MS = 5000;
+
 /**
  * Initialize the calculator form
  */
@@ -1737,11 +1740,11 @@ function showGlobalError(message) {
   if (notification) {
     notification.textContent = message;
     notification.removeAttribute('hidden');
-    // Auto-dismiss after 5 seconds
+    // Auto-dismiss after configured duration
     setTimeout(() => {
       notification.setAttribute('hidden', '');
       notification.textContent = '';
-    }, 5000);
+    }, NOTIFICATION_AUTO_DISMISS_MS);
   } else {
     // Fallback if element not found
     alert(message);

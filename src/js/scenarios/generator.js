@@ -246,7 +246,9 @@ export function createCustomScenario(scenarioData) {
  * @param {number} p2Days - Parent 2 work days
  * @param {number} p1Hours - Parent 1 hours per day
  * @param {number} p2Hours - Parent 2 hours per day
- * @param {number} childHoursPerWeek - Child's typical hours per week if both parents working
+ * @param {number} _childHoursPerWeek - Reserved: child's typical hours per week if both parents
+ *   working. Currently unused as hours are derived from parent schedules, but retained in the
+ *   signature for future use when child-specific hours need to override parent-derived hours.
  * @returns {number} Actual childcare hours needed per week
  */
 function calculateChildcareHoursNeeded(p1Days, p2Days, p1Hours, p2Hours, _childHoursPerWeek) {
