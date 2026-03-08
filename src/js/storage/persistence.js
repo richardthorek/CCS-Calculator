@@ -138,7 +138,7 @@ export function isLocalStorageAvailable() {
     localStorage.setItem(testKey, 'test');
     localStorage.removeItem(testKey);
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -172,7 +172,7 @@ export function hasState() {
     }
 
     return localStorage.getItem(STORAGE_KEY) !== null;
-  } catch (error) {
+  } catch {
     return false;
   }
 }

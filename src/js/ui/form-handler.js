@@ -25,17 +25,19 @@ import {
   checkThresholdRisk
 } from '../calculations/per-person-rates.js';
 import { debounce } from '../utils/debounce.js';
-import { loadState, saveState } from '../storage/persistence.js';
+import { loadState } from '../storage/persistence.js';
 import { storageManager } from '../storage/storage-manager.js';
 import { stripCommas, formatWithCommas } from '../utils/format-input.js';
-import { getCurrentPeriod, convertToPeriod } from './period-selector.js';
-
+import { convertToPeriod } from './period-selector.js';
 // Cache for calculation results to optimize performance
 let lastFormData = null;
 let lastResults = null;
 
 // Default values for child inputs
 const DEFAULT_HOURS_PER_DAY = '10';
+
+// Duration (ms) before the global error notification auto-dismisses
+const NOTIFICATION_AUTO_DISMISS_MS = 5000;
 
 /**
  * Initialize the calculator form
@@ -525,6 +527,7 @@ function showCalculatingIndicator() {
   const resultsSection = document.getElementById('results-section');
   if (resultsSection && !resultsSection.hidden) {
     resultsSection.classList.add('calculating');
+    resultsSection.setAttribute('aria-busy', 'true');
   }
 }
 
@@ -535,6 +538,7 @@ function hideCalculatingIndicator() {
   const resultsSection = document.getElementById('results-section');
   if (resultsSection) {
     resultsSection.classList.remove('calculating');
+    resultsSection.removeAttribute('aria-busy');
   }
 }
 
@@ -595,7 +599,7 @@ function collectFormData() {
 
   // Children data
   const childCards = document.querySelectorAll('.child-card');
-  const children = Array.from(childCards).map((card, index) => {
+  const children = Array.from(childCards).map((card) => {
     const childIndex = card.dataset.childIndex;
     const ageValue = card.querySelector(`#child-${childIndex}-age`).value;
     const careType = card.querySelector(`#child-${childIndex}-care-type`).value;
@@ -1728,10 +1732,23 @@ function showError(fieldId, message) {
 }
 
 /**
- * Show global error message
+ * Show global error message as a non-blocking notification
+ * @param {string} message - Error message to display
  */
 function showGlobalError(message) {
-  alert(message); // Simple implementation - could be enhanced with a toast/modal
+  const notification = document.getElementById('global-notification');
+  if (notification) {
+    notification.textContent = message;
+    notification.removeAttribute('hidden');
+    // Auto-dismiss after configured duration
+    setTimeout(() => {
+      notification.setAttribute('hidden', '');
+      notification.textContent = '';
+    }, NOTIFICATION_AUTO_DISMISS_MS);
+  } else {
+    // Fallback if element not found
+    alert(message);
+  }
 }
 
 /**
@@ -1816,22 +1833,6 @@ function formatCareType(careType) {
 }
 
 /**
- * Save current form state via storage manager (local + cloud if authenticated)
- */
-function saveCurrentState() {
-  try {
-    const formData = collectFormData();
-    const state = {
-      formData: formData,
-      timestamp: new Date().toISOString()
-    };
-    storageManager.autoSave(state);
-  } catch (error) {
-    console.error('Error saving current state:', error);
-  }
-}
-
-/**
  * Restore form data from saved state
  * @param {Object} formData - The saved form data
  */
@@ -1902,7 +1903,7 @@ function restoreFormData(formData) {
       }
 
       // Add children from saved state
-      formData.children.forEach((childData, index) => {
+      formData.children.forEach((childData) => {
         addChild();
 
         // Get the child card that was just added

@@ -293,7 +293,7 @@ function getChildSummary(childIndex) {
       </div>
       <div class="summary-item">
         <span class="summary-label">Fee:</span>
-        <span class="summary-value">${formattedFee}/day</span>
+        <span class="summary-value">${formattedFee}/${feeType === 'hourly' ? 'hr' : 'day'}</span>
       </div>
       <div class="summary-item">
         <span class="summary-label">Days:</span>

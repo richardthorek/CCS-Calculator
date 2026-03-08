@@ -16,7 +16,7 @@ import { calculateEffectiveHourlyRate, calculateSubsidyPerHour, calculateWeeklyC
  * @returns {Array} Array of scenario objects
  */
 export function generateAllScenarios(baseData) {
-  const { parent1BaseIncome, parent2BaseIncome = 0, parent1HoursPerDay, parent2HoursPerDay = 0, children } = baseData;
+  const { parent2BaseIncome = 0 } = baseData;
 
   const scenarios = [];
 
@@ -58,9 +58,6 @@ export function generateSimplifiedScenarios(baseData) {
     parent2BaseIncome = 0,
     parent1Days,
     parent2Days = 0,
-    parent1HoursPerDay,
-    parent2HoursPerDay = 0,
-    children
   } = baseData;
 
   const scenarios = [];
@@ -149,7 +146,7 @@ export function generateSimplifiedScenarios(baseData) {
  * @returns {Array} Array of scenario objects
  */
 export function generateCommonScenarios(baseData) {
-  const { parent1BaseIncome, parent2BaseIncome, parent1HoursPerDay, parent2HoursPerDay, children } = baseData;
+  const { parent2BaseIncome } = baseData;
 
   // Common work day combinations for two parents
   const commonCombinations = [
@@ -214,7 +211,6 @@ function generateScenarioName(p1Days, p2Days, isTwoParent = true) {
  * @returns {Array} Array of single parent scenarios
  */
 export function generateSingleParentScenarios(baseData) {
-  const { parent1BaseIncome, parent1HoursPerDay } = baseData;
 
   const singleParentCombinations = [
     { days: 5, name: '5 days (Full-time)' },
@@ -250,10 +246,12 @@ export function createCustomScenario(scenarioData) {
  * @param {number} p2Days - Parent 2 work days
  * @param {number} p1Hours - Parent 1 hours per day
  * @param {number} p2Hours - Parent 2 hours per day
- * @param {number} childHoursPerWeek - Child's typical hours per week if both parents working
+ * @param {number} _childHoursPerWeek - Reserved: child's typical hours per week if both parents
+ *   working. Currently unused as hours are derived from parent schedules, but retained in the
+ *   signature for future use when child-specific hours need to override parent-derived hours.
  * @returns {number} Actual childcare hours needed per week
  */
-function calculateChildcareHoursNeeded(p1Days, p2Days, p1Hours, p2Hours, childHoursPerWeek) {
+function calculateChildcareHoursNeeded(p1Days, p2Days, p1Hours, p2Hours, _childHoursPerWeek) {
   // If neither parent is working, no childcare needed
   if (p1Days === 0 && p2Days === 0) {
     return 0;
@@ -322,7 +320,7 @@ function createScenario(data) {
     const subsidisedHours = subsidisedHoursResult.hoursPerWeek;
 
     // Calculate costs for each child
-    const childResults = children.map((child, index) => {
+    const childResults = children.map((child) => {
       const { age, careType } = child;
 
       // Normalize child data - convert daily fees to hourly if needed

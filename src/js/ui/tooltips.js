@@ -233,8 +233,7 @@ function showTooltip(icon, tooltipKey) {
  * @param {HTMLElement} icon - Tooltip icon
  * @param {HTMLElement} tooltip - Tooltip popup
  */
-function positionTooltip(icon, tooltip) {
-  const iconRect = icon.getBoundingClientRect();
+function positionTooltip(_icon, tooltip) {
   const viewportWidth = window.innerWidth;
 
   // Default: position below and to the right
