@@ -637,18 +637,368 @@ All four core calculation modules have been implemented with full test coverage:
 
 
 
-### Phase 8: Backend Integration (Optional)
-**Goal:** Add server-side features if needed
+### Phase 8: User Authentication & Cloud Storage 🎯 NEXT
+**Goal:** Enable users to save scenarios across devices with Azure authentication and Table Storage
+**Status:** Design Complete - Ready for Implementation
+**Documentation:** `documentation/user-authentication-storage-design.md`
+**Estimated Duration:** 2-3 weeks
 
-#### 8.1 Azure Functions Setup
-- [ ] Create Azure Function for calculation validation
-- [ ] Set up API endpoints in `api/` folder
-- [ ] Implement error handling and logging
-- [ ] Add CORS configuration
-- [ ] Test locally with Azure Functions Core Tools
+**User Benefits:**
+- ✅ Save scenarios across devices
+- ✅ Never lose data when clearing browser
+- ✅ Access scenarios from any device
+- ✅ Auto-save on every change (no manual save needed)
+- ✅ Multiple scenarios per user (future expansion)
+- ✅ Secure authentication via Google/Microsoft/GitHub
 
-#### 8.2 Data Persistence (Optional)
-- [ ] Set up Azure Storage or Database (if needed)
-- [ ] Implement save/load scenarios functionality
-- [ ] Add user session management
+**Technical Approach:**
+- Azure Static Web App built-in authentication (no additional SDKs needed)
+- Azure Table Storage for scenario persistence
+- Progressive enhancement (app works without login, localStorage fallback)
+- Auto-save with debouncing every 3 seconds
+- Conflict resolution for multi-device editing
+
+#### 8.1 Azure Infrastructure Setup (CLI)
+- [x] Create comprehensive design document
+- [x] Create Azure CLI setup script (`scripts/setup-azure-auth-storage.sh`)
+- [ ] Run Azure CLI commands to provision resources:
+  - [ ] Create Azure Storage Account
+  - [ ] Create Table Storage tables (userscenarios, userprofiles)
+  - [ ] Configure Static Web App authentication settings
+  - [ ] Register OAuth providers (Google, Microsoft, GitHub)
+  - [ ] Add redirect URIs for each provider
+  - [ ] Store client IDs/secrets securely
+  - [ ] Add Static Web App app settings
+    - [ ] AZURE_STORAGE_CONNECTION_STRING
+    - [ ] TABLE_NAME_SCENARIOS="userscenarios"
+    - [ ] TABLE_NAME_PROFILES="userprofiles"
+  - [ ] Add GitHub repo secrets
+    - [ ] AZURE_STORAGE_CONNECTION_STRING
+    - [ ] AZURE_STATIC_WEB_APPS_API_TOKEN
+  - [ ] Verify infrastructure with test data
+
+**Commands to run:**
+```bash
+cd /workspaces/CCS-Calculator
+./scripts/setup-azure-auth-storage.sh
+```
+
+**Estimated Cost:**
+- 1,000 users: ~$0.26/month
+- 10,000 users: ~$17.60/month
+
+#### 8.2 Backend API Development (2-3 days)
+- [ ] Install Azure Storage SDK in api/package.json
+  - [ ] Add @azure/data-tables dependency
+  - [ ] Document version and rationale
+- [ ] Create Table Storage service module
+  - [ ] Create `api/src/services/table-storage.js`
+  - [ ] Implement connection using environment variable
+  - [ ] Create CRUD operations for entities
+  - [ ] Add error handling and logging
+- [ ] Implement user profile endpoints
+  - [ ] Create `api/src/services/user-profile.js`
+  - [ ] Implement `GET /api/user/profile`
+  - [ ] Implement `PUT /api/user/profile`
+  - [ ] Add user profile schema validation
+- [ ] Implement scenario management endpoints
+  - [ ] Create `api/src/services/scenarios.js`
+  - [ ] Implement `GET /api/scenarios` (list all user scenarios)
+  - [ ] Implement `GET /api/scenarios/:id` (get single scenario)
+  - [ ] Implement `POST /api/scenarios` (create new scenario)
+  - [ ] Implement `PUT /api/scenarios/:id` (update scenario)
+  - [ ] Implement `DELETE /api/scenarios/:id` (delete scenario)
+  - [ ] Implement `POST /api/scenarios/:id/activate` (set active scenario)
+- [ ] Add authentication middleware
+  - [ ] Create `api/src/utils/auth.js`
+  - [ ] Extract user ID from x-ms-client-principal header
+  - [ ] Validate user authentication on protected endpoints
+  - [ ] Add authorization checks (user can only access own data)
+- [ ] Implement conflict resolution
+  - [ ] Add ETag support for optimistic concurrency
+  - [ ] Return 409 Conflict when stale data detected
+  - [ ] Include server version in conflict response
+- [ ] Write unit tests for API functions
+  - [ ] Test Table Storage service operations
+  - [ ] Test authentication middleware
+  - [ ] Test scenario CRUD operations
+  - [ ] Test error handling scenarios
+  - [ ] Test conflict resolution
+- [ ] Document API endpoints
+  - [ ] Add OpenAPI/Swagger documentation
+  - [ ] Document authentication requirements
+  - [ ] Document error responses
+  - [ ] Add usage examples
+
+**Files to create:**
+- `api/src/services/table-storage.js`
+- `api/src/services/user-profile.js`
+- `api/src/services/scenarios.js`
+- `api/src/utils/auth.js`
+- `api/src/functions/user-profile.js`
+- `api/src/functions/scenarios.js`
+- `api/tests/services/table-storage.test.js`
+- `api/tests/services/scenarios.test.js`
+- `api/tests/utils/auth.test.js`
+
+#### 8.3 Frontend Authentication Module (1-2 days)
+- [ ] Create authentication manager module
+  - [ ] Create `src/js/auth/auth-manager.js`
+  - [ ] Implement checkAuth() - query /.auth/me endpoint
+  - [ ] Implement getUser() - get current user info
+  - [ ] Implement isAuthenticated() - check auth status
+  - [ ] Implement login(provider) - redirect to OAuth
+  - [ ] Implement logout() - clear session
+  - [ ] Add singleton pattern for manager
+- [ ] Add authentication UI components
+  - [ ] Add auth container to `src/index.html`
+  - [ ] Create login prompt with provider buttons
+  - [ ] Create user info display (email, sign out button)
+  - [ ] Add sync status indicator
+  - [ ] Add privacy notice and explanatory text
+- [ ] Add CSS styling for auth UI
+  - [ ] Style provider login buttons
+  - [ ] Style user badge and info display
+  - [ ] Style sync status indicator (saving/synced/error states)
+  - [ ] Ensure responsive design
+  - [ ] Add animations for state transitions
+- [ ] Integrate auth check on app load
+  - [ ] Call authManager.checkAuth() in app.js
+  - [ ] Show/hide UI elements based on auth state
+  - [ ] Update UI when user logs in/out
+- [ ] Add login/logout button handlers
+  - [ ] Wire up provider selection
+  - [ ] Handle login redirect
+  - [ ] Handle logout with confirmation
+  - [ ] Update UI immediately
+- [ ] Test OAuth flow with multiple providers
+  - [ ] Test Google authentication
+  - [ ] Test Microsoft authentication
+  - [ ] Test GitHub authentication
+  - [ ] Test logout flow
+  - [ ] Test redirect after login
+
+**Files to create/modify:**
+- `src/js/auth/auth-manager.js` (new)
+- `src/index.html` (add auth UI)
+- `src/styles.css` (add auth styling)
+- `src/app.js` (initialize auth on load)
+
+#### 8.4 Frontend Storage Manager (2-3 days)
+- [ ] Create cloud storage manager module
+  - [ ] Create `src/js/storage/storage-manager.js`
+  - [ ] Implement initialize() - check cloud availability
+  - [ ] Implement loadActiveScenario() - load from cloud or localStorage
+  - [ ] Implement saveScenario() - save to both cloud and localStorage
+  - [ ] Implement autoSave() - debounced auto-save (3 seconds)
+  - [ ] Implement listScenarios() - get all user scenarios
+  - [ ] Implement deleteScenario() - remove scenario
+  - [ ] Implement getUserProfile() - get user preferences
+  - [ ] Add singleton pattern
+- [ ] Implement sync logic
+  - [ ] Create syncWithCloud() method
+  - [ ] Detect local vs cloud data conflicts
+  - [ ] Implement "first login" migration (upload localStorage data)
+  - [ ] Add optimistic UI updates
+  - [ ] Handle online/offline transitions
+- [ ] Add conflict resolution
+  - [ ] Detect version conflicts (409 response)
+  - [ ] Implement "server wins" default strategy
+  - [ ] Log conflicts for future UI enhancement
+  - [ ] Update local state with server data
+- [ ] Update form handler for auto-save
+  - [ ] Import storageManager in `src/js/ui/form-handler.js`
+  - [ ] Call autoSave() on input event
+  - [ ] Call autoSave() on blur event
+  - [ ] Pass current form state to storage manager
+  - [ ] Remove direct localStorage calls (use storage manager)
+- [ ] Add sync status UI
+  - [ ] Create updateSyncStatus() method
+  - [ ] Show status: saving, synced, error, conflict
+  - [ ] Update icon and text based on status
+  - [ ] Add CSS transitions for status changes
+- [ ] Test offline/online scenarios
+  - [ ] Test auto-save when authenticated
+  - [ ] Test fallback to localStorage when offline
+  - [ ] Test sync after coming back online
+  - [ ] Test "first login" data migration
+  - [ ] Test error handling (API failures)
+  - [ ] Test conflict scenarios (multi-device editing)
+
+**Files to create/modify:**
+- `src/js/storage/storage-manager.js` (new)
+- `src/js/ui/form-handler.js` (update to use storage manager)
+- `src/js/ui/sync-status.js` (new, optional)
+- `src/index.html` (add sync status indicator)
+- `src/styles.css` (add sync status styling)
+
+#### 8.5 Update Static Web App Configuration (repo, 30 minutes)
+- [ ] Update `staticwebapp.config.json`
+  - [ ] Add authentication routes (/.auth/login/*, /.auth/me, /.auth/logout)
+  - [ ] Protect API routes (require authenticated role)
+  - [ ] Keep health check public
+  - [ ] Add 401 redirect to login page
+  - [ ] Update CSP for authentication endpoints
+- [ ] Test configuration
+  - [ ] Verify authentication routes work
+  - [ ] Test route protection (API requires auth)
+  - [ ] Test CSP doesn't block auth flows
+  - [ ] Verify redirects work correctly
+
+**Files to modify:**
+- `staticwebapp.config.json`
+
+#### 8.6 Testing & Polish (2-3 days)
+- [ ] Write integration tests
+  - [ ] Test full authentication flow
+  - [ ] Test scenario save/load cycle
+  - [ ] Test auto-save functionality
+  - [ ] Test sync after login
+  - [ ] Test conflict scenarios
+  - [ ] Test error handling (network failures)
+  - [ ] Test localStorage fallback
+- [ ] Manual testing checklist
+  - [ ] Sign in with each provider (Google, Microsoft, GitHub)
+  - [ ] Input calculator data and verify auto-save
+  - [ ] Log out and log back in (data persists)
+  - [ ] Open calculator on different device (data syncs)
+  - [ ] Edit while offline (saves to localStorage)
+  - [ ] Go back online (syncs to cloud)
+  - [ ] Test "first login" migration
+  - [ ] Delete scenario
+  - [ ] Test sync status indicator
+- [ ] Performance testing
+  - [ ] Measure API response times (< 200ms target)
+  - [ ] Measure auto-save latency (< 3s after last change)
+  - [ ] Test with multiple scenarios (10+)
+  - [ ] Test concurrent edits from multiple tabs
+  - [ ] Load test with simulated concurrent users
+- [ ] Browser compatibility testing
+  - [ ] Test on Chrome (latest)
+  - [ ] Test on Firefox (latest)
+  - [ ] Test on Safari (latest)
+  - [ ] Test on Edge (latest)
+  - [ ] Test on mobile browsers (iOS Safari, Android Chrome)
+- [ ] Accessibility testing
+  - [ ] Verify auth UI is keyboard accessible
+  - [ ] Test with screen reader
+  - [ ] Check color contrast
+  - [ ] Verify ARIA labels
+- [ ] Security testing
+  - [ ] Verify users can only access own data
+  - [ ] Test expired session handling
+  - [ ] Verify HTTPS enforcement
+  - [ ] Check for XSS vulnerabilities
+  - [ ] Review CSP headers
+
+#### 8.7 Documentation & Privacy (1 day)
+- [ ] Update README.md
+  - [ ] Document authentication feature
+  - [ ] Add setup instructions for OAuth providers
+  - [ ] Document environment variables
+  - [ ] Add troubleshooting section
+- [ ] Create privacy policy page
+  - [ ] Create `src/privacy.html`
+  - [ ] Explain data collection (what, why, how)
+  - [ ] List user rights (access, deletion, export)
+  - [ ] Document data retention policy
+  - [ ] Add contact information
+  - [ ] Link from main page footer
+- [ ] Add data deletion instructions
+  - [ ] Create "Delete My Data" button/page
+  - [ ] Implement account deletion flow
+  - [ ] Document deletion process
+  - [ ] Add confirmation dialog
+- [ ] Document API endpoints
+  - [ ] List all endpoints with examples
+  - [ ] Document authentication requirements
+  - [ ] Document request/response formats
+  - [ ] Add error code reference
+  - [ ] Include rate limiting information
+- [ ] Create user guide for scenarios
+  - [ ] Create `documentation/user-guide.md`
+  - [ ] Explain scenario saving
+  - [ ] Document multi-device usage
+  - [ ] Add screenshots/diagrams
+  - [ ] Include FAQs
+- [ ] Update master-plan.md
+  - [ ] Mark completed tasks
+  - [ ] Update current status
+  - [ ] Add "what's next" section
+
+**Files to create/modify:**
+- `README.md` (update)
+- `src/privacy.html` (new)
+- `documentation/api-reference.md` (new)
+- `documentation/user-guide.md` (new)
+- `documentation/oauth-setup.md` (new)
+- `master-plan.md` (update)
+
+#### 8.8 Deployment (1 day)
+- [ ] Update GitHub Actions workflow
+  - [ ] Add environment variables
+  - [ ] Add Azure credentials
+  - [ ] Configure Static Web App deployment
+  - [ ] Add API deployment step
+  - [ ] Add smoke tests after deployment
+- [ ] Deploy to Azure Static Web App
+  - [ ] Push code to main branch
+  - [ ] Verify GitHub Actions runs successfully
+  - [ ] Check deployment logs
+  - [ ] Verify API functions deployed
+- [ ] Configure custom domain (if applicable)
+  - [ ] Set up DNS records
+  - [ ] Configure SSL certificate
+  - [ ] Update OAuth redirect URIs
+  - [ ] Test with custom domain
+- [ ] Set up monitoring and alerts
+  - [ ] Enable Application Insights
+  - [ ] Configure alerts for errors
+  - [ ] Set up availability monitoring
+  - [ ] Create dashboard for key metrics
+- [ ] Perform smoke tests on production
+  - [ ] Test authentication flow
+  - [ ] Test scenario save/load
+  - [ ] Test API endpoints
+  - [ ] Verify monitoring is working
+  - [ ] Check error rates
+- [ ] Announce feature to users
+  - [ ] Create announcement banner
+  - [ ] Update help documentation
+  - [ ] Post on social media (if applicable)
+  - [ ] Send email to existing users (if applicable)
+
+**Acceptance Criteria:**
+- ✅ Users can sign in with Google, Microsoft, or GitHub
+- ✅ Scenarios automatically save every 3 seconds after changes
+- ✅ Scenarios sync across devices
+- ✅ App works offline (localStorage fallback)
+- ✅ Sync status indicator shows current state
+- ✅ Privacy policy is clear and accessible
+- ✅ Users can delete their data
+- ✅ All tests pass (unit, integration, E2E)
+- ✅ Performance meets targets (< 200ms API, < 3s auto-save)
+- ✅ Zero security vulnerabilities
+- ✅ Deployed to production and monitored
+
+**Risks & Mitigation:**
+- **Risk:** OAuth provider setup complexity
+  - **Mitigation:** Clear documentation, step-by-step guides
+- **Risk:** Sync conflicts between devices
+  - **Mitigation:** Conflict detection + "server wins" strategy initially
+- **Risk:** Storage costs higher than expected
+  - **Mitigation:** Monitor usage, add quotas per user if needed
+- **Risk:** Privacy concerns from users
+  - **Mitigation:** Transparent privacy policy, opt-in approach, easy deletion
+- **Risk:** Authentication breaks app for anonymous users
+  - **Mitigation:** Progressive enhancement, localStorage fallback always works
+
+**Future Enhancements (Phase 9+):**
+- Multiple scenarios per user (scenario management UI)
+- Scenario sharing via links
+- Scenario templates/presets saved per user
+- User-friendly conflict resolution UI
+- Scenario versioning/history
+- Export all scenarios at once
+- Team/family scenario sharing
 - [ ] Test data persiste
