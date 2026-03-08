@@ -26,6 +26,7 @@ import {
 } from '../calculations/per-person-rates.js';
 import { debounce } from '../utils/debounce.js';
 import { loadState, saveState } from '../storage/persistence.js';
+import { storageManager } from '../storage/storage-manager.js';
 import { stripCommas, formatWithCommas } from '../utils/format-input.js';
 import { getCurrentPeriod, convertToPeriod } from './period-selector.js';
 
@@ -44,17 +45,35 @@ export function initializeForm() {
   const addChildBtn = document.getElementById('add-child-btn');
   const resetBtn = document.getElementById('reset-btn');
   const applyAllBtn = document.getElementById('apply-all-btn');
-  
-  // Try to restore saved state
-  const savedState = loadState();
-  
-  if (savedState && savedState.formData) {
-    // Restore form data from localStorage
-    restoreFormData(savedState.formData);
+
+  // Restore state from localStorage immediately for fast initial render (local-first)
+  const initialState = loadState();
+  if (initialState && initialState.formData) {
+    restoreFormData(initialState.formData);
   } else {
     // Add first child by default if no saved state
     addChild();
   }
+
+  // Initialize storage manager in the background (checks auth, syncs cloud if authenticated).
+  // If the cloud has a newer version than localStorage, the form is silently updated once
+  // the async check resolves. This is intentional progressive enhancement: show local data
+  // immediately, then refresh with cloud data only when it differs.
+  storageManager.initialize().then(() => {
+    return storageManager.loadActiveScenario();
+  }).then((cloudState) => {
+    if (cloudState && cloudState.formData) {
+      const localTimestamp = new Date(initialState?.timestamp || 0);
+      const cloudTimestamp = new Date(cloudState.timestamp || 0);
+      // Only re-render if cloud data is newer than what we already showed
+      if (cloudTimestamp > localTimestamp) {
+        restoreFormData(cloudState.formData);
+        updateAdjustedIncomeDisplays();
+      }
+    }
+  }).catch((error) => {
+    console.error('Storage initialization error:', error);
+  });
   
   // Event listeners for form submission
   addChildBtn.addEventListener('click', addChild);
@@ -85,9 +104,6 @@ function setupRealtimeUpdates() {
   
   // Create debounced calculation function
   const debouncedCalculate = debounce(handleRealtimeCalculation, 500);
-  
-  // Create debounced save function
-  const debouncedSave = debounce(saveCurrentState, 500);
 
   const shouldHandleFieldChange = (target) => {
     if (!target || !target.tagName) {
@@ -103,6 +119,19 @@ function setupRealtimeUpdates() {
     return tagName === 'SELECT' || tagName === 'TEXTAREA';
   };
 
+  const triggerAutoSave = () => {
+    try {
+      const formData = collectFormData();
+      const state = {
+        formData,
+        timestamp: new Date().toISOString()
+      };
+      storageManager.autoSave(state);
+    } catch (error) {
+      console.error('Error triggering auto-save:', error);
+    }
+  };
+
   const triggerRealtimeUpdate = () => {
     // Update adjusted income displays immediately (no debounce for better UX)
     updateAdjustedIncomeDisplays();
@@ -110,9 +139,11 @@ function setupRealtimeUpdates() {
     // Show calculating indicator
     showCalculatingIndicator();
 
-    // Trigger debounced calculation and save
+    // Trigger debounced calculation
     debouncedCalculate();
-    debouncedSave();
+
+    // Trigger auto-save via storage manager (debounced 3s, shows sync status)
+    triggerAutoSave();
   };
   
   // Listen to input events on the form (using event delegation)
@@ -128,6 +159,13 @@ function setupRealtimeUpdates() {
       triggerRealtimeUpdate();
     }
   });
+
+  // Listen to blur events on inputs to save when focus leaves a field
+  form.addEventListener('blur', (event) => {
+    if (shouldHandleFieldChange(event.target)) {
+      triggerAutoSave();
+    }
+  }, true);
 }
 
 /**
@@ -1720,7 +1758,7 @@ function formatCareType(careType) {
 }
 
 /**
- * Save current form state to localStorage
+ * Save current form state via storage manager (local + cloud if authenticated)
  */
 function saveCurrentState() {
   try {
@@ -1729,7 +1767,7 @@ function saveCurrentState() {
       formData: formData,
       timestamp: new Date().toISOString()
     };
-    saveState(state);
+    storageManager.autoSave(state);
   } catch (error) {
     console.error('Error saving current state:', error);
   }

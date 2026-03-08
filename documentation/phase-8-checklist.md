@@ -237,59 +237,59 @@ Location: ________________
 **Duration:** 2-3 days
 
 ### 8.4.1 Storage Manager Module
-- [ ] Create `src/js/storage/storage-manager.js`
-- [ ] Create StorageManager class
-- [ ] Import authManager
-- [ ] Import existing persistence module
-- [ ] Import debounce utility
-- [ ] Add class properties (cloudStorageAvailable, lastSavedState, etc.)
-- [ ] Create debounced save method (3 seconds)
+- [x] Create `src/js/storage/storage-manager.js`
+- [x] Create StorageManager class
+- [x] Import authManager
+- [x] Import existing persistence module
+- [x] Import debounce utility
+- [x] Add class properties (cloudStorageAvailable, lastSavedState, etc.)
+- [x] Create debounced save method (3 seconds)
 
 ### 8.4.2 Core Methods
-- [ ] Implement `initialize()` - check auth & sync
-- [ ] Implement `loadActiveScenario()` - cloud first, localStorage fallback
-- [ ] Implement `loadScenario(scenarioId)` - fetch from API
-- [ ] Implement `saveScenario(state, name)` - save to both cloud & local
-- [ ] Implement `autoSave(state)` - debounced save trigger
-- [ ] Implement `listScenarios()` - fetch all user scenarios
-- [ ] Implement `deleteScenario(scenarioId)` - delete from cloud
-- [ ] Implement `getUserProfile()` - fetch user preferences
-- [ ] Export singleton instance
+- [x] Implement `initialize()` - check auth & sync
+- [x] Implement `loadActiveScenario()` - cloud first, localStorage fallback
+- [x] Implement `loadScenario(scenarioId)` - fetch from API
+- [x] Implement `saveScenario(state, name)` - save to both cloud & local
+- [x] Implement `autoSave(state)` - debounced save trigger
+- [x] Implement `listScenarios()` - fetch all user scenarios
+- [x] Implement `deleteScenario(scenarioId)` - delete from cloud
+- [x] Implement `getUserProfile()` - fetch user preferences
+- [x] Export singleton instance
 
 ### 8.4.3 Sync Logic
-- [ ] Implement `syncWithCloud()` - merge local/cloud data
-- [ ] Load local state from localStorage
-- [ ] Load cloud state from API
-- [ ] Compare timestamps
-- [ ] Upload local data if newer
-- [ ] Download cloud data if newer
-- [ ] Handle first-time login (no cloud data)
-- [ ] Update sync status UI
+- [x] Implement `syncWithCloud()` - merge local/cloud data
+- [x] Load local state from localStorage
+- [x] Load cloud state from API
+- [x] Compare timestamps
+- [x] Upload local data if newer
+- [x] Download cloud data if newer
+- [x] Handle first-time login (no cloud data)
+- [x] Update sync status UI
 
 ### 8.4.4 Conflict Resolution
-- [ ] Implement `handleConflict(conflict)` method
-- [ ] Parse 409 response
-- [ ] Log conflict for debugging
-- [ ] Apply "server wins" strategy
-- [ ] Update local storage with server data
-- [ ] Update sync status UI
+- [x] Implement `handleConflict(conflict)` method
+- [x] Parse 409 response
+- [x] Log conflict for debugging
+- [x] Apply "server wins" strategy
+- [x] Update local storage with server data
+- [x] Update sync status UI
 
 ### 8.4.5 Sync Status UI
-- [ ] Implement `updateSyncStatus(status)` method
-- [ ] Find sync status element
-- [ ] Update icon based on status (saving/synced/error)
-- [ ] Update text based on status
-- [ ] Add CSS transitions
-- [ ] Test all status states
+- [x] Implement `updateSyncStatus(status)` method
+- [x] Find sync status element
+- [x] Update icon based on status (saving/synced/error)
+- [x] Update text based on status
+- [x] Add CSS transitions
+- [x] Test all status states
 
 ### 8.4.6 Form Handler Integration
-- [ ] Open `src/js/ui/form-handler.js`
-- [ ] Import storageManager
-- [ ] Replace saveState() calls with storageManager.autoSave()
-- [ ] Add autoSave() call to input event listener
-- [ ] Add autoSave() call to blur event listener
-- [ ] Remove direct localStorage calls
-- [ ] Test auto-save triggers
+- [x] Open `src/js/ui/form-handler.js`
+- [x] Import storageManager
+- [x] Replace saveState() calls with storageManager.autoSave()
+- [x] Add autoSave() call to input event listener
+- [x] Add autoSave() call to blur event listener
+- [x] Remove direct localStorage calls
+- [x] Test auto-save triggers
 
 ### 8.4.7 App Initialization
 - [ ] Open `src/app.js`
@@ -300,14 +300,14 @@ Location: ________________
 - [ ] Test initial load flow
 
 ### 8.4.8 Testing
-- [ ] Test auto-save when authenticated (watch network tab)
-- [ ] Test localStorage fallback when not authenticated
-- [ ] Test sync after login
-- [ ] Test "first login" migration
-- [ ] Test offline behavior
-- [ ] Test coming back online (sync)
-- [ ] Test conflict scenarios
-- [ ] Test error handling (API down)
+- [x] Test auto-save when authenticated (watch network tab)
+- [x] Test localStorage fallback when not authenticated
+- [x] Test sync after login
+- [x] Test "first login" migration
+- [x] Test offline behavior
+- [x] Test coming back online (sync)
+- [x] Test conflict scenarios
+- [x] Test error handling (API down)
 - [ ] Verify sync status updates
 
 ---
