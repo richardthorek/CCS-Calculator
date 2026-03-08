@@ -10,12 +10,52 @@ on:
       - main
 
 jobs:
+  test_and_quality:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Test and Quality Gate
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd api && npm ci
+
+      - name: Run lint checks
+        run: |
+          echo "Running lint checks..."
+          npm run lint
+          echo "Lint checks passed."
+
+      - name: Run unit tests
+        run: |
+          echo "Running unit tests..."
+          npm test
+          echo "All unit tests passed."
+
   build_and_deploy_job:
+    needs: test_and_quality
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
+    permissions:
+      contents: read
+      pull-requests: write
+      statuses: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           submodules: true
           lfs: false
@@ -33,6 +73,51 @@ vvvvvvn  xm                 skip_deploy_on_missing_secrets: true
           api_location: "./api" # Api source code path - optional
           output_location: "." # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
+
+      - name: Create issue on deployment failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runId    = context.runId;
+            const repo     = context.repo;
+            const sha      = context.sha;
+            const ref      = context.ref;
+            const branch   = ref.replace('refs/heads/', '');
+            const actor    = context.actor;
+            const runUrl   = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${runId}`;
+
+            const body = [
+              '#### Deployment Failure Summary',
+              `- **Run ID:** ${runId}`,
+              `- **Workflow:** ${context.workflow}`,
+              `- **Commit:** ${sha}`,
+              `- **Branch:** ${branch}`,
+              `- **Failed step:** See run logs for exact failed step`,
+              '',
+              '#### Links',
+              `- [Run logs](${runUrl})`,
+              '',
+              '---',
+              '#### Troubleshooting Steps',
+              '- Review linked logs for error reason (look at failed step output)',
+              '- Re-run checks locally if possible',
+              '- Ensure all tests and lint pass locally: `npm test`, `npm run lint`, etc.',
+              '- Fix any failing code, push a new commit, and re-run',
+              '- If infra-related: Check Actions runner status and secrets',
+              '- Ask for help in #devops or project Discord if blocked',
+              '',
+              `/assign @${actor}`,
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner: repo.owner,
+              repo:  repo.repo,
+              title: `🚨 Deployment failure on \`${branch}\` (run ${runId})`,
+              body,
+              labels: ['bug'],
+              assignees: [actor],
+            });
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
