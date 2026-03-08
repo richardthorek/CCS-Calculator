@@ -67,7 +67,7 @@ This document outlines the design for adding user authentication and cloud-based
 │              Azure Static Web App (HTTPS)                        │
 │  ┌──────────────────────────────────────────────────────────┐  │
 │  │  Built-in Authentication Provider                         │  │
-│  │  - Microsoft, Google, Twitter, GitHub                     │  │
+│  │  - Microsoft (Entra ID), GitHub                           │  │
 │  │  - Handles OAuth flows, tokens, user identity            │  │
 │  └──────────────────────────────────────────────────────────┘  │
 └───────────────────────────────────┬─────────────────────────────┘
@@ -110,11 +110,12 @@ This document outlines the design for adding user authentication and cloud-based
 Azure Static Web Apps provides built-in authentication without requiring additional code or SDKs on the frontend. It handles the entire OAuth flow automatically.
 
 #### Supported Providers
-- Microsoft (Azure AD)
-- Google
-- Twitter
+
+⚠️ **Azure Static Web Apps built-in authentication supports only:**
+- Microsoft (Azure AD / Entra ID)
 - GitHub
-- Facebook (optional)
+
+**Google OAuth is NOT supported** with built-in SWA authentication. To add Google, you would need custom OAuth implementation.
 
 #### Authentication Flow
 
@@ -146,7 +147,7 @@ Azure SWA provides user identity via `/.auth/me`:
   "clientPrincipal": {
     "userId": "d75b260a64504067bfc5b2905e3b8182",
     "userRoles": ["anonymous", "authenticated"],
-    "identityProvider": "google",
+    "identityProvider": "aad",
     "userDetails": "user@example.com"
   }
 }
@@ -221,10 +222,10 @@ class AuthManager {
 
   /**
    * Initiate login with provider
-   * @param {string} provider - 'google', 'microsoft', 'github', 'twitter'
+  * @param {string} provider - 'aad', 'github'
    * @param {string} redirectUrl - URL to redirect after login
    */
-  login(provider = 'google', redirectUrl = window.location.pathname) {
+  login(provider = 'aad', redirectUrl = window.location.pathname) {
     const loginUrl = `/.auth/login/${provider}?post_login_redirect_uri=${encodeURIComponent(redirectUrl)}`;
     window.location.href = loginUrl;
   }
@@ -266,10 +267,7 @@ export const authManager = new AuthManager();
         Sign in to save your scenarios across devices and never lose your data.
       </p>
       <div class="auth-providers">
-        <button type="button" class="btn-auth btn-auth-google" data-provider="google">
-          <span class="auth-icon">🔐</span> Sign in with Google
-        </button>
-        <button type="button" class="btn-auth btn-auth-microsoft" data-provider="microsoft">
+        <button type="button" class="btn-auth btn-auth-microsoft" data-provider="aad">
           <span class="auth-icon">🔐</span> Sign in with Microsoft
         </button>
         <button type="button" class="btn-auth btn-auth-github" data-provider="github">
@@ -1249,12 +1247,9 @@ echo "Static Web App Deployment Token: $SWA_DEPLOYMENT_TOKEN"
 # Azure SWA authentication is configured via staticwebapp.config.json
 # No CLI commands needed, but you need to register apps with providers
 
-# For Google OAuth:
-# 1. Go to https://console.cloud.google.com/apis/credentials
-# 2. Create OAuth 2.0 Client ID
-# 3. Add authorized redirect URI: https://<your-swa-url>/.auth/login/google/callback
+# Azure SWA built-in auth supports ONLY Microsoft and GitHub
 
-# For Microsoft OAuth:
+# For Microsoft OAuth (Entra ID/Azure AD):
 # 1. Go to https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade
 # 2. Register new application
 # 3. Add redirect URI: https://<your-swa-url>/.auth/login/aad/callback
@@ -1309,7 +1304,7 @@ az staticwebapp appsettings list \
   "responseOverrides": {
     "401": {
       "statusCode": 302,
-      "redirect": "/.auth/login/google"
+      "redirect": "/.auth/login/aad"
     },
     "404": {
       "rewrite": "/index.html",
@@ -1344,7 +1339,7 @@ echo "AZURE_STORAGE_CONNECTION_STRING=$STORAGE_CONNECTION_STRING"
 echo ""
 echo "=== Next Steps ==="
 echo "1. Add AZURE_STORAGE_CONNECTION_STRING to GitHub Secrets"
-echo "2. Configure OAuth providers (Google, Microsoft, GitHub)"
+echo "2. Configure OAuth providers (Microsoft, GitHub)"
 echo "3. Update staticwebapp.config.json with auth routes"
 echo "4. Deploy updated code to Azure"
 ```
@@ -1497,7 +1492,7 @@ describe('StorageManager', () => {
 ### Integration Tests
 
 1. **Authentication Flow**:
-   - User logs in with Google
+  - User logs in with Microsoft
    - User identity is retrieved
    - User can access protected endpoints
    - User logs out successfully
@@ -1522,7 +1517,6 @@ describe('StorageManager', () => {
 
 ### Manual Testing Checklist
 
-- [ ] Sign in with Google
 - [ ] Sign in with Microsoft
 - [ ] Sign in with GitHub
 - [ ] Input calculator data

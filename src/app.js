@@ -52,6 +52,7 @@ import {
 import {
   initializeAdjustableVariablesPanel
 } from './js/ui/adjustable-variables-panel.js';
+import { authManager } from './js/auth/auth-manager.js';
 
 // Global state for scenarios
 let currentScenarios = [];
@@ -113,6 +114,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize collapsible sections for mobile/tablet
     initializeAllCollapses();
+    
+    // Initialize authentication (Phase 8.3)
+    initializeAuth();
     
     // Check if URL contains shared data and load it (Phase 7)
     const urlData = loadFromURL();
@@ -415,5 +419,112 @@ function storeFormDataForExport(formData) {
   }
   
   dataElement.dataset.formData = JSON.stringify(formData);
+}
+
+// ===== Phase 8.3 – Authentication =====
+
+/**
+ * Initialize authentication: check current auth state and wire up UI handlers.
+ */
+async function initializeAuth() {
+  // Initialize the auth menu dropdown interaction
+  initializeAuthMenu();
+
+  // Initialize the theme toggle (now lives inside the dropdown panel)
+  initializeThemeToggle();
+
+  const user = await authManager.checkAuth();
+  updateAuthUI(user);
+  wireAuthHandlers();
+}
+
+/**
+ * Set up the consolidated auth + theme dropdown menu:
+ * - Toggle `is-open` on trigger click (for keyboard / touch support)
+ * - Close the menu when the user clicks outside it
+ * - Close the menu on Escape key press
+ */
+function initializeAuthMenu() {
+  const menu = document.getElementById('auth-menu');
+  const trigger = document.getElementById('auth-menu-trigger');
+  if (!menu || !trigger) return;
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = menu.classList.toggle('is-open');
+    trigger.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // Close when clicking outside the menu
+  document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target)) {
+      menu.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu.classList.contains('is-open')) {
+      menu.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.focus();
+    }
+  });
+}
+
+/**
+ * Update auth UI elements to reflect the current authentication state.
+ * @param {Object|null} user - Authenticated user object, or null if not logged in
+ */
+function updateAuthUI(user) {
+  const panelSignin = document.getElementById('auth-panel-signin');
+  const panelUser = document.getElementById('auth-panel-user');
+  const userEmailEl = document.getElementById('user-email');
+  const triggerIcon = document.querySelector('#auth-menu-trigger .auth-menu-icon');
+  const triggerLabel = document.querySelector('#auth-menu-trigger .auth-menu-label');
+
+  if (!panelSignin || !panelUser) return;
+
+  if (user) {
+    // Show user section, hide sign-in section
+    panelUser.hidden = false;
+    panelSignin.hidden = true;
+    const displayName = user.email || user.id || 'Account';
+    if (userEmailEl) userEmailEl.textContent = displayName;
+    // Update trigger to show user profile
+    if (triggerIcon) triggerIcon.textContent = '👤';
+    if (triggerLabel) triggerLabel.textContent = displayName;
+  } else {
+    // Show sign-in section, hide user section
+    panelSignin.hidden = false;
+    panelUser.hidden = true;
+    // Update trigger to show sign-in prompt
+    if (triggerIcon) triggerIcon.textContent = '💾';
+    if (triggerLabel) triggerLabel.textContent = 'Sign in';
+  }
+}
+
+/**
+ * Wire up click handlers for login provider buttons and the logout button.
+ */
+function wireAuthHandlers() {
+  // Login buttons (one per provider via data-provider attribute)
+  document.querySelectorAll('.btn-auth[data-provider]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const provider = btn.dataset.provider;
+      authManager.login(provider);
+    });
+  });
+
+  // Logout button
+  const logoutBtn = document.getElementById('btn-logout');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to sign out?')) {
+        authManager.logout();
+      }
+    });
+  }
 }
 

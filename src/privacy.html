@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Privacy Policy for the CCS Calculator - how your data is collected, used, and how you can delete it.">
+    <title>Privacy Policy | CCS Calculator</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .privacy-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        .privacy-page h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .privacy-page .last-updated {
+            color: var(--text-muted, #6b7280);
+            font-size: 0.875rem;
+            margin-bottom: 2rem;
+        }
+
+        .privacy-page h2 {
+            font-size: 1.25rem;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid var(--border-color, #e5e7eb);
+        }
+
+        .privacy-page p,
+        .privacy-page li {
+            line-height: 1.7;
+            color: var(--text-color, #374151);
+        }
+
+        .privacy-page ul,
+        .privacy-page ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .privacy-page li {
+            margin-bottom: 0.4rem;
+        }
+
+        .privacy-page .highlight-box {
+            background: var(--bg-secondary, #f9fafb);
+            border-left: 4px solid var(--primary-color, #2563eb);
+            border-radius: 0 0.5rem 0.5rem 0;
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+        }
+
+        .privacy-page .highlight-box p {
+            margin: 0;
+        }
+
+        .privacy-page .danger-box {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            border-radius: 0 0.5rem 0.5rem 0;
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+        }
+
+        .privacy-page .danger-box p {
+            margin: 0;
+            color: #7f1d1d;
+        }
+
+        .privacy-page table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .privacy-page table th,
+        .privacy-page table td {
+            text-align: left;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid var(--border-color, #e5e7eb);
+        }
+
+        .privacy-page table th {
+            background: var(--bg-secondary, #f3f4f6);
+            font-weight: 600;
+        }
+
+        .privacy-page table tr:nth-child(even) td {
+            background: var(--bg-secondary, #f9fafb);
+        }
+
+        .privacy-page .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--primary-color, #2563eb);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .privacy-page .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .privacy-page .section-icon {
+            margin-right: 0.35rem;
+        }
+
+        .delete-steps {
+            counter-reset: step-counter;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .delete-steps li {
+            counter-increment: step-counter;
+            position: relative;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            margin-bottom: 0.75rem;
+            background: var(--bg-secondary, #f9fafb);
+            border-radius: 0.5rem;
+        }
+
+        .delete-steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.5rem;
+            height: 1.5rem;
+            background: var(--primary-color, #2563eb);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-content">
+            <h1 class="site-title">🧒 Child Care Subsidy Calculator</h1>
+            <p class="site-subtitle">Know exactly what childcare will cost your family</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="privacy-page">
+            <a href="index.html" class="back-link">← Back to Calculator</a>
+
+            <h1>Privacy Policy</h1>
+            <p class="last-updated">Last updated: March 2026</p>
+
+            <div class="highlight-box">
+                <p>🔒 <strong>Short version:</strong> When you use the calculator without signing in, all data stays on your device and we collect nothing. When you choose to sign in, only your calculator scenarios are stored in the cloud — no advertising, no profiling, no sharing.</p>
+            </div>
+
+            <!-- 1. Who We Are -->
+            <h2><span class="section-icon">👤</span>1. Who We Are</h2>
+            <p>The CCS Calculator is a free, open-source tool for Australian families to estimate their Child Care Subsidy (CCS) entitlements. It is not affiliated with the Australian Government, Services Australia, or the Department of Education.</p>
+            <p>For questions about this policy, open an issue on the <a href="https://github.com/richardthorek/CCS-Calculator" target="_blank" rel="noopener noreferrer">GitHub repository</a>.</p>
+
+            <!-- 2. Data We Collect -->
+            <h2><span class="section-icon">📋</span>2. What Data We Collect</h2>
+
+            <h3>2.1 Without Signing In (Default)</h3>
+            <p>When you use the calculator without an account, <strong>we collect no data whatsoever.</strong></p>
+            <ul>
+                <li>All income figures, work-hour inputs, and child details exist only in your browser's local storage.</li>
+                <li>Nothing is transmitted to any server.</li>
+                <li>Clearing your browser data removes all stored calculator information.</li>
+            </ul>
+
+            <h3>2.2 When You Sign In (Optional)</h3>
+            <p>Signing in is entirely optional and unlocks cross-device sync. When you choose to sign in, we store:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data Item</th>
+                        <th>Why It Is Stored</th>
+                        <th>Where It Is Stored</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>OAuth user ID (anonymous hash)</td>
+                        <td>Identifies your account without revealing your identity</td>
+                        <td>Azure Table Storage</td>
+                    </tr>
+                    <tr>
+                        <td>Email address</td>
+                        <td>Provided by your OAuth provider (Microsoft/GitHub) for display only</td>
+                        <td>Azure Table Storage</td>
+                    </tr>
+                    <tr>
+                        <td>Calculator scenarios (income, hours, children)</td>
+                        <td>So you can access your data across devices</td>
+                        <td>Azure Table Storage (encrypted at rest)</td>
+                    </tr>
+                    <tr>
+                        <td>App preferences (theme, period)</td>
+                        <td>Remember your display settings</td>
+                        <td>Azure Table Storage</td>
+                    </tr>
+                    <tr>
+                        <td>Last sync timestamp</td>
+                        <td>Detect and resolve multi-device conflicts</td>
+                        <td>Azure Table Storage</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>We do <strong>not</strong> collect:</p>
+            <ul>
+                <li>Your full name (unless your email contains it — we cannot control that)</li>
+                <li>IP addresses or location data</li>
+                <li>Device identifiers or browser fingerprints</li>
+                <li>Usage analytics, page views, or click tracking</li>
+                <li>Any financial account information</li>
+            </ul>
+
+            <!-- 3. How We Use Data -->
+            <h2><span class="section-icon">🎯</span>3. How We Use Your Data</h2>
+            <p>Your data is used exclusively to provide the calculator service:</p>
+            <ul>
+                <li><strong>Sync:</strong> Load and save your calculator scenarios across your devices.</li>
+                <li><strong>Preferences:</strong> Remember your display settings (theme, default period).</li>
+                <li><strong>Authentication:</strong> Verify your identity so only you can access your scenarios.</li>
+            </ul>
+            <p>We do <strong>not</strong> use your data for advertising, profiling, machine learning, or any purpose other than operating the calculator.</p>
+
+            <!-- 4. Data Sharing -->
+            <h2><span class="section-icon">🤝</span>4. Data Sharing</h2>
+            <p>We <strong>never</strong> sell, rent, or share your data with third parties except:</p>
+            <ul>
+                <li><strong>Microsoft Azure</strong> — Cloud infrastructure provider that stores your encrypted scenario data. Microsoft's use of this data is governed by their <a href="https://www.microsoft.com/en-au/trust-center/privacy" target="_blank" rel="noopener noreferrer">Data Protection Agreement</a>.</li>
+                <li><strong>Your OAuth provider</strong> — Microsoft or GitHub authenticate your identity and share a user ID and email with us. Refer to their privacy policies for how they handle your credentials.</li>
+                <li><strong>Legal requirements</strong> — We may disclose data if required by law or to protect the rights and safety of users.</li>
+            </ul>
+
+            <!-- 5. Data Retention -->
+            <h2><span class="section-icon">🕑</span>5. Data Retention</h2>
+            <p>We retain your data for as long as your account is active. If you have not signed in for <strong>12 months</strong>, your cloud data may be automatically purged.</p>
+            <p>You can delete your data at any time — see <a href="#delete-data">Section 7: How to Delete Your Data</a>.</p>
+
+            <!-- 6. Security -->
+            <h2><span class="section-icon">🔐</span>6. Security</h2>
+            <ul>
+                <li>All data is transmitted over <strong>HTTPS</strong> (TLS 1.2+).</li>
+                <li>Data is <strong>encrypted at rest</strong> in Azure Table Storage.</li>
+                <li>Authentication uses industry-standard <strong>OAuth 2.0</strong> — we never see or store your password.</li>
+                <li>Each user's data is isolated by a unique partition key (your user ID); other users cannot access your scenarios.</li>
+                <li>API endpoints require a valid authentication token on every request.</li>
+                <li>The source code is open-source and publicly auditable on GitHub.</li>
+            </ul>
+
+            <!-- 7. Delete Your Data -->
+            <h2 id="delete-data"><span class="section-icon">🗑️</span>7. How to Delete Your Data</h2>
+
+            <h3>7.1 Delete Local Browser Data</h3>
+            <p>If you have never signed in, this removes all calculator data:</p>
+            <ol class="delete-steps">
+                <li>Open the calculator at <a href="index.html">index.html</a>.</li>
+                <li>Scroll down to the <strong>Form Actions</strong> section.</li>
+                <li>Click the <strong>"Clear Data"</strong> button to wipe all locally stored inputs.</li>
+                <li>Alternatively, clear your browser's local storage via your browser's developer tools or privacy settings.</li>
+            </ol>
+
+            <h3>7.2 Delete Cloud Account Data</h3>
+            <p>If you have signed in and want to delete all data stored in the cloud:</p>
+            <ol class="delete-steps">
+                <li>Sign in to the calculator using your Microsoft or GitHub account.</li>
+                <li>Open the account menu (top right — your name or "💾 Sign in").</li>
+                <li>Click <strong>"Sign Out"</strong> to end your session.</li>
+                <li>To request permanent deletion of all your cloud data, open an issue on <a href="https://github.com/richardthorek/CCS-Calculator/issues/new?title=Data+Deletion+Request&body=Please+delete+all+data+associated+with+my+account." target="_blank" rel="noopener noreferrer">GitHub</a> titled <em>"Data Deletion Request"</em>.</li>
+                <li>Your data will be permanently removed within <strong>30 days</strong> of the request.</li>
+            </ol>
+
+            <div class="danger-box">
+                <p>⚠️ <strong>Data deletion is permanent and irreversible.</strong> Your calculator scenarios cannot be recovered after deletion. Export your scenarios (CSV) before requesting deletion if you want to keep a copy.</p>
+            </div>
+
+            <h3>7.3 Revoke OAuth Access</h3>
+            <p>You can revoke the CCS Calculator's access to your account at any time without deleting your data:</p>
+            <ul>
+                <li><strong>Microsoft:</strong> <a href="https://account.microsoft.com/privacy/app-access" target="_blank" rel="noopener noreferrer">account.microsoft.com/privacy/app-access</a></li>
+                <li><strong>GitHub:</strong> <a href="https://github.com/settings/applications" target="_blank" rel="noopener noreferrer">github.com/settings/applications</a> → Authorised OAuth Apps</li>
+            </ul>
+
+            <!-- 8. Your Rights -->
+            <h2><span class="section-icon">⚖️</span>8. Your Rights</h2>
+            <p>Under the <strong>Australian Privacy Act 1988</strong> and the Australian Privacy Principles (APPs) you have the right to:</p>
+            <ul>
+                <li><strong>Access</strong> — Request a copy of all data we hold about you.</li>
+                <li><strong>Correction</strong> — Ask us to correct inaccurate data.</li>
+                <li><strong>Deletion</strong> — Request permanent deletion of your data (see Section 7).</li>
+                <li><strong>Portability</strong> — Export your calculator scenarios to CSV at any time using the Export button.</li>
+                <li><strong>Objection</strong> — Opt out of cloud storage by signing out and using the calculator in anonymous mode.</li>
+            </ul>
+            <p>To exercise any of these rights, open an issue on the <a href="https://github.com/richardthorek/CCS-Calculator/issues" target="_blank" rel="noopener noreferrer">GitHub repository</a>.</p>
+
+            <!-- 9. Cookies -->
+            <h2><span class="section-icon">🍪</span>9. Cookies</h2>
+            <p>The CCS Calculator uses <strong>no tracking cookies</strong>. The only browser storage used is:</p>
+            <ul>
+                <li><strong>localStorage</strong> — Saves your calculator inputs and preferences locally on your device. Never transmitted to a server unless you sign in.</li>
+                <li><strong>Session cookies</strong> — Set by Azure Static Web Apps during authentication. These expire when you sign out or close the browser.</li>
+            </ul>
+
+            <!-- 10. Children's Privacy -->
+            <h2><span class="section-icon">👶</span>10. Children's Privacy</h2>
+            <p>The calculator is designed for use by parents and guardians, not children. We do not knowingly collect personal information from children under 13. If you believe we have inadvertently done so, please contact us via GitHub.</p>
+
+            <!-- 11. Changes to This Policy -->
+            <h2><span class="section-icon">📝</span>11. Changes to This Policy</h2>
+            <p>We may update this privacy policy from time to time. Changes will be committed to the <a href="https://github.com/richardthorek/CCS-Calculator" target="_blank" rel="noopener noreferrer">GitHub repository</a> with a new "Last updated" date. Continued use of the calculator after changes constitutes acceptance of the updated policy.</p>
+
+            <!-- 12. Contact -->
+            <h2><span class="section-icon">✉️</span>12. Contact</h2>
+            <p>For privacy questions, data requests, or concerns:</p>
+            <ul>
+                <li>Open an issue on <a href="https://github.com/richardthorek/CCS-Calculator/issues" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+            </ul>
+
+            <div class="highlight-box" style="margin-top: 2rem;">
+                <p>🇦🇺 This calculator is an <strong>estimate tool only</strong>. For official CCS information and applications, visit <a href="https://www.servicesaustralia.gov.au/child-care-subsidy" target="_blank" rel="noopener noreferrer">Services Australia</a>.</p>
+            </div>
+
+            <p style="margin-top: 2rem;"><a href="index.html" class="back-link">← Back to Calculator</a></p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p class="footer-disclaimer">
+                <strong>Important:</strong> This calculator provides estimates only and should not be considered financial advice.
+                For official CCS information and applications, visit
+                <a href="https://www.servicesaustralia.gov.au/child-care-subsidy" target="_blank" rel="noopener noreferrer">Services Australia</a>.
+            </p>
+            <p class="footer-copyright">© 2026 CCS Calculator | Not affiliated with the Australian Government</p>
+        </div>
+    </footer>
+</body>
+</html>

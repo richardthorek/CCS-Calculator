@@ -5,10 +5,21 @@
   "main": "src/functions/*.js",
   "scripts": {
     "start": "func start",
-    "build": "echo 'No build step required'"
+    "build": "echo 'No build step required'",
+    "test": "jest",
+    "test:coverage": "jest --coverage"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
   },
   "dependencies": {
+    "@azure/data-tables": "^13.3.2",
     "@azure/functions": "^4.5.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "jest": "^30.0.0"
+  }
 }

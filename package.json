@@ -10,6 +10,7 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "test:ui": "playwright test",
     "dev": "npm run start:all",
     "start": "swa start src --api-location api",
     "start:all": "concurrently --names \"FRONTEND,API\" --prefix-colors \"cyan,yellow\" \"npm run start:frontend\" \"npm run start:api\"",
@@ -38,6 +39,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@types/jest": "^30.0.0",
     "concurrently": "^9.2.1",
     "jest": "^30.2.0",
