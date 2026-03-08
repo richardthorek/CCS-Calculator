@@ -21,6 +21,9 @@ export function initializeAdjustableVariablesPanel() {
     const panel = createAdjustableVariablesPanel();
     container.appendChild(panel);
     
+    // Populate controls now that the panel is in the DOM
+    updatePanelControls();
+    
     // Setup event delegation for input changes
     setupPanelEventListeners(container);
     
@@ -47,9 +50,6 @@ function createAdjustableVariablesPanel() {
   controls.id = 'adjustable-variables-controls';
   panel.appendChild(controls);
   
-  // Initial population of controls
-  updatePanelControls();
-  
   return panel;
 }
 
@@ -63,9 +63,9 @@ function updatePanelControls() {
   // Clear existing controls
   controlsContainer.innerHTML = '';
   
-  // Create parent row
-  const parentRow = document.createElement('div');
-  parentRow.className = 'panel-row panel-parent-row';
+  // Create a single row for ALL controls (parents + children)
+  const allRow = document.createElement('div');
+  allRow.className = 'panel-row';
   
   // Add parent controls
   const parent1DaysInput = document.getElementById('parent1-days');
@@ -75,7 +75,7 @@ function updatePanelControls() {
   if (parent1DaysInput) {
     const parent1Value = parent1DaysInput.value || '0';
     const parent1Control = createCompactInputControl('Parent 1', 'panel-parent1-days', parent1Value);
-    parentRow.appendChild(parent1Control);
+    allRow.appendChild(parent1Control);
   }
   
   // Only show Parent 2 if they have entered an income value
@@ -84,26 +84,18 @@ function updatePanelControls() {
     if (parent2Income > 0) {
       const parent2Value = parent2DaysInput.value || '0';
       const parent2Control = createCompactInputControl('Parent 2', 'panel-parent2-days', parent2Value);
-      parentRow.appendChild(parent2Control);
+      allRow.appendChild(parent2Control);
     }
   }
   
-  // Add global child setter to parent row
+  // Add Set All + individual child controls in the same row
   const childrenContainer = document.getElementById('children-container');
   const childCards = childrenContainer ? childrenContainer.querySelectorAll('.child-card') : [];
   
   if (childCards.length > 0) {
     const globalChildControl = createCompactInputControl('Set All', 'panel-children-all-days', '');
     globalChildControl.classList.add('panel-global-child-control');
-    parentRow.appendChild(globalChildControl);
-  }
-  
-  controlsContainer.appendChild(parentRow);
-  
-  // Create children row if there are children
-  if (childCards.length > 0) {
-    const childRow = document.createElement('div');
-    childRow.className = 'panel-row panel-children-row';
+    allRow.appendChild(globalChildControl);
     
     childCards.forEach((card, index) => {
       const childIndex = card.dataset.childIndex;
@@ -116,12 +108,12 @@ function updatePanelControls() {
           `panel-child-${childIndex}-days`,
           childValue
         );
-        childRow.appendChild(childControl);
+        allRow.appendChild(childControl);
       }
     });
-    
-    controlsContainer.appendChild(childRow);
   }
+  
+  controlsContainer.appendChild(allRow);
 }
 
 /**

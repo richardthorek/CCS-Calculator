@@ -1151,7 +1151,8 @@ select.valid:focus {
 /* ===== Controls Bar ===== */
 .controls-bar {
     display: flex;
-    gap: var(--spacing-lg);
+    flex-direction: column;
+    gap: var(--spacing-sm);
     align-items: flex-start;
     margin-bottom: var(--spacing-lg);
     padding: var(--spacing-md);
@@ -1164,8 +1165,9 @@ select.valid:focus {
 .adjustable-variables-panel {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-sm);
-    flex: 1;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+    width: 100%;
     min-width: 0;
 }
 
@@ -1180,19 +1182,15 @@ select.valid:focus {
 
 .panel-controls {
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
+    flex: 1;
 }
 
 .panel-row {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-sm);
-    align-items: flex-start;
-}
-
-.panel-parent-row {
-    gap: var(--spacing-md);
+    align-items: flex-end;
+    flex: 1;
 }
 
 .panel-input-compact {
@@ -1245,8 +1243,7 @@ select.valid:focus {
 
 @media (max-width: 960px) {
     .controls-bar {
-        flex-direction: column;
-        gap: var(--spacing-md);
+        gap: var(--spacing-sm);
     }
 
     .panel-row {
@@ -1256,13 +1253,8 @@ select.valid:focus {
 
 @media (max-width: 640px) {
     .controls-bar {
-        flex-direction: column;
-        gap: var(--spacing-md);
+        gap: var(--spacing-sm);
         padding: var(--spacing-sm);
-    }
-
-    .adjustable-variables-panel {
-        gap: var(--spacing-xs);
     }
 
     .panel-row {
