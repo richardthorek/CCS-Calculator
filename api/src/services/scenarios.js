@@ -88,6 +88,7 @@ class ScenariosService {
             rowKey: scenarioId,
             scenarioName: scenarioData.name,
             scenarioData: JSON.stringify(scenarioData.data || {}),
+            keyInputs: scenarioData.keyInputs ? JSON.stringify(scenarioData.keyInputs) : '',
             version: 1,
             createdAt: now,
             updatedAt: now,
@@ -142,6 +143,9 @@ class ScenariosService {
         }
         if (updates.data !== undefined) {
             merged.scenarioData = JSON.stringify(updates.data);
+        }
+        if (updates.keyInputs !== undefined) {
+            merged.keyInputs = JSON.stringify(updates.keyInputs);
         }
         if (updates.isActive !== undefined) {
             merged.isActive = updates.isActive;
@@ -232,13 +236,20 @@ class ScenariosService {
      * @private
      */
     _toScenarioSummary(entity) {
+        let keyInputs = null;
+        try {
+            keyInputs = entity.keyInputs ? JSON.parse(entity.keyInputs) : null;
+        } catch {
+            keyInputs = null;
+        }
         return {
             id: entity.rowKey,
             name: entity.scenarioName || '',
             createdAt: entity.createdAt || null,
             updatedAt: entity.updatedAt || null,
             isActive: entity.isActive === true,
-            tags: entity.tags || ''
+            tags: entity.tags || '',
+            keyInputs
         };
     }
 

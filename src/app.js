@@ -53,6 +53,7 @@ import {
   initializeAdjustableVariablesPanel
 } from './js/ui/adjustable-variables-panel.js';
 import { authManager } from './js/auth/auth-manager.js';
+import { storageManager } from './js/storage/storage-manager.js';
 
 // Global state for scenarios
 let currentScenarios = [];
@@ -506,6 +507,15 @@ function updateAuthUI(user) {
 }
 
 /**
+ * Update the current scenario name displayed in the auth panel.
+ * @param {string} name - The scenario name to display
+ */
+function updateScenarioNameDisplay(name) {
+  const el = document.getElementById('current-scenario-name');
+  if (el) el.textContent = name || 'My Scenario';
+}
+
+/**
  * Wire up click handlers for login provider buttons and the logout button.
  */
 function wireAuthHandlers() {
@@ -526,5 +536,60 @@ function wireAuthHandlers() {
       }
     });
   }
+
+  // New Scenario button
+  const newScenarioBtn = document.getElementById('btn-new-scenario');
+  if (newScenarioBtn) {
+    newScenarioBtn.addEventListener('click', async () => {
+      const name = prompt('Enter a name for the new scenario:', 'New Scenario');
+      if (!name || !name.trim()) return;
+      newScenarioBtn.disabled = true;
+      try {
+        const scenario = await storageManager.createNewScenario(name.trim());
+        if (scenario) {
+          storageManager.activeScenarioId = scenario.id;
+          storageManager.activeScenarioName = scenario.name;
+          updateScenarioNameDisplay(scenario.name);
+          // Clear the form for the new scenario
+          if (confirm('New scenario created. Clear the form to start fresh?')) {
+            clearState();
+            window.location.reload();
+          }
+        } else {
+          alert('Could not create scenario. Please sign in and try again.');
+        }
+      } finally {
+        newScenarioBtn.disabled = false;
+      }
+    });
+  }
+
+  // Rename current scenario button
+  const renameBtn = document.getElementById('btn-rename-scenario');
+  if (renameBtn) {
+    renameBtn.addEventListener('click', async () => {
+      const currentName = storageManager.activeScenarioName || 'My Scenario';
+      const newName = prompt('Rename this scenario:', currentName);
+      if (!newName || !newName.trim() || newName.trim() === currentName) return;
+      if (!storageManager.activeScenarioId) {
+        alert('No active cloud scenario to rename. Please sign in.');
+        return;
+      }
+      const ok = await storageManager.renameScenario(storageManager.activeScenarioId, newName.trim());
+      if (ok) {
+        storageManager.activeScenarioName = newName.trim();
+        updateScenarioNameDisplay(newName.trim());
+      } else {
+        alert('Could not rename scenario. Please try again.');
+      }
+    });
+  }
+
+  // Listen for scenarioChanged events to update the name display
+  document.addEventListener('scenarioChanged', (event) => {
+    if (event.detail && event.detail.name) {
+      updateScenarioNameDisplay(event.detail.name);
+    }
+  });
 }
 

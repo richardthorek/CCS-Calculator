@@ -19,11 +19,15 @@
     {
       "route": "/api/*",
       "allowedRoles": ["authenticated"]
+    },
+    {
+      "route": "/dashboard",
+      "rewrite": "/dashboard.html"
     }
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/api/*", "/*.{css,js,png,jpg,jpeg,gif,svg,ico}"]
+    "exclude": ["/api/*", "/dashboard.html", "/*.{css,js,png,jpg,jpeg,gif,svg,ico}"]
   },
   "responseOverrides": {
     "401": {
