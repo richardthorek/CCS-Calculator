@@ -198,8 +198,8 @@ class StorageManager {
     const results = state && state.results;
     if (!formData) return {};
     return {
-      parent1Income: formData.parent1?.income || 0,
-      parent2Income: formData.parent2?.income || 0,
+      parent1Income: formData.parent1?.income ?? 0,
+      parent2Income: formData.parent2?.income ?? 0,
       childrenCount: Array.isArray(formData.children) ? formData.children.length : 0,
       workDaysCount: Array.isArray(formData.parent1?.workDays)
         ? formData.parent1.workDays.length

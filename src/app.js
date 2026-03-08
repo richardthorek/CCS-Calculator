@@ -59,6 +59,9 @@ import { storageManager } from './js/storage/storage-manager.js';
 let currentScenarios = [];
 let currentFormData = null;
 
+// Timer reference for the auth panel feedback auto-hide
+let authPanelFeedbackTimer = null;
+
 // Initialize theme before DOM content loads to prevent flash
 initializeTheme();
 
@@ -527,8 +530,8 @@ function showAuthPanelFeedback(message, isError = false) {
   el.textContent = message;
   el.hidden = false;
   el.className = `auth-panel-feedback${isError ? ' auth-panel-feedback--error' : ''}`;
-  clearTimeout(el._hideTimer);
-  el._hideTimer = setTimeout(() => { el.hidden = true; }, 3000);
+  clearTimeout(authPanelFeedbackTimer);
+  authPanelFeedbackTimer = setTimeout(() => { el.hidden = true; }, 3000);
 }
 
 /**

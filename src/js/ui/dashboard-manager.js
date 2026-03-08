@@ -305,6 +305,10 @@ async function confirmRename() {
       }
     } else {
       // Renaming an existing scenario
+      if (!pendingRenameId) {
+        if (errorEl) { errorEl.textContent = 'No scenario selected for rename.'; errorEl.hidden = false; }
+        return;
+      }
       const ok = await storageManager.renameScenario(pendingRenameId, newName);
       if (ok) {
         const card = document.querySelector(`[data-scenario-id="${CSS.escape(pendingRenameId)}"]`);
@@ -331,7 +335,7 @@ function openDeleteModal(scenarioId, scenarioName) {
   if (!modal) return;
   if (nameEl) nameEl.textContent = escapeHtml(scenarioName);
   modal.hidden = false;
-  document.getElementById('delete-confirm-btn').focus();
+  document.getElementById('delete-confirm-btn')?.focus();
 }
 
 function closeDeleteModal() {
@@ -341,6 +345,7 @@ function closeDeleteModal() {
 }
 
 async function confirmDelete() {
+  if (!pendingDeleteId) return;
   const confirmBtn = document.getElementById('delete-confirm-btn');
   if (confirmBtn) confirmBtn.disabled = true;
 
