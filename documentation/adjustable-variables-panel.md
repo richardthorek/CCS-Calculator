@@ -1,7 +1,7 @@
 # Adjustable Variables Panel
 
 ## Overview
-The Adjustable Variables Panel is a compact, linked control interface positioned next to the period selector in the results column. It provides quick access to the most frequently adjusted parameters without requiring users to scroll through the full form.
+The Adjustable Variables Panel is a compact, linked control interface positioned in the controls bar directly below the period selector in the results column. It provides quick access to the most frequently adjusted parameters without requiring users to scroll through the full form.
 
 ## Adjustable Parameters
 
@@ -34,13 +34,14 @@ The Adjustable Variables Panel is a compact, linked control interface positioned
 ```
 
 ### CSS Classes
-- `.controls-bar` - Container for period selector and adjustable panel
-- `.adjustable-variables-panel` - Main panel wrapper
-- `.panel-title` - "Adjust" title
-- `.panel-controls` - Grid container for control groups
-- `.panel-input-control` - Individual control group (label + input)
-- `.panel-input` - Number input field
-- `.panel-input-label` - Control label
+- `.controls-bar` - Container for period selector (row 1) and adjustable panel (row 2), flex-column layout
+- `.adjustable-variables-panel` - Main panel wrapper, flex-row with label on left and controls on right
+- `.panel-controls` - Flex container holding the single controls row
+- `.panel-row` - Single horizontal row of all controls (parents + children), flex-wrap
+- `.panel-input-compact` - Individual control group (label + input)
+- `.panel-input-field-compact` - Number input field
+- `.panel-input-label-compact` - Control label
+- `.panel-global-child-control` - "Set All" control with primary colour accent
 
 ## Bidirectional Sync
 
@@ -76,13 +77,16 @@ When form field changes:
 ## Responsive Design
 
 ### Desktop (≥960px)
-- Panel controls in 2-column grid
-- Panel displays horizontally next to period selector
-- Title and controls side-by-side
+- Controls bar is a vertical flex container (column layout)
+- Row 1: Period selector (Show figures buttons)
+- Row 2: All days-per-week controls on a single horizontal row (label + inputs)
+- All controls (Parent 1, [Parent 2], Set All, Child 1, ...) are visible on one line
 
 ### Tablet/Mobile (≤640px)
-- Panel controls in 2-column grid (space-efficient)
-- Controls bar stacks vertically
+- Controls bar maintains column layout
+- Adjustable panel switches to column layout (label above controls row)
+- Controls row wraps to multiple lines if needed
+- Smaller font and padding on input fields for space efficiency
 - Full-width layout
 
 ## Data Linkage Mapping
