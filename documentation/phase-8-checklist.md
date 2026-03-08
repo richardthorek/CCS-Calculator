@@ -1,9 +1,9 @@
 # Phase 8 Implementation Checklist
 
 **Phase:** User Authentication & Cloud Storage  
-**Start Date:** _____________  
+**Start Date:** 2026-03-08  
 **Target Completion:** _____________  
-**Status:** ⏳ Not Started
+**Status:** 🟦 In Progress
 
 ---
 
@@ -23,37 +23,36 @@
 ## 8.1 Azure Infrastructure Setup (CLI)
 
 **Goal:** Provision all Azure resources needed for authentication and storage  
-**Duration:** 30 minutes
+**Duration:** 30 minutes  
+**Manual Guide:** `documentation/phase-8-1-azure-setup-guide.md`  
+**Status:** Mostly Complete - OAuth registration remaining
 
 ### Prerequisites
-- [ ] Azure CLI installed and working (`az --version`)
-- [ ] Azure subscription with appropriate permissions
-- [ ] OpenSSL available (for random string generation)
+- [x] Azure CLI installed and working (`az --version`)
+- [x] Azure subscription with appropriate permissions
+- [x] OpenSSL available (for random string generation)
 
-### Tasks
-- [ ] Run setup script: `./scripts/setup-azure-auth-storage.sh`
-- [ ] Save connection string to secure location
-- [ ] Verify storage account created
-- [ ] Verify tables created (userscenarios, userprofiles)
-- [ ] Document resource names (resource group, storage account)
+### Tasks - Automated (Complete)
+- [x] Create detailed setup guide with subscription/resource group details
+- [x] Run setup commands to create storage account
+- [x] Save connection string to secure location
+- [x] Verify storage account created: `stccscalc72929273`
+- [x] Verify tables created (userscenarios, userprofiles)
+- [x] Document resource names in guide
+- [x] Add Azure SWA app settings (connection string, table names)
 
-### OAuth Provider Registration
+### OAuth Provider Registration (Manual - Remaining)
 - [ ] Register Google OAuth app
 - [ ] Register Microsoft OAuth app (Azure AD)
 - [ ] Register GitHub OAuth app
 - [ ] Add redirect URI for each provider
 - [ ] Save client IDs/secrets securely
 
-### Add Secrets to Azure
-- [ ] Add AZURE_STORAGE_CONNECTION_STRING to Static Web App settings
-- [ ] Add TABLE_NAME_SCENARIOS="userscenarios"
-- [ ] Add TABLE_NAME_PROFILES="userprofiles"
-- [ ] Verify settings with `az staticwebapp appsettings list`
-
-### Add Secrets to GitHub
+### GitHub Secrets (Manual - Remaining)
+Note: Requires repository admin permissions
 - [ ] Go to GitHub repo settings → Secrets
-- [ ] Add AZURE_STORAGE_CONNECTION_STRING
-- [ ] Add AZURE_STATIC_WEB_APPS_API_TOKEN
+- [ ] Add AZURE_STORAGE_CONNECTION_STRING (value in guide)
+- [ ] Add AZURE_STATIC_WEB_APPS_API_TOKEN (get from Azure portal)
 - [ ] Verify secrets are masked
 
 ### Outputs to Save
@@ -591,7 +590,7 @@ Check all before marking Phase 8 complete:
 
 ## 📊 Progress Tracking
 
-**Phase 8.1:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
+**Phase 8.1:** 🟦 In Progress (Azure resources created, OAuth registration remaining)  
 **Phase 8.2:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
 **Phase 8.3:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
 **Phase 8.4:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
@@ -600,7 +599,7 @@ Check all before marking Phase 8 complete:
 **Phase 8.7:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
 **Phase 8.8:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
 
-**Overall Phase 8:** ⬜ Not Started | 🟦 In Progress | ✅ Complete
+**Overall Phase 8:** 🟦 In Progress
 
 ---
 
@@ -615,8 +614,14 @@ Example:
 2026-03-07 - Started Phase 8.1, ran Azure setup script successfully
 2026-03-07 - Storage account created: stccscalc1a2b3c4d
 2026-03-08 - Decision: Using "server wins" for conflict resolution initially
+2026-03-08 - Started Phase 8.1 work, opened issue #62 and created feature branch
+2026-03-08 - Completed Azure infrastructure setup:
+  - Storage account: stccscalc72929273
+  - Tables created: userscenarios, userprofiles
+  - App settings configured in Azure SWA
+  - OAuth provider registration and GitHub secrets require manual steps (admin permissions)
 ```
 
 ---
 
-**Last Updated:** March 7, 2026
+**Last Updated:** March 8, 2026
