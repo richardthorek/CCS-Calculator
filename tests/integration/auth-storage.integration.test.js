@@ -81,6 +81,8 @@ describe('Phase 8.6 auth + storage integration', () => {
     authManager.clearCache();
     storageManager.cloudStorageAvailable = false;
     storageManager.lastSavedState = null;
+    storageManager.activeScenarioId = null;
+    storageManager.activeScenarioName = 'My Scenario';
     syncIconEl.textContent = '';
     syncTextEl.textContent = '';
     syncStatusEl.classList._classes.clear();
@@ -184,7 +186,8 @@ describe('Phase 8.6 auth + storage integration', () => {
     };
 
     fetchMock
-      .enqueue(mockResponse(true, 200, { activeScenarioId: 'existing-id' }))
+      // With activeScenarioId cached as 'new-id' from syncWithCloud above,
+      // getUserProfile is skipped and PUT goes directly to the cached scenario
       .enqueue(mockResponse(false, 409, { serverVersion: { data: serverState } }));
 
     await storageManager.saveScenario(localState, 'Scenario');

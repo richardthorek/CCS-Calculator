@@ -95,6 +95,8 @@ describe('StorageManager', () => {
     // Reset storage manager state
     storageManager.cloudStorageAvailable = false;
     storageManager.lastSavedState = null;
+    storageManager.activeScenarioId = null;
+    storageManager.activeScenarioName = 'My Scenario';
     syncStatusEl.classList._classes.clear();
     syncIconEl.textContent = '';
     syncTextEl.textContent = '';
@@ -381,6 +383,142 @@ describe('StorageManager', () => {
       await storageManager.syncWithCloud();
       expect(syncTextEl.textContent).toBe('Sync failed');
       global.fetch = (...args) => fetchMock.handler()(...args);
+    });
+  });
+
+  describe('renameScenario()', () => {
+    test('should return false when cloud is unavailable', async () => {
+      storageManager.cloudStorageAvailable = false;
+      const result = await storageManager.renameScenario('some-id', 'New Name');
+      expect(result).toBe(false);
+    });
+
+    test('should return true on successful rename', async () => {
+      storageManager.cloudStorageAvailable = true;
+      fetchMock.enqueue(mockResponse(true, 200, { id: 'some-id', updatedAt: new Date().toISOString() }));
+      const result = await storageManager.renameScenario('some-id', 'New Name');
+      expect(result).toBe(true);
+    });
+
+    test('should return false when the PUT request fails', async () => {
+      storageManager.cloudStorageAvailable = true;
+      fetchMock.enqueue(mockResponse(false, 500, {}));
+      const result = await storageManager.renameScenario('some-id', 'New Name');
+      expect(result).toBe(false);
+    });
+
+    test('should URL-encode scenario ID in request', async () => {
+      storageManager.cloudStorageAvailable = true;
+      let capturedUrl = null;
+      global.fetch = (url) => { capturedUrl = url; return Promise.resolve(mockResponse(true, 200, {})); };
+      await storageManager.renameScenario('id with spaces', 'New Name');
+      expect(capturedUrl).toBe('/api/scenarios/id%20with%20spaces');
+      global.fetch = (...args) => fetchMock.handler()(...args);
+    });
+
+    test('should send the new name in the request body', async () => {
+      storageManager.cloudStorageAvailable = true;
+      let capturedBody = null;
+      global.fetch = (_url, options) => {
+        capturedBody = JSON.parse(options.body);
+        return Promise.resolve(mockResponse(true, 200, {}));
+      };
+      await storageManager.renameScenario('some-id', 'Renamed Scenario');
+      expect(capturedBody.name).toBe('Renamed Scenario');
+      global.fetch = (...args) => fetchMock.handler()(...args);
+    });
+
+    test('should return false on network error', async () => {
+      storageManager.cloudStorageAvailable = true;
+      global.fetch = () => Promise.reject(new Error('Network error'));
+      const result = await storageManager.renameScenario('some-id', 'New Name');
+      expect(result).toBe(false);
+      global.fetch = (...args) => fetchMock.handler()(...args);
+    });
+  });
+
+  describe('createNewScenario()', () => {
+    test('should return null when cloud is unavailable', async () => {
+      storageManager.cloudStorageAvailable = false;
+      const result = await storageManager.createNewScenario('New Scenario');
+      expect(result).toBeNull();
+    });
+
+    test('should return the created scenario on success', async () => {
+      storageManager.cloudStorageAvailable = true;
+      const created = { id: 'new-uuid', name: 'Test Scenario' };
+      // POST /api/scenarios
+      fetchMock.enqueue(mockResponse(true, 201, created));
+      // POST /api/scenarios/:id/activate
+      fetchMock.enqueue(mockResponse(true, 200, { success: true }));
+      const result = await storageManager.createNewScenario('Test Scenario');
+      expect(result).toEqual(created);
+    });
+
+    test('should return null when the POST request fails', async () => {
+      storageManager.cloudStorageAvailable = true;
+      fetchMock.enqueue(mockResponse(false, 500, {}));
+      const result = await storageManager.createNewScenario('Test Scenario');
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('activateScenario()', () => {
+    test('should return false when cloud is unavailable', async () => {
+      storageManager.cloudStorageAvailable = false;
+      const result = await storageManager.activateScenario('some-id');
+      expect(result).toBe(false);
+    });
+
+    test('should return true on successful activation', async () => {
+      storageManager.cloudStorageAvailable = true;
+      fetchMock.enqueue(mockResponse(true, 200, { success: true, activeScenarioId: 'some-id' }));
+      const result = await storageManager.activateScenario('some-id');
+      expect(result).toBe(true);
+    });
+
+    test('should return false when activation fails', async () => {
+      storageManager.cloudStorageAvailable = true;
+      fetchMock.enqueue(mockResponse(false, 404, {}));
+      const result = await storageManager.activateScenario('non-existent');
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('_extractKeyInputs()', () => {
+    test('should return empty object when state has no formData', () => {
+      const result = storageManager._extractKeyInputs(null);
+      expect(result).toEqual({});
+    });
+
+    test('should extract key inputs from a full state object', () => {
+      const state = {
+        formData: {
+          parent1: { income: 100000, workDays: ['Mon', 'Tue', 'Wed'] },
+          parent2: { income: 80000 },
+          children: [{ age: 2 }, { age: 4 }]
+        },
+        results: { totalWeeklyGap: 300 }
+      };
+      const ki = storageManager._extractKeyInputs(state);
+      expect(ki.parent1Income).toBe(100000);
+      expect(ki.parent2Income).toBe(80000);
+      expect(ki.childrenCount).toBe(2);
+      expect(ki.workDaysCount).toBe(3);
+      expect(ki.weeklyOutOfPocket).toBe(300);
+    });
+
+    test('should handle missing results gracefully', () => {
+      const state = {
+        formData: {
+          parent1: { income: 50000, workDays: ['Mon'] },
+          parent2: { income: 0 },
+          children: [{ age: 1 }]
+        }
+      };
+      const ki = storageManager._extractKeyInputs(state);
+      expect(ki.weeklyOutOfPocket).toBeNull();
+      expect(ki.childrenCount).toBe(1);
     });
   });
 });

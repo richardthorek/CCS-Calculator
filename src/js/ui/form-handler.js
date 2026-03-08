@@ -59,7 +59,36 @@ export function initializeForm() {
   // If the cloud has a newer version than localStorage, the form is silently updated once
   // the async check resolves. This is intentional progressive enhancement: show local data
   // immediately, then refresh with cloud data only when it differs.
-  storageManager.initialize().then(() => {
+  storageManager.initialize().then(async (cloudAvailable) => {
+    // Check if a specific scenario was requested via URL param (e.g. from the dashboard)
+    if (cloudAvailable && typeof window !== 'undefined' && window.location) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const requestedId = urlParams.get('scenarioId');
+      if (requestedId) {
+        const scenario = await storageManager.loadScenario(requestedId);
+        if (scenario) {
+          await storageManager.activateScenario(requestedId);
+          storageManager.activeScenarioId = requestedId;
+          storageManager.activeScenarioName = scenario.name || 'My Scenario';
+          // Clean the URL param so a refresh doesn't re-load the same scenario
+          try {
+            const cleanUrl = new URL(window.location.href);
+            cleanUrl.searchParams.delete('scenarioId');
+            window.history.replaceState({}, '', cleanUrl.toString());
+          } catch {
+            // Non-critical – ignore URL manipulation errors
+          }
+          if (scenario.data && scenario.data.formData) {
+            restoreFormData(scenario.data.formData);
+            updateAdjustedIncomeDisplays();
+          }
+          document.dispatchEvent(new CustomEvent('scenarioChanged', {
+            detail: { id: requestedId, name: scenario.name || 'My Scenario' }
+          }));
+          return; // Skip loadActiveScenario – we already loaded the right one
+        }
+      }
+    }
     return storageManager.loadActiveScenario();
   }).then((cloudState) => {
     if (cloudState && cloudState.formData) {
@@ -69,6 +98,12 @@ export function initializeForm() {
       if (cloudTimestamp > localTimestamp) {
         restoreFormData(cloudState.formData);
         updateAdjustedIncomeDisplays();
+      }
+      // Notify scenario name display of the active scenario
+      if (storageManager.activeScenarioName) {
+        document.dispatchEvent(new CustomEvent('scenarioChanged', {
+          detail: { id: storageManager.activeScenarioId, name: storageManager.activeScenarioName }
+        }));
       }
     }
   }).catch((error) => {
@@ -124,6 +159,7 @@ function setupRealtimeUpdates() {
       const formData = collectFormData();
       const state = {
         formData,
+        results: lastResults,
         timestamp: new Date().toISOString()
       };
       storageManager.autoSave(state);

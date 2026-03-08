@@ -53,10 +53,14 @@ import {
   initializeAdjustableVariablesPanel
 } from './js/ui/adjustable-variables-panel.js';
 import { authManager } from './js/auth/auth-manager.js';
+import { storageManager } from './js/storage/storage-manager.js';
 
 // Global state for scenarios
 let currentScenarios = [];
 let currentFormData = null;
+
+// Timer reference for the auth panel feedback auto-hide
+let authPanelFeedbackTimer = null;
 
 // Initialize theme before DOM content loads to prevent flash
 initializeTheme();
@@ -506,6 +510,31 @@ function updateAuthUI(user) {
 }
 
 /**
+ * Update the current scenario name displayed in the auth panel.
+ * @param {string} name - The scenario name to display
+ */
+function updateScenarioNameDisplay(name) {
+  const el = document.getElementById('current-scenario-name');
+  if (el) el.textContent = name || 'My Scenario';
+}
+
+/**
+ * Show an inline feedback message in the auth panel.
+ * Auto-hides after 3 seconds.
+ * @param {string} message - The message to show
+ * @param {boolean} [isError=false] - Whether to style as an error
+ */
+function showAuthPanelFeedback(message, isError = false) {
+  const el = document.getElementById('auth-panel-feedback');
+  if (!el) return;
+  el.textContent = message;
+  el.hidden = false;
+  el.className = `auth-panel-feedback${isError ? ' auth-panel-feedback--error' : ''}`;
+  clearTimeout(authPanelFeedbackTimer);
+  authPanelFeedbackTimer = setTimeout(() => { el.hidden = true; }, 3000);
+}
+
+/**
  * Wire up click handlers for login provider buttons and the logout button.
  */
 function wireAuthHandlers() {
@@ -526,5 +555,130 @@ function wireAuthHandlers() {
       }
     });
   }
+
+  // ── New Scenario flow ─────────────────────────────────────────────────────
+
+  const newScenarioBtn = document.getElementById('btn-new-scenario');
+  const newScenarioForm = document.getElementById('new-scenario-form');
+  const newScenarioInput = document.getElementById('new-scenario-input');
+  const newScenarioConfirm = document.getElementById('btn-new-scenario-confirm');
+  const newScenarioCancel = document.getElementById('btn-new-scenario-cancel');
+
+  if (newScenarioBtn && newScenarioForm && newScenarioInput) {
+    // Show the inline form
+    newScenarioBtn.addEventListener('click', () => {
+      newScenarioForm.hidden = false;
+      newScenarioBtn.hidden = true;
+      newScenarioInput.value = '';
+      newScenarioInput.focus();
+    });
+
+    // Cancel – hide form, restore button
+    const cancelNewScenario = () => {
+      newScenarioForm.hidden = true;
+      newScenarioBtn.hidden = false;
+    };
+
+    newScenarioCancel?.addEventListener('click', cancelNewScenario);
+
+    // Confirm – create scenario
+    const confirmNewScenario = async () => {
+      const name = newScenarioInput.value.trim();
+      if (!name) {
+        newScenarioInput.focus();
+        return;
+      }
+      newScenarioConfirm.disabled = true;
+      try {
+        const scenario = await storageManager.createNewScenario(name);
+        if (scenario) {
+          storageManager.activeScenarioId = scenario.id;
+          storageManager.activeScenarioName = scenario.name;
+          updateScenarioNameDisplay(scenario.name);
+          cancelNewScenario();
+          // Clear localStorage so the new scenario starts fresh
+          clearState();
+          window.location.reload();
+        } else {
+          showAuthPanelFeedback('Could not create scenario. Please try again.', true);
+        }
+      } finally {
+        newScenarioConfirm.disabled = false;
+      }
+    };
+
+    newScenarioConfirm?.addEventListener('click', confirmNewScenario);
+    newScenarioInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') confirmNewScenario();
+      if (e.key === 'Escape') cancelNewScenario();
+    });
+  }
+
+  // ── Rename Scenario flow ──────────────────────────────────────────────────
+
+  const renameBtn = document.getElementById('btn-rename-scenario');
+  const renameForm = document.getElementById('scenario-rename-form');
+  const renameInput = document.getElementById('scenario-rename-input');
+  const renameConfirmBtn = document.getElementById('btn-rename-confirm');
+  const renameCancelBtn = document.getElementById('btn-rename-cancel');
+  const scenarioNameView = document.getElementById('scenario-name-view');
+
+  if (renameBtn && renameForm && renameInput) {
+    // Show the inline rename input
+    renameBtn.addEventListener('click', () => {
+      const currentName = storageManager.activeScenarioName || 'My Scenario';
+      renameInput.value = currentName;
+      scenarioNameView?.setAttribute('hidden', '');
+      renameForm.hidden = false;
+      renameInput.focus();
+      renameInput.select();
+    });
+
+    const cancelRename = () => {
+      renameForm.hidden = true;
+      scenarioNameView?.removeAttribute('hidden');
+    };
+
+    renameCancelBtn?.addEventListener('click', cancelRename);
+
+    const confirmRename = async () => {
+      const newName = renameInput.value.trim();
+      if (!newName) {
+        renameInput.focus();
+        return;
+      }
+      if (!storageManager.activeScenarioId) {
+        showAuthPanelFeedback('No active scenario to rename.', true);
+        cancelRename();
+        return;
+      }
+      renameConfirmBtn.disabled = true;
+      try {
+        const ok = await storageManager.renameScenario(storageManager.activeScenarioId, newName);
+        if (ok) {
+          storageManager.activeScenarioName = newName;
+          updateScenarioNameDisplay(newName);
+          cancelRename();
+        } else {
+          showAuthPanelFeedback('Could not rename. Please try again.', true);
+        }
+      } finally {
+        renameConfirmBtn.disabled = false;
+      }
+    };
+
+    renameConfirmBtn?.addEventListener('click', confirmRename);
+    renameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') confirmRename();
+      if (e.key === 'Escape') cancelRename();
+    });
+  }
+
+  // Listen for scenarioChanged events to update the name display
+  document.addEventListener('scenarioChanged', (event) => {
+    if (event.detail && event.detail.name) {
+      updateScenarioNameDisplay(event.detail.name);
+    }
+  });
 }
 

@@ -14,6 +14,10 @@ class StorageManager {
     this.autoSaving = false;
     this.lastSavedState = null;
     this.queuedSave = null;
+    /** ID of the scenario currently being edited, or null */
+    this.activeScenarioId = null;
+    /** Display name of the active scenario */
+    this.activeScenarioName = 'My Scenario';
 
     // Auto-save debounced (3 seconds)
     this.debouncedSave = debounce(
@@ -59,6 +63,8 @@ class StorageManager {
           if (profile.activeScenarioId) {
             const scenario = await this.loadScenario(profile.activeScenarioId);
             if (scenario) {
+              this.activeScenarioId = scenario.id;
+              this.activeScenarioName = scenario.name || 'My Scenario';
               return scenario.data;
             }
           }
@@ -102,10 +108,12 @@ class StorageManager {
   /**
    * Save a scenario to localStorage and, if authenticated, to cloud.
    * @param {Object} state - The state to save
-   * @param {string} [scenarioName='My Scenario'] - The scenario name for cloud storage
+   * @param {string} [scenarioName] - The scenario name for cloud storage (defaults to activeScenarioName)
    * @returns {Promise<Object|undefined>} The saved scenario result from cloud, or undefined
    */
-  async saveScenario(state, scenarioName = 'My Scenario') {
+  async saveScenario(state, scenarioName) {
+    const name = scenarioName || this.activeScenarioName || 'My Scenario';
+
     // Always save to localStorage first (instant, no network dependency)
     saveState(state);
     this.lastSavedState = state;
@@ -113,12 +121,23 @@ class StorageManager {
     // If authenticated, also save to cloud
     if (this.cloudStorageAvailable) {
       try {
-        const profile = await this.getUserProfile();
-        const scenarioId = profile && profile.activeScenarioId;
+        // Prefer the in-memory activeScenarioId; fall back to querying the profile
+        let scenarioId = this.activeScenarioId;
+        if (!scenarioId) {
+          const profile = await this.getUserProfile();
+          scenarioId = profile && profile.activeScenarioId;
+          if (scenarioId) {
+            this.activeScenarioId = scenarioId;
+          }
+        }
+
+        // Extract key inputs for the summary shown in the dashboard
+        const keyInputs = this._extractKeyInputs(state);
 
         const scenarioData = {
-          name: scenarioName,
+          name,
           data: state,
+          keyInputs,
           isActive: true
         };
 
@@ -148,6 +167,10 @@ class StorageManager {
 
         if (response.ok) {
           const result = await response.json();
+          // Capture the ID of the newly created scenario so future saves go to the same record
+          if (!this.activeScenarioId && result.id) {
+            this.activeScenarioId = result.id;
+          }
           this.updateSyncStatus('synced');
           return result;
         } else if (response.status === 409) {
@@ -162,6 +185,29 @@ class StorageManager {
         this.updateSyncStatus('error');
       }
     }
+  }
+
+  /**
+   * Extract key inputs from a state object for display in the dashboard summary.
+   * @param {Object} state - The calculator state
+   * @returns {Object} Key inputs summary
+   * @private
+   */
+  _extractKeyInputs(state) {
+    const formData = state && state.formData;
+    const results = state && state.results;
+    if (!formData) return {};
+    return {
+      parent1Income: formData.parent1?.income ?? 0,
+      parent2Income: formData.parent2?.income ?? 0,
+      childrenCount: Array.isArray(formData.children) ? formData.children.length : 0,
+      workDaysCount: Array.isArray(formData.parent1?.workDays)
+        ? formData.parent1.workDays.length
+        : 0,
+      weeklyOutOfPocket: results && results.totalWeeklyGap != null
+        ? results.totalWeeklyGap
+        : null
+    };
   }
 
   /**
@@ -197,6 +243,91 @@ class StorageManager {
     } catch (error) {
       console.error('Error listing scenarios:', error);
       return [];
+    }
+  }
+
+  /**
+   * Rename a scenario in cloud.
+   * @param {string} scenarioId - The scenario ID to rename
+   * @param {string} newName - The new name for the scenario
+   * @returns {Promise<boolean>} Whether the rename was successful
+   */
+  async renameScenario(scenarioId, newName) {
+    if (!this.cloudStorageAvailable) {
+      return false;
+    }
+
+    try {
+      const response = await fetch(`/api/scenarios/${encodeURIComponent(scenarioId)}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({ name: newName })
+      });
+
+      return response.ok;
+    } catch (error) {
+      console.error('Error renaming scenario:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Create a new blank scenario and set it as active.
+   * @param {string} [name='New Scenario'] - The scenario name
+   * @returns {Promise<Object|null>} The created scenario, or null on failure
+   */
+  async createNewScenario(name = 'New Scenario') {
+    if (!this.cloudStorageAvailable) {
+      return null;
+    }
+
+    try {
+      const response = await fetch('/api/scenarios', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({ name, data: {}, isActive: true })
+      });
+
+      if (response.ok) {
+        const scenario = await response.json();
+        // Activate the new scenario so subsequent autosaves target it
+        await this.activateScenario(scenario.id);
+        return scenario;
+      }
+
+      return null;
+    } catch (error) {
+      console.error('Error creating new scenario:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Activate a scenario so it becomes the current working scenario.
+   * @param {string} scenarioId - The scenario ID to activate
+   * @returns {Promise<boolean>} Whether the activation was successful
+   */
+  async activateScenario(scenarioId) {
+    if (!this.cloudStorageAvailable) {
+      return false;
+    }
+
+    try {
+      const response = await fetch(`/api/scenarios/${encodeURIComponent(scenarioId)}/activate`, {
+        method: 'POST',
+        credentials: 'same-origin'
+      });
+
+      return response.ok;
+    } catch (error) {
+      console.error('Error activating scenario:', error);
+      return false;
     }
   }
 

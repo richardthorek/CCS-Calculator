@@ -1013,4 +1013,37 @@ cd /workspaces/CCS-Calculator
 - Scenario versioning/history
 - Export all scenarios at once
 - Team/family scenario sharing
-- [ ] Test data persiste
+
+---
+
+## Phase 9: Scenario Management Dashboard ✅ COMPLETE
+
+**Goal:** Enable signed-in users to save, manage, and switch between multiple named scenarios.
+
+### Phase 9.1 – Dashboard Page ✅
+- [x] Create `src/dashboard.html` with scenario list, modals, and auth gate
+- [x] Create `src/js/ui/dashboard-manager.js` for all dashboard interactions
+- [x] Add `/dashboard` route to `staticwebapp.config.json`
+- [x] Show auth-required gate for anonymous visitors
+
+### Phase 9.2 – Scenario CRUD ✅
+- [x] Add `renameScenario(id, name)` to StorageManager – lightweight PUT with just name
+- [x] Add `createNewScenario(name)` to StorageManager – POST + activate
+- [x] Add `activateScenario(id)` to StorageManager – POST /activate endpoint
+- [x] Add `_extractKeyInputs(state)` to extract parent incomes, child count, work days, out-of-pocket for dashboard display
+- [x] Update `api/src/services/scenarios.js` to store/return `keyInputs` field in summaries
+- [x] Dashboard supports inline rename modal, delete confirmation modal, and "Open" to load
+
+### Phase 9.3 – Main App Integration ✅
+- [x] Update auth panel in `index.html` with: current scenario name + rename button, "New Scenario" button, "My Scenarios" link
+- [x] Update `app.js` to wire rename, new scenario buttons, listen to `scenarioChanged` event
+- [x] Add `?scenarioId=` URL param handling in `form-handler.js` to load a specific scenario from the dashboard
+- [x] Include `lastResults` in autosave state so weekly out-of-pocket is persisted with scenario
+
+### Phase 9.4 – Testing ✅
+- [x] Add tests for `renameScenario()`, `createNewScenario()`, `activateScenario()`, `_extractKeyInputs()`
+- [x] Update `beforeEach` in storage-manager and integration tests to reset `activeScenarioId`
+- [x] 337 tests passing total
+
+### Phase 9.5 – Documentation ✅
+- [x] Updated master-plan.md with Phase 9 tasks and status
