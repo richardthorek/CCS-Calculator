@@ -67,12 +67,9 @@ This will:
 
 After infrastructure is created, register your app with OAuth providers:
 
-#### Google OAuth
-1. Go to: https://console.cloud.google.com/apis/credentials
-2. Create "OAuth 2.0 Client ID"
-3. Add redirect URI: `https://YOUR-APP.azurestaticapps.net/.auth/login/google/callback`
+⚠️ **Important:** Azure SWA built-in auth only supports Microsoft and GitHub (NOT Google)
 
-#### Microsoft OAuth (Azure AD)
+#### Microsoft OAuth (Entra ID/Azure AD)
 1. Go to: https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps
 2. Click "New registration"
 3. Add redirect URI: `https://YOUR-APP.azurestaticapps.net/.auth/login/aad/callback`
@@ -130,7 +127,7 @@ Follow the implementation plan in the master plan:
 - **No frontend SDK needed**: Uses standard OAuth redirects
 - **Zero maintenance**: Microsoft manages OAuth flows
 - **Secure by default**: Industry-standard implementation
-- **Multiple providers**: Google, Microsoft, GitHub out-of-the-box
+- **Multiple providers**: Microsoft and GitHub out-of-the-box
 
 ### Why Progressive Enhancement?
 - **No breaking changes**: App works without authentication
@@ -157,7 +154,7 @@ Azure Table Storage
 ✅ **Auto-save**: Every 3 seconds after changes  
 ✅ **Cross-device sync**: Access from any device  
 ✅ **Offline support**: Works without internet (localStorage)  
-✅ **Multiple providers**: Google, Microsoft, GitHub  
+✅ **Multiple providers**: Microsoft and GitHub  
 ✅ **Privacy-first**: Transparent data usage, easy deletion  
 ✅ **Progressive**: App works without login  
 ✅ **Conflict resolution**: Handles multi-device editing  
@@ -249,7 +246,7 @@ Refer to the comprehensive design document:
 
 Before marking Phase 8 complete:
 
-- [ ] Users can sign in with 3 providers (Google, Microsoft, GitHub)
+- [ ] Users can sign in with 2 providers (Microsoft, GitHub)
 - [ ] Scenarios auto-save within 3 seconds
 - [ ] Scenarios sync across devices
 - [ ] App works offline with localStorage fallback

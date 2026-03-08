@@ -1,9 +1,9 @@
 # Phase 8 Implementation Checklist
 
 **Phase:** User Authentication & Cloud Storage  
-**Start Date:** _____________  
+**Start Date:** 2026-03-08  
 **Target Completion:** _____________  
-**Status:** ⏳ In Progress - 8.2 Complete
+**Status:** 🟦 In Progress - 8.1 mostly complete, 8.2 complete
 
 ---
 
@@ -23,37 +23,36 @@
 ## 8.1 Azure Infrastructure Setup (CLI)
 
 **Goal:** Provision all Azure resources needed for authentication and storage  
-**Duration:** 30 minutes
+**Duration:** 30 minutes  
+**Manual Guide:** `documentation/phase-8-1-azure-setup-guide.md`  
+**Status:** Mostly Complete - OAuth registration remaining
 
 ### Prerequisites
-- [ ] Azure CLI installed and working (`az --version`)
-- [ ] Azure subscription with appropriate permissions
-- [ ] OpenSSL available (for random string generation)
+- [x] Azure CLI installed and working (`az --version`)
+- [x] Azure subscription with appropriate permissions
+- [x] OpenSSL available (for random string generation)
 
-### Tasks
-- [ ] Run setup script: `./scripts/setup-azure-auth-storage.sh`
-- [ ] Save connection string to secure location
-- [ ] Verify storage account created
-- [ ] Verify tables created (userscenarios, userprofiles)
-- [ ] Document resource names (resource group, storage account)
+### Tasks - Automated (Complete)
+- [x] Create detailed setup guide with subscription/resource group details
+- [x] Run setup commands to create storage account
+- [x] Save connection string to secure location
+- [x] Verify storage account created: `stccscalc72929273`
+- [x] Verify tables created (userscenarios, userprofiles)
+- [x] Document resource names in guide
+- [x] Add Azure SWA app settings (connection string, table names)
 
-### OAuth Provider Registration
-- [ ] Register Google OAuth app
-- [ ] Register Microsoft OAuth app (Azure AD)
-- [ ] Register GitHub OAuth app
+### OAuth Provider Registration (Manual - Remaining)
+⚠️ **Note:** Azure SWA built-in auth only supports Microsoft (Entra ID) and GitHub
+- [ ] Register Microsoft OAuth app (Entra ID/Azure AD) - `/.auth/login/aad`
+- [ ] Register GitHub OAuth app - `/.auth/login/github`
 - [ ] Add redirect URI for each provider
 - [ ] Save client IDs/secrets securely
 
-### Add Secrets to Azure
-- [ ] Add AZURE_STORAGE_CONNECTION_STRING to Static Web App settings
-- [ ] Add TABLE_NAME_SCENARIOS="userscenarios"
-- [ ] Add TABLE_NAME_PROFILES="userprofiles"
-- [ ] Verify settings with `az staticwebapp appsettings list`
-
-### Add Secrets to GitHub
+### GitHub Secrets (Manual - Remaining)
+Note: Requires repository admin permissions
 - [ ] Go to GitHub repo settings → Secrets
-- [ ] Add AZURE_STORAGE_CONNECTION_STRING
-- [ ] Add AZURE_STATIC_WEB_APPS_API_TOKEN
+- [ ] Add AZURE_STORAGE_CONNECTION_STRING (value in guide)
+- [ ] Add AZURE_STATIC_WEB_APPS_API_TOKEN (get from Azure portal)
 - [ ] Verify secrets are masked
 
 ### Outputs to Save
@@ -190,7 +189,7 @@ Location: ________________
 - [ ] Open `src/index.html`
 - [ ] Add auth container div (near header)
 - [ ] Add auth-prompt section (when not logged in)
-- [ ] Add provider buttons (Google, Microsoft, GitHub)
+- [ ] Add provider buttons (Microsoft, GitHub)
 - [ ] Add privacy notice text
 - [ ] Add auth-user-info section (when logged in)
 - [ ] Add user badge with email display
@@ -222,7 +221,6 @@ Location: ________________
 - [ ] Test auth flow
 
 ### 8.3.5 Testing
-- [ ] Test Google login
 - [ ] Test Microsoft login
 - [ ] Test GitHub login
 - [ ] Test logout flow
@@ -354,7 +352,6 @@ Location: ________________
 - [ ] Verify 100% passing
 
 ### 8.6.2 Manual Testing Checklist
-- [ ] Sign in with Google
 - [ ] Sign in with Microsoft
 - [ ] Sign in with GitHub
 - [ ] Enter calculator data
@@ -470,12 +467,12 @@ Location: ________________
 
 ### 8.7.6 OAuth Setup Guide
 - [ ] Create `documentation/oauth-setup.md`
-- [ ] Step-by-step Google OAuth setup
-- [ ] Step-by-step Microsoft OAuth setup
+- [ ] Step-by-step Microsoft OAuth setup (Entra ID/Azure AD)
 - [ ] Step-by-step GitHub OAuth setup
 - [ ] Add screenshots
 - [ ] Document redirect URIs
 - [ ] Document where to add secrets
+- [ ] Note: Azure SWA built-in auth supports Microsoft and GitHub only
 
 ### 8.7.7 Update Master Plan
 - [ ] Open `master-plan.md`
@@ -548,7 +545,6 @@ Location: ________________
 Check all before marking Phase 8 complete:
 
 ### Functionality
-- [ ] Users can sign in with Google
 - [ ] Users can sign in with Microsoft
 - [ ] Users can sign in with GitHub
 - [ ] Scenarios auto-save within 3 seconds
@@ -591,7 +587,7 @@ Check all before marking Phase 8 complete:
 
 ## 📊 Progress Tracking
 
-**Phase 8.1:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
+**Phase 8.1:** 🟦 In Progress (Azure resources created, OAuth registration and GitHub secrets remaining)  
 **Phase 8.2:** ⬜ Not Started | 🟦 In Progress | **✅ Complete**  
 **Phase 8.3:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
 **Phase 8.4:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
@@ -600,7 +596,7 @@ Check all before marking Phase 8 complete:
 **Phase 8.7:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
 **Phase 8.8:** ⬜ Not Started | 🟦 In Progress | ✅ Complete  
 
-**Overall Phase 8:** ⬜ Not Started | **🟦 In Progress** | ✅ Complete
+**Overall Phase 8:** 🟦 In Progress
 
 ---
 
@@ -609,6 +605,12 @@ Check all before marking Phase 8 complete:
 Use this section for implementation notes, issues encountered, and decisions made:
 
 ```
+2026-03-08 - Started Phase 8.1 work, opened issue #62 and created feature branch.
+2026-03-08 - Completed Azure infrastructure setup:
+  - Storage account: stccscalc72929273
+  - Tables created: userscenarios, userprofiles
+  - App settings configured in Azure SWA
+  - OAuth provider registration and GitHub secrets require manual steps (admin permissions)
 2026-03-08 - Phase 8.2 complete. All API files implemented and 36 unit tests passing.
 2026-03-08 - Decision: Used "server wins" strategy for ETag conflicts (409 returns serverVersion).
 2026-03-08 - @azure/data-tables v13.3.2 installed (no known vulnerabilities).
@@ -617,4 +619,4 @@ Use this section for implementation notes, issues encountered, and decisions mad
 
 ---
 
-**Last Updated:** March 7, 2026
+**Last Updated:** March 8, 2026
