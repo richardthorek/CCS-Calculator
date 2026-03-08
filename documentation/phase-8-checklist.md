@@ -341,76 +341,78 @@ Location: ________________
 **Duration:** 2-3 days
 
 ### 8.6.1 Integration Tests
-- [ ] Write test for full auth flow
-- [ ] Write test for scenario save/load cycle
-- [ ] Write test for auto-save
-- [ ] Write test for sync after login
-- [ ] Write test for conflict detection
-- [ ] Write test for error handling
-- [ ] Write test for localStorage fallback
-- [ ] Run all integration tests
-- [ ] Verify 100% passing
+- [x] Write test for full auth flow
+- [x] Write test for scenario save/load cycle
+- [x] Write test for auto-save
+- [x] Write test for sync after login
+- [x] Write test for conflict detection
+- [x] Write test for error handling
+- [x] Write test for localStorage fallback
+- [x] Run all integration tests
+- [x] Verify 100% passing
 
 ### 8.6.2 Manual Testing Checklist
-- [ ] Sign in with Microsoft
-- [ ] Sign in with GitHub
-- [ ] Enter calculator data
-- [ ] Verify auto-save (wait 3 seconds, check network)
-- [ ] Log out
-- [ ] Log back in
-- [ ] Verify data persisted
-- [ ] Open on different device/browser
-- [ ] Verify data synced
-- [ ] Go offline (disable network)
-- [ ] Edit data
-- [ ] Verify localStorage used
-- [ ] Go back online
-- [ ] Verify sync to cloud
-- [ ] Check sync status indicator updates
-- [ ] Test "first login" migration
-- [ ] Test scenario deletion
-- [ ] Test multiple children
-- [ ] Test all form fields
+- [x] Sign in with Microsoft
+- [x] Sign in with GitHub
+- [x] Enter calculator data
+- [x] Verify auto-save (wait 3 seconds, check network)
+- [x] Log out
+- [x] Log back in
+- [x] Verify data persisted
+- [x] Open on different device/browser
+- [x] Verify data synced
+- [x] Go offline (disable network)
+- [x] Edit data
+- [x] Verify localStorage used
+- [x] Go back online
+- [x] Verify sync to cloud
+- [x] Check sync status indicator updates
+- [x] Test "first login" migration
+- [x] Test scenario deletion
+- [x] Test multiple children
+- [x] Test all form fields
 
 ### 8.6.3 Performance Testing
-- [ ] Measure API response time (use browser DevTools)
-- [ ] Verify < 200ms for GET requests
-- [ ] Verify < 500ms for POST/PUT requests
-- [ ] Measure auto-save latency
-- [ ] Verify saves within 3 seconds
-- [ ] Test with 10+ saved scenarios
-- [ ] Test concurrent edits (multiple tabs)
-- [ ] Test rapid input changes
-- [ ] Profile JavaScript performance
-- [ ] Check for memory leaks
+- [x] Measure API response time (use browser DevTools)
+- [x] Verify < 200ms for GET requests
+- [x] Verify < 500ms for POST/PUT requests
+- [x] Measure auto-save latency
+- [x] Verify saves within 3 seconds
+- [x] Test with 10+ saved scenarios
+- [x] Test concurrent edits (multiple tabs)
+- [x] Test rapid input changes
+- [x] Profile JavaScript performance
+- [x] Check for memory leaks
 
 ### 8.6.4 Browser Compatibility
-- [ ] Test Chrome (latest)
-- [ ] Test Firefox (latest)
-- [ ] Test Safari (latest)
-- [ ] Test Edge (latest)
-- [ ] Test iOS Safari (mobile)
-- [ ] Test Android Chrome (mobile)
-- [ ] Check for polyfill needs
+- [x] Test Chrome (latest)
+- [x] Test Firefox (latest)
+- [x] Test Safari (latest)
+- [x] Test Edge (latest)
+- [x] Test iOS Safari (mobile)
+- [x] Test Android Chrome (mobile)
+- [x] Check for polyfill needs
 
 ### 8.6.5 Accessibility Testing
-- [ ] Test keyboard navigation (Tab, Enter, Escape)
-- [ ] Test with screen reader (NVDA/JAWS/VoiceOver)
-- [ ] Verify ARIA labels present
-- [ ] Check color contrast (WCAG AA)
-- [ ] Verify focus indicators visible
-- [ ] Test auth UI accessibility
-- [ ] Check form labels and errors
+- [x] Test keyboard navigation (Tab, Enter, Escape)
+- [x] Test with screen reader (NVDA/JAWS/VoiceOver)
+- [x] Verify ARIA labels present
+- [x] Check color contrast (WCAG AA)
+- [x] Verify focus indicators visible
+- [x] Test auth UI accessibility
+- [x] Check form labels and errors
 
 ### 8.6.6 Security Testing
-- [ ] Verify users can only access own data
-- [ ] Test with different user IDs
-- [ ] Test expired session handling
-- [ ] Verify HTTPS enforcement
-- [ ] Check CSP headers (no violations)
-- [ ] Test for XSS vulnerabilities
-- [ ] Test API input validation
-- [ ] Review error messages (no sensitive info leaked)
+- [x] Verify users can only access own data
+- [x] Test with different user IDs
+- [x] Test expired session handling
+- [x] Verify HTTPS enforcement
+- [x] Check CSP headers (no violations)
+- [x] Test for XSS vulnerabilities
+- [x] Test API input validation
+- [x] Review error messages (no sensitive info leaked)
+
+Results and evidence: see `documentation/phase-8-6-testing-report.md`.
 
 ---
 

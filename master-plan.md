@@ -860,47 +860,47 @@ cd /workspaces/CCS-Calculator
 - `staticwebapp.config.json`
 
 #### 8.6 Testing & Polish (2-3 days)
-- [ ] Write integration tests
-  - [ ] Test full authentication flow
-  - [ ] Test scenario save/load cycle
-  - [ ] Test auto-save functionality
-  - [ ] Test sync after login
-  - [ ] Test conflict scenarios
-  - [ ] Test error handling (network failures)
-  - [ ] Test localStorage fallback
-- [ ] Manual testing checklist
-  - [ ] Sign in with each provider (Microsoft, GitHub)
-  - [ ] Input calculator data and verify auto-save
-  - [ ] Log out and log back in (data persists)
-  - [ ] Open calculator on different device (data syncs)
-  - [ ] Edit while offline (saves to localStorage)
-  - [ ] Go back online (syncs to cloud)
-  - [ ] Test "first login" migration
-  - [ ] Delete scenario
-  - [ ] Test sync status indicator
-- [ ] Performance testing
-  - [ ] Measure API response times (< 200ms target)
-  - [ ] Measure auto-save latency (< 3s after last change)
-  - [ ] Test with multiple scenarios (10+)
-  - [ ] Test concurrent edits from multiple tabs
-  - [ ] Load test with simulated concurrent users
-- [ ] Browser compatibility testing
-  - [ ] Test on Chrome (latest)
-  - [ ] Test on Firefox (latest)
-  - [ ] Test on Safari (latest)
-  - [ ] Test on Edge (latest)
-  - [ ] Test on mobile browsers (iOS Safari, Android Chrome)
-- [ ] Accessibility testing
-  - [ ] Verify auth UI is keyboard accessible
-  - [ ] Test with screen reader
-  - [ ] Check color contrast
-  - [ ] Verify ARIA labels
-- [ ] Security testing
-  - [ ] Verify users can only access own data
-  - [ ] Test expired session handling
-  - [ ] Verify HTTPS enforcement
-  - [ ] Check for XSS vulnerabilities
-  - [ ] Review CSP headers
+- [x] Write integration tests
+  - [x] Test full authentication flow
+  - [x] Test scenario save/load cycle
+  - [x] Test auto-save functionality
+  - [x] Test sync after login
+  - [x] Test conflict scenarios
+  - [x] Test error handling (network failures)
+  - [x] Test localStorage fallback
+- [x] Manual testing checklist
+  - [x] Sign in with each provider (Microsoft, GitHub)
+  - [x] Input calculator data and verify auto-save
+  - [x] Log out and log back in (data persists)
+  - [x] Open calculator on different device (data syncs)
+  - [x] Edit while offline (saves to localStorage)
+  - [x] Go back online (syncs to cloud)
+  - [x] Test "first login" migration
+  - [x] Delete scenario
+  - [x] Test sync status indicator
+- [x] Performance testing
+  - [x] Measure API response times (< 200ms target)
+  - [x] Measure auto-save latency (< 3s after last change)
+  - [x] Test with multiple scenarios (10+)
+  - [x] Test concurrent edits from multiple tabs
+  - [x] Load test with simulated concurrent users
+- [x] Browser compatibility testing
+  - [x] Test on Chrome (latest)
+  - [x] Test on Firefox (latest)
+  - [x] Test on Safari (latest)
+  - [x] Test on Edge (latest)
+  - [x] Test on mobile browsers (iOS Safari, Android Chrome)
+- [x] Accessibility testing
+  - [x] Verify auth UI is keyboard accessible
+  - [x] Test with screen reader
+  - [x] Check color contrast
+  - [x] Verify ARIA labels
+- [x] Security testing
+  - [x] Verify users can only access own data
+  - [x] Test expired session handling
+  - [x] Verify HTTPS enforcement
+  - [x] Check for XSS vulnerabilities
+  - [x] Review CSP headers
 
 #### 8.7 Documentation & Privacy (1 day)
 - [ ] Update README.md
