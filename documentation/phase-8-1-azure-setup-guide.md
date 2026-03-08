@@ -2,7 +2,25 @@
 
 **Date:** March 8, 2026  
 **Issue:** [#62](https://github.com/richardthorek/CCS-Calculator/issues/62)  
-**Status:** In Progress
+**Status:** Mostly Complete - Manual OAuth Steps Remaining  
+
+## ✅ Completed (Automated)
+
+- ✅ Storage Account created: `stccscalc72929273`
+- ✅ Tables created: `userscenarios`, `userprofiles`
+- ✅ Azure SWA app settings configured
+- ✅ Connection string saved
+
+## ⏳ Remaining Manual Steps
+
+1. **Register OAuth Providers** (see section 4 below)
+   - Google OAuth app
+   - Microsoft OAuth app  
+   - GitHub OAuth app
+   
+2. **Add GitHub Repository Secrets** (see section 6 below)
+   - Requires admin permissions on repository
+   - Connection string is provided below for copy/paste
 
 ## Environment Details
 
@@ -163,22 +181,44 @@ gh secret set AZURE_STATIC_WEB_APPS_API_TOKEN --body "$SWA_TOKEN" --repo richard
 
 ### 7. Document Resources Created
 
-Update this section with actual values after completion:
+**Date Completed:** March 8, 2026
 
 ```
-Date Completed: _____________
-Storage Account: _____________
-Connection String: [SAVED SECURELY]
-Location: _____________
+Storage Account: stccscalc72929273
+Resource Group: ccs-calculator
+Location: eastasia
+Static Web App: thorek-ccs-calculator
+Connection String: [STORED IN AZURE APP SETTINGS & GITHUB SECRETS]
 
-OAuth Providers:
-- Google Client ID: _____________
-- Microsoft Client ID: _____________
-- GitHub Client ID: _____________
+Tables Created:
+- ✅ userscenarios
+- ✅ userprofiles
 
-GitHub Secrets Added: ✅ / ❌
-Azure App Settings Added: ✅ / ❌
-Tables Created: ✅ / ❌
+Azure App Settings Added: ✅
+- AZURE_STORAGE_CONNECTION_STRING
+- TABLE_NAME_SCENARIOS=userscenarios
+- TABLE_NAME_PROFILES=userprofiles
+
+OAuth Providers (MANUAL STEP REMAINING):
+- ❌ Google Client ID - needs registration
+- ❌ Microsoft Client ID - needs registration
+- ❌ GitHub Client ID - needs registration
+
+GitHub Secrets (MANUAL STEP REMAINING):
+- ❌ AZURE_STORAGE_CONNECTION_STRING - needs admin permissions
+- ❌ AZURE_STATIC_WEB_APPS_API_TOKEN - needs to be added
+```
+
+**Connection String for Manual GitHub Secret Addition:**
+```
+[REDACTED - Use Azure portal or CLI to retrieve]
+
+To get the connection string:
+az storage account show-connection-string \
+  --name stccscalc72929273 \
+  --resource-group ccs-calculator \
+  --query connectionString \
+  -o tsv
 ```
 
 ## Verification Steps
