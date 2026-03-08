@@ -796,45 +796,45 @@ cd /workspaces/CCS-Calculator
 - `src/app.js` (initialize auth on load)
 
 #### 8.4 Frontend Storage Manager (2-3 days)
-- [ ] Create cloud storage manager module
-  - [ ] Create `src/js/storage/storage-manager.js`
-  - [ ] Implement initialize() - check cloud availability
-  - [ ] Implement loadActiveScenario() - load from cloud or localStorage
-  - [ ] Implement saveScenario() - save to both cloud and localStorage
-  - [ ] Implement autoSave() - debounced auto-save (3 seconds)
-  - [ ] Implement listScenarios() - get all user scenarios
-  - [ ] Implement deleteScenario() - remove scenario
-  - [ ] Implement getUserProfile() - get user preferences
-  - [ ] Add singleton pattern
-- [ ] Implement sync logic
-  - [ ] Create syncWithCloud() method
-  - [ ] Detect local vs cloud data conflicts
-  - [ ] Implement "first login" migration (upload localStorage data)
-  - [ ] Add optimistic UI updates
-  - [ ] Handle online/offline transitions
-- [ ] Add conflict resolution
-  - [ ] Detect version conflicts (409 response)
-  - [ ] Implement "server wins" default strategy
-  - [ ] Log conflicts for future UI enhancement
-  - [ ] Update local state with server data
-- [ ] Update form handler for auto-save
-  - [ ] Import storageManager in `src/js/ui/form-handler.js`
-  - [ ] Call autoSave() on input event
-  - [ ] Call autoSave() on blur event
-  - [ ] Pass current form state to storage manager
-  - [ ] Remove direct localStorage calls (use storage manager)
-- [ ] Add sync status UI
-  - [ ] Create updateSyncStatus() method
-  - [ ] Show status: saving, synced, error, conflict
-  - [ ] Update icon and text based on status
-  - [ ] Add CSS transitions for status changes
-- [ ] Test offline/online scenarios
-  - [ ] Test auto-save when authenticated
-  - [ ] Test fallback to localStorage when offline
-  - [ ] Test sync after coming back online
-  - [ ] Test "first login" data migration
-  - [ ] Test error handling (API failures)
-  - [ ] Test conflict scenarios (multi-device editing)
+- [x] Create cloud storage manager module
+  - [x] Create `src/js/storage/storage-manager.js`
+  - [x] Implement initialize() - check cloud availability
+  - [x] Implement loadActiveScenario() - load from cloud or localStorage
+  - [x] Implement saveScenario() - save to both cloud and localStorage
+  - [x] Implement autoSave() - debounced auto-save (3 seconds)
+  - [x] Implement listScenarios() - get all user scenarios
+  - [x] Implement deleteScenario() - remove scenario
+  - [x] Implement getUserProfile() - get user preferences
+  - [x] Add singleton pattern
+- [x] Implement sync logic
+  - [x] Create syncWithCloud() method
+  - [x] Detect local vs cloud data conflicts
+  - [x] Implement "first login" migration (upload localStorage data)
+  - [x] Add optimistic UI updates
+  - [x] Handle online/offline transitions
+- [x] Add conflict resolution
+  - [x] Detect version conflicts (409 response)
+  - [x] Implement "server wins" default strategy
+  - [x] Log conflicts for future UI enhancement
+  - [x] Update local state with server data
+- [x] Update form handler for auto-save
+  - [x] Import storageManager in `src/js/ui/form-handler.js`
+  - [x] Call autoSave() on input event
+  - [x] Call autoSave() on blur event
+  - [x] Pass current form state to storage manager
+  - [x] Remove direct localStorage calls (use storage manager)
+- [x] Add sync status UI
+  - [x] Create updateSyncStatus() method
+  - [x] Show status: saving, synced, error, conflict
+  - [x] Update icon and text based on status
+  - [x] Add CSS transitions for status changes
+- [x] Test offline/online scenarios
+  - [x] Test auto-save when authenticated
+  - [x] Test fallback to localStorage when offline
+  - [x] Test sync after coming back online
+  - [x] Test "first login" data migration
+  - [x] Test error handling (API failures)
+  - [x] Test conflict scenarios (multi-device editing)
 
 **Files to create/modify:**
 - `src/js/storage/storage-manager.js` (new)
