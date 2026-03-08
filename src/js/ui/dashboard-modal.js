@@ -385,10 +385,10 @@ async function confirmDmRename() {
         if (card) {
           const nameEl = card.querySelector('.scenario-card-name');
           if (nameEl) nameEl.textContent = newName;
-          // Update aria-labels on action buttons
-          card.querySelector('.btn-scenario-rename')?.setAttribute('aria-label', `Rename scenario ${escapeHtml(newName)}`);
-          card.querySelector('.btn-scenario-delete')?.setAttribute('aria-label', `Delete scenario ${escapeHtml(newName)}`);
-          card.querySelector('.btn-scenario-open')?.setAttribute('aria-label', `Open scenario ${escapeHtml(newName)}`);
+          // Update aria-labels on action buttons (setAttribute takes raw text, no HTML escaping)
+          card.querySelector('.btn-scenario-rename')?.setAttribute('aria-label', `Rename scenario ${newName}`);
+          card.querySelector('.btn-scenario-delete')?.setAttribute('aria-label', `Delete scenario ${newName}`);
+          card.querySelector('.btn-scenario-open')?.setAttribute('aria-label', `Open scenario ${newName}`);
         }
         closeDmRenameModal();
       } else {

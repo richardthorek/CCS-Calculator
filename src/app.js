@@ -713,7 +713,8 @@ function closeNewScenarioModal() {
  */
 function wireNewScenarioModal() {
   const modal = document.getElementById('new-scenario-modal');
-  if (!modal) return;
+  if (!modal || modal._handlersWired) return;
+  modal._handlersWired = true;
 
   const cancelBtn = document.getElementById('ns-modal-cancel');
   const confirmBtn = document.getElementById('ns-modal-confirm');
@@ -762,16 +763,6 @@ function wireNewScenarioModal() {
   // Close on backdrop click
   modal.addEventListener('click', (e) => {
     if (e.target === e.currentTarget) closeNewScenarioModal();
-  });
-  // Close on global Escape (only when no other modal is open)
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal && !modal.hidden) {
-      // Only handle if dashboard modal is not open (it handles its own Escape)
-      const dashModal = document.getElementById('dashboard-modal');
-      if (!dashModal || dashModal.hidden) {
-        closeNewScenarioModal();
-      }
-    }
   });
 }
 
