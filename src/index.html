@@ -58,45 +58,57 @@
                 <p class="subtitle">Know exactly what childcare will cost your family</p>
                 <p class="disclaimer">Based on official 2025-26 Australian Government rates</p>
             </div>
-            <!-- Authentication UI -->
-            <div id="auth-container" class="auth-container" aria-live="polite">
-                <!-- Login prompt (shown when not authenticated) -->
-                <div id="auth-prompt" class="auth-prompt" hidden>
-                    <p class="auth-prompt-text">
-                        <strong>💾 Save your scenarios</strong><br>
-                        Sign in to save your scenarios across devices.
-                    </p>
-                    <div class="auth-providers">
-                        <button type="button" class="btn-auth btn-auth-microsoft" data-provider="aad" aria-label="Sign in with Microsoft">
-                            <span class="auth-icon" aria-hidden="true">🔐</span> Sign in with Microsoft
-                        </button>
-                        <button type="button" class="btn-auth btn-auth-github" data-provider="github" aria-label="Sign in with GitHub">
-                            <span class="auth-icon" aria-hidden="true">🐙</span> Sign in with GitHub
-                        </button>
-                    </div>
-                    <p class="auth-privacy-note">
-                        <small>Your data is stored securely and never shared.</small>
-                    </p>
-                </div>
+            <!-- Consolidated Auth + Theme Menu -->
+            <div id="auth-menu" class="auth-menu" aria-live="polite">
+                <button id="auth-menu-trigger" class="auth-menu-trigger" type="button"
+                        aria-haspopup="menu" aria-expanded="false">
+                    <span class="auth-menu-icon" aria-hidden="true">💾</span>
+                    <span class="auth-menu-label">Sign in</span>
+                    <span class="auth-menu-chevron" aria-hidden="true">▾</span>
+                </button>
 
-                <!-- User info (shown when authenticated) -->
-                <div id="auth-user-info" class="auth-user-info" hidden>
-                    <div class="user-badge">
-                        <span class="user-icon" aria-hidden="true">👤</span>
-                        <span id="user-email" class="user-email"></span>
+                <div id="auth-menu-panel" class="auth-menu-panel">
+                    <!-- Sign-in section (shown when not authenticated) -->
+                    <div id="auth-panel-signin" class="auth-panel-section">
+                        <p class="auth-panel-heading">💾 Save your scenarios</p>
+                        <p class="auth-panel-subtext">Sign in to save across devices and never lose your work.</p>
+                        <div class="auth-panel-providers">
+                            <button type="button" class="btn-auth btn-auth-microsoft" data-provider="aad" aria-label="Sign in with Microsoft">
+                                <span class="auth-icon" aria-hidden="true">🔐</span> Sign in with Microsoft
+                            </button>
+                            <button type="button" class="btn-auth btn-auth-github" data-provider="github" aria-label="Sign in with GitHub">
+                                <span class="auth-icon" aria-hidden="true">🐙</span> Sign in with GitHub
+                            </button>
+                        </div>
+                        <p class="auth-privacy-note"><small>Your data is stored securely and never shared.</small></p>
                     </div>
-                    <span id="sync-status" class="sync-status" aria-label="Sync status">
-                        <span class="sync-icon" aria-hidden="true">☁️</span>
-                        <span class="sync-text">Synced</span>
-                    </span>
-                    <button type="button" id="btn-logout" class="btn-logout">Sign Out</button>
+
+                    <!-- User section (hidden by default, shown when authenticated) -->
+                    <div id="auth-panel-user" class="auth-panel-section" hidden>
+                        <div class="auth-panel-user-profile">
+                            <span class="user-icon" aria-hidden="true">👤</span>
+                            <span id="user-email" class="user-email"></span>
+                        </div>
+                        <span id="sync-status" class="sync-status" aria-label="Sync status">
+                            <span class="sync-icon" aria-hidden="true">☁️</span>
+                            <span class="sync-text">Synced</span>
+                        </span>
+                        <button type="button" id="btn-logout" class="btn-panel-signout">Sign Out</button>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="auth-panel-divider" role="separator"></div>
+
+                    <!-- Theme section (always shown) -->
+                    <div class="auth-panel-theme">
+                        <span class="auth-panel-theme-label">Appearance</span>
+                        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">
+                            <span class="theme-toggle-icon" aria-hidden="true">☀️</span>
+                            <span class="theme-toggle-label">Auto</span>
+                        </button>
+                    </div>
                 </div>
             </div>
-
-            <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">
-                <span class="theme-toggle-icon" aria-hidden="true">☀️</span>
-                <span class="theme-toggle-label">Auto</span>
-            </button>
         </div>
     </header>
     
