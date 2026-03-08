@@ -19,6 +19,16 @@ All four core calculation modules have been implemented with full test coverage:
 
 ## Completed Features (Post-Phase 7)
 
+### Controls Bar Single-Row Layout Refactor (2026-03)
+- ✅ Changed controls bar to flex-column so period selector stacks above adjustable panel
+- ✅ Merged parent-row and children-row into a single horizontal `panel-row`
+- ✅ All adjustable controls (Parent 1, Parent 2, Set All, Child 1...) now on one row beneath "Show Figures"
+- ✅ Fixed initialisation bug: `updatePanelControls()` now called after panel is inserted into the DOM
+- ✅ Each control clearly labelled; "Set All" does not disrupt alignment
+- ✅ Responsive: mobile (≤640px) wraps label above controls row
+- ✅ Documentation updated in `documentation/current_state/controls-bar-single-row-layout.md`
+- ✅ All 280 tests passing
+
 ### Adjustable Variables Panel (2026-03)
 - ✅ Created compact panel next to period selector for quick access to adjustable parameters
 - ✅ Panel displays linked inputs for:
