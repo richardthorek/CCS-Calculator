@@ -1083,3 +1083,39 @@ cd /workspaces/CCS-Calculator
 ### Phase 9.6.5 – Documentation ✅
 - [x] Updated master-plan.md with Phase 9.6 tasks and status
 - [x] 337 tests passing, no regressions
+
+---
+
+## Phase 10: `/health` Endpoint – Integrated Smoke Tests & Monitoring ✅ COMPLETE
+
+**Goal:** Provide a single `/api/health` endpoint for post-deployment smoke testing, automated
+monitoring, and infrastructure health checks.
+
+**Date:** March 2026
+
+### Phase 10.1 – Health Checks Service ✅
+- [x] Create `api/src/services/health-checks.js` with four individual check functions:
+  - `checkStorageConnectionString` – verifies `AZURE_STORAGE_CONNECTION_STRING` is set
+  - `checkTableStorageConnectivity` – live connectivity probe via `TableServiceClient.listTables()`
+  - `checkScenariosTable` – verifies `TABLE_NAME_SCENARIOS` config (default: `userscenarios`)
+  - `checkProfilesTable` – verifies `TABLE_NAME_PROFILES` config (default: `userprofiles`)
+- [x] `runAllChecks(options)` aggregates all checks; accepts an injectable `tableClientFactory`
+  for testability without real Azure infrastructure
+- [x] Returns `{ status, timestamp, service, checks[] }` standardised format
+
+### Phase 10.2 – Health Endpoint ✅
+- [x] Update `api/src/functions/health.js` to call `runAllChecks()` on every request
+- [x] HTTP 200 when all checks pass; HTTP 503 when any check fails
+- [x] Full JSDoc comments documenting all included checks and response format
+
+### Phase 10.3 – Testing ✅
+- [x] Create `api/tests/services/health-checks.test.js` with 16 unit tests covering:
+  - All four individual check functions
+  - `runAllChecks` aggregation and pass/fail scenarios
+  - Dependency injection for mock `TableServiceClient`
+- [x] All 52 API tests passing (36 existing + 16 new)
+
+### Phase 10.4 – Documentation ✅
+- [x] Update `documentation/api-reference.md` with full health endpoint spec including:
+  - Check table, response examples (200 and 503), extensibility note
+- [x] Update `master-plan.md` with Phase 10 tasks and status
