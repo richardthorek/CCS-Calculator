@@ -754,35 +754,35 @@ cd /workspaces/CCS-Calculator
 - `api/tests/utils/auth.test.js`
 
 #### 8.3 Frontend Authentication Module (1-2 days)
-- [ ] Create authentication manager module
-  - [ ] Create `src/js/auth/auth-manager.js`
-  - [ ] Implement checkAuth() - query /.auth/me endpoint
-  - [ ] Implement getUser() - get current user info
-  - [ ] Implement isAuthenticated() - check auth status
-  - [ ] Implement login(provider) - redirect to OAuth
-  - [ ] Implement logout() - clear session
-  - [ ] Add singleton pattern for manager
-- [ ] Add authentication UI components
-  - [ ] Add auth container to `src/index.html`
-  - [ ] Create login prompt with provider buttons
-  - [ ] Create user info display (email, sign out button)
-  - [ ] Add sync status indicator
-  - [ ] Add privacy notice and explanatory text
-- [ ] Add CSS styling for auth UI
-  - [ ] Style provider login buttons
-  - [ ] Style user badge and info display
-  - [ ] Style sync status indicator (saving/synced/error states)
-  - [ ] Ensure responsive design
-  - [ ] Add animations for state transitions
-- [ ] Integrate auth check on app load
-  - [ ] Call authManager.checkAuth() in app.js
-  - [ ] Show/hide UI elements based on auth state
-  - [ ] Update UI when user logs in/out
-- [ ] Add login/logout button handlers
-  - [ ] Wire up provider selection
-  - [ ] Handle login redirect
-  - [ ] Handle logout with confirmation
-  - [ ] Update UI immediately
+- [x] Create authentication manager module
+  - [x] Create `src/js/auth/auth-manager.js`
+  - [x] Implement checkAuth() - query /.auth/me endpoint
+  - [x] Implement getUser() - get current user info
+  - [x] Implement isAuthenticated() - check auth status
+  - [x] Implement login(provider) - redirect to OAuth
+  - [x] Implement logout() - clear session
+  - [x] Add singleton pattern for manager
+- [x] Add authentication UI components
+  - [x] Add auth container to `src/index.html`
+  - [x] Create login prompt with provider buttons
+  - [x] Create user info display (email, sign out button)
+  - [x] Add sync status indicator
+  - [x] Add privacy notice and explanatory text
+- [x] Add CSS styling for auth UI
+  - [x] Style provider login buttons
+  - [x] Style user badge and info display
+  - [x] Style sync status indicator (saving/synced/error states)
+  - [x] Ensure responsive design
+  - [x] Add animations for state transitions
+- [x] Integrate auth check on app load
+  - [x] Call authManager.checkAuth() in app.js
+  - [x] Show/hide UI elements based on auth state
+  - [x] Update UI when user logs in/out
+- [x] Add login/logout button handlers
+  - [x] Wire up provider selection
+  - [x] Handle login redirect
+  - [x] Handle logout with confirmation
+  - [x] Update UI immediately
 - [ ] Test OAuth flow with multiple providers (Microsoft and GitHub only)
   - [ ] Test Microsoft authentication
   - [ ] Test GitHub authentication

@@ -52,6 +52,7 @@ import {
 import {
   initializeAdjustableVariablesPanel
 } from './js/ui/adjustable-variables-panel.js';
+import { authManager } from './js/auth/auth-manager.js';
 
 // Global state for scenarios
 let currentScenarios = [];
@@ -113,6 +114,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize collapsible sections for mobile/tablet
     initializeAllCollapses();
+    
+    // Initialize authentication (Phase 8.3)
+    initializeAuth();
     
     // Check if URL contains shared data and load it (Phase 7)
     const urlData = loadFromURL();
@@ -415,5 +419,64 @@ function storeFormDataForExport(formData) {
   }
   
   dataElement.dataset.formData = JSON.stringify(formData);
+}
+
+// ===== Phase 8.3 – Authentication =====
+
+/**
+ * Initialize authentication: check current auth state and wire up UI handlers.
+ */
+async function initializeAuth() {
+  const user = await authManager.checkAuth();
+  updateAuthUI(user);
+  wireAuthHandlers();
+}
+
+/**
+ * Update auth UI elements to reflect the current authentication state.
+ * @param {Object|null} user - Authenticated user object, or null if not logged in
+ */
+function updateAuthUI(user) {
+  const authPrompt = document.getElementById('auth-prompt');
+  const authUserInfo = document.getElementById('auth-user-info');
+  const userEmailEl = document.getElementById('user-email');
+
+  if (!authPrompt || !authUserInfo) return;
+
+  if (user) {
+    // Show user info, hide login prompt
+    authUserInfo.hidden = false;
+    authPrompt.hidden = true;
+    if (userEmailEl) {
+      userEmailEl.textContent = user.email || user.id || 'Signed in';
+    }
+  } else {
+    // Show login prompt, hide user info
+    authPrompt.hidden = false;
+    authUserInfo.hidden = true;
+  }
+}
+
+/**
+ * Wire up click handlers for login provider buttons and the logout button.
+ */
+function wireAuthHandlers() {
+  // Login buttons (one per provider via data-provider attribute)
+  document.querySelectorAll('.btn-auth[data-provider]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const provider = btn.dataset.provider;
+      authManager.login(provider);
+    });
+  });
+
+  // Logout button
+  const logoutBtn = document.getElementById('btn-logout');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to sign out?')) {
+        authManager.logout();
+      }
+    });
+  }
 }
 
