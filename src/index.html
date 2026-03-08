@@ -160,6 +160,8 @@
     </div>
     
     <main>
+        <!-- Global notification for non-blocking error messages -->
+        <div id="global-notification" class="global-notification" role="alert" aria-live="assertive" hidden></div>
         <div class="calculator-layout">
             <!-- LEFT COLUMN: Inputs -->
             <div class="inputs-column">
@@ -193,10 +195,10 @@
                         
                         <div class="compact-grid">
                             <div class="form-group">
-                                <label for="parent1-income">Annual Income (FTE) <span class="required">*</span></label>
+                                <label for="parent1-income">Annual Income (FTE) <span class="required" aria-hidden="true">*</span></label>
                                 <div class="input-wrapper">
                                     <span class="input-prefix">$</span>
-                                    <input type="number" id="parent1-income" name="parent1-income" min="0" max="10000000" step="1000" required placeholder="100,000">
+                                    <input type="number" id="parent1-income" name="parent1-income" min="0" max="10000000" step="1000" required placeholder="100,000" autocomplete="off">
                                 </div>
                                 <div id="parent1-adjusted-income-display" class="adjusted-income-mini hidden">
                                     Adjusted: <span id="parent1-adjusted-income-value"></span>
@@ -206,27 +208,27 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="parent1-days">Days/Week <span class="required">*</span></label>
+                                <label for="parent1-days">Days/Week <span class="required" aria-hidden="true">*</span></label>
                                 <input type="number" id="parent1-days" name="parent1-days" min="0" max="5" step="1" value="5" required>
                             </div>
                             
                             <div class="form-group">
-                                <label for="parent1-hours">Hours/Day <span class="required">*</span></label>
+                                <label for="parent1-hours">Hours/Day <span class="required" aria-hidden="true">*</span></label>
                                 <input type="number" id="parent1-hours" name="parent1-hours" min="0" max="24" step="0.5" value="7.6" required>
                             </div>
                         </div>
                         
                         <!-- Work Days Selection - Compact -->
-                        <div class="form-group work-days-compact">
-                            <label>Work Days:</label>
+                        <fieldset class="form-group work-days-compact">
+                            <legend class="work-days-legend">Work Days:</legend>
                             <div class="checkbox-group work-days-group compact-days" id="parent1-work-days">
-                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="monday" checked><span>M</span></label>
-                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="tuesday" checked><span>T</span></label>
-                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="wednesday" checked><span>W</span></label>
-                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="thursday" checked><span>T</span></label>
-                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="friday" checked><span>F</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="monday" aria-label="Monday" checked><span aria-hidden="true">M</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="tuesday" aria-label="Tuesday" checked><span aria-hidden="true">T</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="wednesday" aria-label="Wednesday" checked><span aria-hidden="true">W</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="thursday" aria-label="Thursday" checked><span aria-hidden="true">T</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent1-workday" value="friday" aria-label="Friday" checked><span aria-hidden="true">F</span></label>
                             </div>
-                        </div>
+                        </fieldset>
                     </section>
 
                     <!-- Parent 2 Section - Compact -->
@@ -241,7 +243,7 @@
                                 <label for="parent2-income">Annual Income (FTE)</label>
                                 <div class="input-wrapper">
                                     <span class="input-prefix">$</span>
-                                    <input type="number" id="parent2-income" name="parent2-income" min="0" max="10000000" step="1000" placeholder="80,000">
+                                    <input type="number" id="parent2-income" name="parent2-income" min="0" max="10000000" step="1000" placeholder="80,000" autocomplete="off">
                                 </div>
                                 <div id="parent2-adjusted-income-display" class="adjusted-income-mini hidden">
                                     Adjusted: <span id="parent2-adjusted-income-value"></span>
@@ -260,16 +262,16 @@
                             </div>
                         </div>
                         
-                        <div class="form-group work-days-compact" id="parent2-workdays-container">
-                            <label>Work Days:</label>
+                        <fieldset class="form-group work-days-compact" id="parent2-workdays-container">
+                            <legend class="work-days-legend">Work Days:</legend>
                             <div class="checkbox-group work-days-group compact-days" id="parent2-work-days">
-                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="monday"><span>M</span></label>
-                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="tuesday"><span>T</span></label>
-                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="wednesday"><span>W</span></label>
-                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="thursday"><span>T</span></label>
-                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="friday"><span>F</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="monday" aria-label="Monday"><span aria-hidden="true">M</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="tuesday" aria-label="Tuesday"><span aria-hidden="true">T</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="wednesday" aria-label="Wednesday"><span aria-hidden="true">W</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="thursday" aria-label="Thursday"><span aria-hidden="true">T</span></label>
+                                <label class="day-checkbox"><input type="checkbox" name="parent2-workday" value="friday" aria-label="Friday"><span aria-hidden="true">F</span></label>
                             </div>
-                        </div>
+                        </fieldset>
                     </section>
 
                     <!-- CCS Settings Section - Compact -->
@@ -285,10 +287,10 @@
                                 <span class="info-icon" data-tooltip="The government withholds a percentage of your CCS to create a buffer for income changes. This reduces the risk of overpayment debt at tax time. You can adjust this in myGov (0-100%). Default is 5%.">ℹ️</span>
                             </label>
                             <div class="input-wrapper">
-                                <input type="number" id="withholding-rate" name="withholding-rate" min="0" max="100" step="1" value="5" required>
+                                <input type="number" id="withholding-rate" name="withholding-rate" min="0" max="100" step="1" value="5" required aria-describedby="withholding-rate-help">
                                 <span class="input-suffix">%</span>
                             </div>
-                            <span class="help-text">Default: 5% (adjustable in myGov)</span>
+                            <span class="help-text" id="withholding-rate-help">Default: 5% (adjustable in myGov)</span>
                         </div>
                     </section>
 

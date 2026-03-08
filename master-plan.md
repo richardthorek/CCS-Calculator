@@ -1119,3 +1119,42 @@ monitoring, and infrastructure health checks.
 - [x] Update `documentation/api-reference.md` with full health endpoint spec including:
   - Check table, response examples (200 and 503), extensibility note
 - [x] Update `master-plan.md` with Phase 10 tasks and status
+
+---
+
+## Phase 11: Code Quality & UX Improvements ✅ COMPLETE
+
+**Goal:** Conduct a thorough code review and implement improvements across code quality and user experience/interface dimensions (GitHub Issue: Quality Improvements).
+
+**Date:** March 2026
+
+### Phase 11.1 – Code Quality Fixes ✅
+- [x] Fix all ESLint warnings (0 errors, 0 warnings after cleanup):
+  - `persistence.js`: Use optional catch binding where error variable was unused
+  - `collapsible-sections.js`: Use `feeType` variable to show correct fee unit (day/hr) in section summary
+  - `comparison-table.js`: Remove unused imports, fix unused callback parameters
+  - `form-handler.js`: Remove unused imports (`saveState`, `getCurrentPeriod`), remove dead `saveCurrentState` function, fix unused index params
+  - `tooltips.js`: Remove unused `iconRect` variable assignment
+  - `generator.js`: Remove unnecessary destructuring of unused variables
+  - `parent-schedule.js`: Remove unused `allWorkDays` variable
+- [x] Add "Full Cost" metric to scenario comparison cards (used previously computed but unused `periodFullCost`)
+
+### Phase 11.2 – Accessibility (A11y) Improvements ✅
+- [x] Replace `<div>` wrapper for work-day checkboxes with semantic `<fieldset>/<legend>` elements for both Parent 1 and Parent 2, improving screen reader navigation
+- [x] Add `aria-label` to each day-of-week checkbox with the full day name (Monday–Friday)
+- [x] Add `aria-hidden="true"` to required field star indicators (`*`) to avoid redundant screen reader announcements
+- [x] Add `aria-describedby` on withholding-rate input linking to its help text
+- [x] Add `aria-busy` attribute to results section during calculation (set/removed by `showCalculatingIndicator`/`hideCalculatingIndicator`)
+- [x] Add `autocomplete="off"` to income number inputs
+
+### Phase 11.3 – UX Improvements ✅
+- [x] Replace blocking `alert()` in `showGlobalError` with a non-blocking inline notification (`#global-notification` element with `role="alert"` and `aria-live="assertive"`)
+- [x] Auto-dismiss global notification after 5 seconds
+- [x] Add slide-down animation for notification appearance
+
+### Phase 11.4 – CSS ✅
+- [x] Add CSS reset for `fieldset.work-days-compact` (remove default border/padding/margin)
+- [x] Add `.work-days-legend` styling matching previous label appearance
+- [x] Add `.global-notification` styles with slide-down animation
+- [x] Add `.global-notification[hidden] { display: none }` to ensure hidden attribute works
+- [x] 379 tests passing, 0 lint warnings, no regressions

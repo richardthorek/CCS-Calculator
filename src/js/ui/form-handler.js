@@ -524,6 +524,7 @@ function showCalculatingIndicator() {
   const resultsSection = document.getElementById('results-section');
   if (resultsSection && !resultsSection.hidden) {
     resultsSection.classList.add('calculating');
+    resultsSection.setAttribute('aria-busy', 'true');
   }
 }
 
@@ -534,6 +535,7 @@ function hideCalculatingIndicator() {
   const resultsSection = document.getElementById('results-section');
   if (resultsSection) {
     resultsSection.classList.remove('calculating');
+    resultsSection.removeAttribute('aria-busy');
   }
 }
 
@@ -1727,10 +1729,23 @@ function showError(fieldId, message) {
 }
 
 /**
- * Show global error message
+ * Show global error message as a non-blocking notification
+ * @param {string} message - Error message to display
  */
 function showGlobalError(message) {
-  alert(message); // Simple implementation - could be enhanced with a toast/modal
+  const notification = document.getElementById('global-notification');
+  if (notification) {
+    notification.textContent = message;
+    notification.removeAttribute('hidden');
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+      notification.setAttribute('hidden', '');
+      notification.textContent = '';
+    }, 5000);
+  } else {
+    // Fallback if element not found
+    alert(message);
+  }
 }
 
 /**
