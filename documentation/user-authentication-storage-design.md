@@ -67,7 +67,7 @@ This document outlines the design for adding user authentication and cloud-based
 │              Azure Static Web App (HTTPS)                        │
 │  ┌──────────────────────────────────────────────────────────┐  │
 │  │  Built-in Authentication Provider                         │  │
-│  │  - Microsoft, Google, Twitter, GitHub                     │  │
+│  │  - Microsoft (Entra ID), GitHub                           │  │
 │  │  - Handles OAuth flows, tokens, user identity            │  │
 │  └──────────────────────────────────────────────────────────┘  │
 └───────────────────────────────────┬─────────────────────────────┘
@@ -222,10 +222,10 @@ class AuthManager {
 
   /**
    * Initiate login with provider
-   * @param {string} provider - 'google', 'microsoft', 'github', 'twitter'
+  * @param {string} provider - 'aad', 'github'
    * @param {string} redirectUrl - URL to redirect after login
    */
-  login(provider = 'google', redirectUrl = window.location.pathname) {
+  login(provider = 'aad', redirectUrl = window.location.pathname) {
     const loginUrl = `/.auth/login/${provider}?post_login_redirect_uri=${encodeURIComponent(redirectUrl)}`;
     window.location.href = loginUrl;
   }
@@ -267,10 +267,7 @@ export const authManager = new AuthManager();
         Sign in to save your scenarios across devices and never lose your data.
       </p>
       <div class="auth-providers">
-        <button type="button" class="btn-auth btn-auth-google" data-provider="google">
-          <span class="auth-icon">🔐</span> Sign in with Google
-        </button>
-        <button type="button" class="btn-auth btn-auth-microsoft" data-provider="microsoft">
+        <button type="button" class="btn-auth btn-auth-microsoft" data-provider="aad">
           <span class="auth-icon">🔐</span> Sign in with Microsoft
         </button>
         <button type="button" class="btn-auth btn-auth-github" data-provider="github">
@@ -1307,7 +1304,7 @@ az staticwebapp appsettings list \
   "responseOverrides": {
     "401": {
       "statusCode": 302,
-      "redirect": "/.auth/login/google"
+      "redirect": "/.auth/login/aad"
     },
     "404": {
       "rewrite": "/index.html",
@@ -1342,7 +1339,7 @@ echo "AZURE_STORAGE_CONNECTION_STRING=$STORAGE_CONNECTION_STRING"
 echo ""
 echo "=== Next Steps ==="
 echo "1. Add AZURE_STORAGE_CONNECTION_STRING to GitHub Secrets"
-echo "2. Configure OAuth providers (Google, Microsoft, GitHub)"
+echo "2. Configure OAuth providers (Microsoft, GitHub)"
 echo "3. Update staticwebapp.config.json with auth routes"
 echo "4. Deploy updated code to Azure"
 ```
@@ -1495,7 +1492,7 @@ describe('StorageManager', () => {
 ### Integration Tests
 
 1. **Authentication Flow**:
-   - User logs in with Google
+  - User logs in with Microsoft
    - User identity is retrieved
    - User can access protected endpoints
    - User logs out successfully
@@ -1520,7 +1517,6 @@ describe('StorageManager', () => {
 
 ### Manual Testing Checklist
 
-- [ ] Sign in with Google
 - [ ] Sign in with Microsoft
 - [ ] Sign in with GitHub
 - [ ] Input calculator data

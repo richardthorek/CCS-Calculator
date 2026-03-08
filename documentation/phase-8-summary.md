@@ -118,7 +118,7 @@ Detailed task-by-task checklist with:
 ```
 1. User visits app → Works immediately (no auth required)
 2. User sees "Sign in to save across devices" prompt
-3. User clicks provider (Google/Microsoft/GitHub)
+3. User clicks provider (Microsoft/GitHub)
 4. Redirect to OAuth → User authenticates
 5. Redirect back to app → Auto-sync with cloud
 6. Calculator continues working + cloud features enabled
@@ -318,7 +318,7 @@ These will be created during implementation:
 2. ✅ Review quick start guide
 3. ⏳ Run Azure setup script: `./scripts/setup-azure-auth-storage.sh`
 4. ⏳ Save connection string securely
-5. ⏳ Register OAuth apps (Google, Microsoft, GitHub)
+5. ⏳ Register OAuth apps (Microsoft, GitHub)
 
 ### Short-term (This Week)
 1. ⏳ Begin Phase 8.2: Backend API development

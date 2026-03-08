@@ -189,7 +189,7 @@ Location: ________________
 - [ ] Open `src/index.html`
 - [ ] Add auth container div (near header)
 - [ ] Add auth-prompt section (when not logged in)
-- [ ] Add provider buttons (Google, Microsoft, GitHub)
+- [ ] Add provider buttons (Microsoft, GitHub)
 - [ ] Add privacy notice text
 - [ ] Add auth-user-info section (when logged in)
 - [ ] Add user badge with email display
@@ -221,7 +221,6 @@ Location: ________________
 - [ ] Test auth flow
 
 ### 8.3.5 Testing
-- [ ] Test Google login
 - [ ] Test Microsoft login
 - [ ] Test GitHub login
 - [ ] Test logout flow
@@ -353,7 +352,6 @@ Location: ________________
 - [ ] Verify 100% passing
 
 ### 8.6.2 Manual Testing Checklist
-- [ ] Sign in with Google
 - [ ] Sign in with Microsoft
 - [ ] Sign in with GitHub
 - [ ] Enter calculator data
@@ -474,7 +472,7 @@ Location: ________________
 - [ ] Add screenshots
 - [ ] Document redirect URIs
 - [ ] Document where to add secrets
-- [ ] Note: Google NOT supported by Azure SWA built-in auth
+- [ ] Note: Azure SWA built-in auth supports Microsoft and GitHub only
 
 ### 8.7.7 Update Master Plan
 - [ ] Open `master-plan.md`
@@ -547,7 +545,6 @@ Location: ________________
 Check all before marking Phase 8 complete:
 
 ### Functionality
-- [ ] Users can sign in with Google
 - [ ] Users can sign in with Microsoft
 - [ ] Users can sign in with GitHub
 - [ ] Scenarios auto-save within 3 seconds

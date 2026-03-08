@@ -127,7 +127,7 @@ Follow the implementation plan in the master plan:
 - **No frontend SDK needed**: Uses standard OAuth redirects
 - **Zero maintenance**: Microsoft manages OAuth flows
 - **Secure by default**: Industry-standard implementation
-- **Multiple providers**: Google, Microsoft, GitHub out-of-the-box
+- **Multiple providers**: Microsoft and GitHub out-of-the-box
 
 ### Why Progressive Enhancement?
 - **No breaking changes**: App works without authentication
@@ -154,7 +154,7 @@ Azure Table Storage
 ✅ **Auto-save**: Every 3 seconds after changes  
 ✅ **Cross-device sync**: Access from any device  
 ✅ **Offline support**: Works without internet (localStorage)  
-✅ **Multiple providers**: Google, Microsoft, GitHub  
+✅ **Multiple providers**: Microsoft and GitHub  
 ✅ **Privacy-first**: Transparent data usage, easy deletion  
 ✅ **Progressive**: App works without login  
 ✅ **Conflict resolution**: Handles multi-device editing  
@@ -246,7 +246,7 @@ Refer to the comprehensive design document:
 
 Before marking Phase 8 complete:
 
-- [ ] Users can sign in with 3 providers (Google, Microsoft, GitHub)
+- [ ] Users can sign in with 2 providers (Microsoft, GitHub)
 - [ ] Scenarios auto-save within 3 seconds
 - [ ] Scenarios sync across devices
 - [ ] App works offline with localStorage fallback
