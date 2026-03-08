@@ -131,7 +131,8 @@ header {
     color: var(--color-text-inverse);
     padding: var(--spacing-sm) var(--spacing-lg);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+    z-index: 500;
 }
 
 header::before {
