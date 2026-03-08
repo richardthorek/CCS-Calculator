@@ -105,16 +105,6 @@
                                 <button type="button" id="btn-rename-cancel" class="btn-inline-cancel" aria-label="Cancel">✕</button>
                             </div>
                         </div>
-                        <!-- New scenario inline form (hidden by default) -->
-                        <div id="new-scenario-form" class="auth-panel-inline-form" hidden>
-                            <label for="new-scenario-input" class="visually-hidden">New scenario name</label>
-                            <input type="text" id="new-scenario-input" class="auth-panel-inline-input"
-                                   maxlength="200" placeholder="New scenario name" autocomplete="off">
-                            <div class="auth-panel-inline-actions">
-                                <button type="button" id="btn-new-scenario-confirm" class="btn-inline-confirm" aria-label="Create scenario">✓</button>
-                                <button type="button" id="btn-new-scenario-cancel" class="btn-inline-cancel" aria-label="Cancel">✕</button>
-                            </div>
-                        </div>
                         <p id="auth-panel-feedback" class="auth-panel-feedback" hidden></p>
                         <span id="sync-status" class="sync-status" aria-label="Sync status">
                             <span class="sync-icon" aria-hidden="true">☁️</span>
@@ -124,9 +114,9 @@
                             <button type="button" id="btn-new-scenario" class="btn-panel-action btn-new-scenario">
                                 <span aria-hidden="true">➕</span> New Scenario
                             </button>
-                            <a href="/dashboard" class="btn-panel-action btn-my-scenarios">
+                            <button type="button" id="btn-my-scenarios" class="btn-panel-action btn-my-scenarios">
                                 <span aria-hidden="true">📋</span> My Scenarios
-                            </a>
+                            </button>
                         </div>
                         <button type="button" id="btn-logout" class="btn-panel-signout">Sign Out</button>
                     </div>
@@ -549,7 +539,100 @@
             <p class="footer-copyright">© 2026 CCS Calculator | Not affiliated with the Australian Government | <a href="privacy.html">Privacy Policy</a></p>
         </div>
     </footer>
-    
+
+    <!-- ── New Scenario modal ─────────────────────────────────────────────── -->
+    <div id="new-scenario-modal" class="modal-overlay" hidden
+         role="dialog" aria-modal="true" aria-labelledby="ns-modal-title">
+        <div class="modal-card">
+            <h2 id="ns-modal-title" class="modal-title">New Scenario</h2>
+            <div class="modal-body">
+                <label for="ns-modal-input" class="modal-label">Scenario name</label>
+                <input type="text" id="ns-modal-input" class="modal-input" maxlength="200"
+                       placeholder="e.g. Full-time return to work" autocomplete="off">
+                <p id="ns-modal-error" class="modal-error" hidden></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="ns-modal-cancel" class="btn-modal-cancel">Cancel</button>
+                <button type="button" id="ns-modal-confirm" class="btn-modal-confirm">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Dashboard modal ────────────────────────────────────────────────── -->
+    <div id="dashboard-modal" class="modal-overlay dashboard-modal-overlay" hidden
+         role="dialog" aria-modal="true" aria-labelledby="dashboard-modal-title">
+        <div class="modal-card dashboard-modal-card">
+            <div class="dashboard-modal-header">
+                <h2 id="dashboard-modal-title" class="modal-title">📋 My Scenarios</h2>
+                <button type="button" id="dm-modal-close" class="btn-modal-close" aria-label="Close My Scenarios">✕</button>
+            </div>
+            <div class="dashboard-modal-body">
+                <!-- Loading state -->
+                <div id="dm-scenarios-loading" class="scenarios-loading" aria-live="polite">
+                    <span class="loading-spinner" aria-hidden="true">⏳</span>
+                    <span>Loading your scenarios…</span>
+                </div>
+                <!-- Error state -->
+                <div id="dm-scenarios-error" class="scenarios-error" hidden>
+                    <p class="empty-icon" aria-hidden="true">⚠️</p>
+                    <p class="dm-error-message">Could not load scenarios. Please check your connection and try again.</p>
+                    <button type="button" id="dm-retry-btn" class="btn-dashboard-new">Retry</button>
+                </div>
+                <!-- Empty state -->
+                <div id="dm-scenarios-empty" class="scenarios-empty" hidden>
+                    <p class="empty-icon" aria-hidden="true">📂</p>
+                    <h3>No scenarios yet</h3>
+                    <p>Create your first scenario to save and compare different situations.</p>
+                </div>
+                <!-- Scenarios list -->
+                <div id="dm-scenarios-list" class="scenarios-list" role="list" hidden
+                     aria-label="Saved scenarios">
+                    <!-- Scenario cards rendered by dashboard-modal.js -->
+                </div>
+            </div>
+            <div class="dashboard-modal-footer">
+                <span id="dm-user-greeting" class="dashboard-user-greeting"></span>
+                <button type="button" id="dm-new-scenario-btn" class="btn-dashboard-new">
+                    <span aria-hidden="true">➕</span> New Scenario
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Dashboard: Rename/New scenario modal ───────────────────────────── -->
+    <div id="dm-rename-modal" class="modal-overlay" hidden
+         role="dialog" aria-modal="true" aria-labelledby="dm-rename-modal-title">
+        <div class="modal-card">
+            <h2 id="dm-rename-modal-title" class="modal-title">Rename Scenario</h2>
+            <div class="modal-body">
+                <label for="dm-rename-input" class="modal-label">New name</label>
+                <input type="text" id="dm-rename-input" class="modal-input" maxlength="200"
+                       placeholder="Enter scenario name" autocomplete="off">
+                <p id="dm-rename-error" class="modal-error" hidden></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="dm-rename-cancel-btn" class="btn-modal-cancel">Cancel</button>
+                <button type="button" id="dm-rename-confirm-btn" class="btn-modal-confirm">Rename</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Dashboard: Delete confirmation modal ──────────────────────────── -->
+    <div id="dm-delete-modal" class="modal-overlay" hidden
+         role="dialog" aria-modal="true" aria-labelledby="dm-delete-modal-title">
+        <div class="modal-card">
+            <h2 id="dm-delete-modal-title" class="modal-title">Delete Scenario</h2>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="dm-delete-scenario-name"></strong>?</p>
+                <p class="modal-warning">This cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="dm-delete-cancel-btn" class="btn-modal-cancel">Cancel</button>
+                <button type="button" id="dm-delete-confirm-btn" class="btn-modal-delete">Delete</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="app.js"></script>
 </body>
 </html>

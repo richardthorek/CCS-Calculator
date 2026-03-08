@@ -78,21 +78,43 @@ function wireLoginButtons() {
 
 async function loadAndRenderScenarios() {
   const loadingEl = document.getElementById('scenarios-loading');
+  const errorEl = document.getElementById('scenarios-error');
   const emptyEl = document.getElementById('scenarios-empty');
   const listEl = document.getElementById('scenarios-list');
 
   if (loadingEl) loadingEl.hidden = false;
+  if (errorEl) errorEl.hidden = true;
   if (emptyEl) emptyEl.hidden = true;
   if (listEl) { listEl.hidden = true; listEl.innerHTML = ''; }
 
+  if (!storageManager.cloudStorageAvailable) {
+    console.warn('[Dashboard] Cloud storage not available — storageManager.initialize() may not have completed auth resolution. Ensure the user is signed in.');
+    if (loadingEl) loadingEl.hidden = true;
+    if (errorEl) errorEl.hidden = false;
+    return;
+  }
+
   let scenarios = [];
+  let loadError = false;
   try {
     scenarios = await storageManager.listScenarios();
-  } catch {
+    if (!scenarios) {
+      console.error('[Dashboard] listScenarios() returned null/undefined unexpectedly.');
+      loadError = true;
+      scenarios = [];
+    }
+  } catch (err) {
+    console.error('[Dashboard] Failed to load scenarios:', err);
+    loadError = true;
     scenarios = [];
   }
 
   if (loadingEl) loadingEl.hidden = true;
+
+  if (loadError) {
+    if (errorEl) errorEl.hidden = false;
+    return;
+  }
 
   if (!scenarios || scenarios.length === 0) {
     if (emptyEl) emptyEl.hidden = false;
@@ -333,7 +355,8 @@ function openDeleteModal(scenarioId, scenarioName) {
   const modal = document.getElementById('delete-modal');
   const nameEl = document.getElementById('delete-scenario-name');
   if (!modal) return;
-  if (nameEl) nameEl.textContent = escapeHtml(scenarioName);
+  // Use textContent (not innerHTML) so no HTML escaping is needed
+  if (nameEl) nameEl.textContent = scenarioName;
   modal.hidden = false;
   document.getElementById('delete-confirm-btn')?.focus();
 }
