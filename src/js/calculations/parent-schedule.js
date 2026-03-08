@@ -56,7 +56,6 @@ export function calculateMinimumChildcareDays(parent1Days = [], parent2Days = []
 
   // Days without care: days where at least one parent is home (not working)
   // This includes: days neither parent works + days only one parent works
-  const allWorkDays = [...new Set([...parent1Days, ...parent2Days])];
   const daysWithoutCare = getDaysWithoutCare(childcareDays, []); // All non-childcare days
 
   return {
