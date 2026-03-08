@@ -42,9 +42,9 @@
 - [x] Add Azure SWA app settings (connection string, table names)
 
 ### OAuth Provider Registration (Manual - Remaining)
-- [ ] Register Google OAuth app
-- [ ] Register Microsoft OAuth app (Azure AD)
-- [ ] Register GitHub OAuth app
+⚠️ **Note:** Azure SWA built-in auth only supports Microsoft (Entra ID) and GitHub
+- [ ] Register Microsoft OAuth app (Entra ID/Azure AD) - `/.auth/login/aad`
+- [ ] Register GitHub OAuth app - `/.auth/login/github`
 - [ ] Add redirect URI for each provider
 - [ ] Save client IDs/secrets securely
 
@@ -469,12 +469,12 @@ Location: ________________
 
 ### 8.7.6 OAuth Setup Guide
 - [ ] Create `documentation/oauth-setup.md`
-- [ ] Step-by-step Google OAuth setup
-- [ ] Step-by-step Microsoft OAuth setup
+- [ ] Step-by-step Microsoft OAuth setup (Entra ID/Azure AD)
 - [ ] Step-by-step GitHub OAuth setup
 - [ ] Add screenshots
 - [ ] Document redirect URIs
 - [ ] Document where to add secrets
+- [ ] Note: Google NOT supported by Azure SWA built-in auth
 
 ### 8.7.7 Update Master Plan
 - [ ] Open `master-plan.md`

@@ -110,11 +110,12 @@ This document outlines the design for adding user authentication and cloud-based
 Azure Static Web Apps provides built-in authentication without requiring additional code or SDKs on the frontend. It handles the entire OAuth flow automatically.
 
 #### Supported Providers
-- Microsoft (Azure AD)
-- Google
-- Twitter
+
+⚠️ **Azure Static Web Apps built-in authentication supports only:**
+- Microsoft (Azure AD / Entra ID)
 - GitHub
-- Facebook (optional)
+
+**Google OAuth is NOT supported** with built-in SWA authentication. To add Google, you would need custom OAuth implementation.
 
 #### Authentication Flow
 
@@ -146,7 +147,7 @@ Azure SWA provides user identity via `/.auth/me`:
   "clientPrincipal": {
     "userId": "d75b260a64504067bfc5b2905e3b8182",
     "userRoles": ["anonymous", "authenticated"],
-    "identityProvider": "google",
+    "identityProvider": "aad",
     "userDetails": "user@example.com"
   }
 }
@@ -1249,12 +1250,9 @@ echo "Static Web App Deployment Token: $SWA_DEPLOYMENT_TOKEN"
 # Azure SWA authentication is configured via staticwebapp.config.json
 # No CLI commands needed, but you need to register apps with providers
 
-# For Google OAuth:
-# 1. Go to https://console.cloud.google.com/apis/credentials
-# 2. Create OAuth 2.0 Client ID
-# 3. Add authorized redirect URI: https://<your-swa-url>/.auth/login/google/callback
+# Azure SWA built-in auth supports ONLY Microsoft and GitHub
 
-# For Microsoft OAuth:
+# For Microsoft OAuth (Entra ID/Azure AD):
 # 1. Go to https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade
 # 2. Register new application
 # 3. Add redirect URI: https://<your-swa-url>/.auth/login/aad/callback

@@ -14,9 +14,10 @@
 ## ⏳ Remaining Manual Steps
 
 1. **Register OAuth Providers** (see section 4 below)
-   - Google OAuth app
-   - Microsoft OAuth app  
+   - Microsoft OAuth app (Entra ID/Azure AD)
    - GitHub OAuth app
+   
+   ⚠️ **Note:** Azure SWA built-in auth only supports Microsoft and GitHub, NOT Google.
    
 2. **Add GitHub Repository Secrets** (see section 6 below)
    - Requires admin permissions on repository
@@ -98,18 +99,13 @@ az storage table list \
 
 ### 4. Register OAuth Providers
 
-#### Google OAuth
-1. Go to: https://console.cloud.google.com/apis/credentials
-2. Click "Create Credentials" → "OAuth 2.0 Client ID"
-3. Application type: Web application
-4. Name: CCS Calculator
-5. Authorized redirect URIs:
-   ```
-   https://yellow-cliff-03142c500.4.azurestaticapps.net/.auth/login/google/callback
-   ```
-6. Save **Client ID** and **Client Secret**
+⚠️ **Important:** Azure Static Web Apps built-in authentication only supports:
+- **Microsoft (Entra ID/Azure AD)** - `/.auth/login/aad`
+- **GitHub** - `/.auth/login/github`
 
-#### Microsoft OAuth (Azure AD)
+Google OAuth is NOT supported with built-in SWA auth.
+
+#### Microsoft OAuth (Azure AD / Entra ID)
 1. Go to: https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps
 2. Click "New registration"
 3. Name: CCS Calculator
@@ -200,9 +196,10 @@ Azure App Settings Added: ✅
 - TABLE_NAME_PROFILES=userprofiles
 
 OAuth Providers (MANUAL STEP REMAINING):
-- ❌ Google Client ID - needs registration
-- ❌ Microsoft Client ID - needs registration
+- ❌ Microsoft Client ID (Entra ID/Azure AD) - needs registration
 - ❌ GitHub Client ID - needs registration
+
+⚠️ Note: Google OAuth NOT supported by Azure SWA built-in auth
 
 GitHub Secrets (MANUAL STEP REMAINING):
 - ❌ AZURE_STORAGE_CONNECTION_STRING - needs admin permissions

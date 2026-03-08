@@ -67,12 +67,9 @@ This will:
 
 After infrastructure is created, register your app with OAuth providers:
 
-#### Google OAuth
-1. Go to: https://console.cloud.google.com/apis/credentials
-2. Create "OAuth 2.0 Client ID"
-3. Add redirect URI: `https://YOUR-APP.azurestaticapps.net/.auth/login/google/callback`
+⚠️ **Important:** Azure SWA built-in auth only supports Microsoft and GitHub (NOT Google)
 
-#### Microsoft OAuth (Azure AD)
+#### Microsoft OAuth (Entra ID/Azure AD)
 1. Go to: https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps
 2. Click "New registration"
 3. Add redirect URI: `https://YOUR-APP.azurestaticapps.net/.auth/login/aad/callback`

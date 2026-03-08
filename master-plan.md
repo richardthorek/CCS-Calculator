@@ -649,7 +649,7 @@ All four core calculation modules have been implemented with full test coverage:
 - ✅ Access scenarios from any device
 - ✅ Auto-save on every change (no manual save needed)
 - ✅ Multiple scenarios per user (future expansion)
-- ✅ Secure authentication via Google/Microsoft/GitHub
+- ✅ Secure authentication via Microsoft/GitHub (⚠️ Azure SWA built-in auth only supports these two)
 
 **Technical Approach:**
 - Azure Static Web App built-in authentication (no additional SDKs needed)
@@ -665,7 +665,7 @@ All four core calculation modules have been implemented with full test coverage:
   - [ ] Create Azure Storage Account
   - [ ] Create Table Storage tables (userscenarios, userprofiles)
   - [ ] Configure Static Web App authentication settings
-  - [ ] Register OAuth providers (Google, Microsoft, GitHub)
+  - [ ] Register OAuth providers (Microsoft, GitHub) ⚠️ Azure SWA built-in auth only supports these two
   - [ ] Add redirect URIs for each provider
   - [ ] Store client IDs/secrets securely
   - [ ] Add Static Web App app settings
@@ -771,8 +771,7 @@ cd /workspaces/CCS-Calculator
   - [ ] Handle login redirect
   - [ ] Handle logout with confirmation
   - [ ] Update UI immediately
-- [ ] Test OAuth flow with multiple providers
-  - [ ] Test Google authentication
+- [ ] Test OAuth flow with multiple providers (Microsoft and GitHub only)
   - [ ] Test Microsoft authentication
   - [ ] Test GitHub authentication
   - [ ] Test logout flow
@@ -858,7 +857,7 @@ cd /workspaces/CCS-Calculator
   - [ ] Test error handling (network failures)
   - [ ] Test localStorage fallback
 - [ ] Manual testing checklist
-  - [ ] Sign in with each provider (Google, Microsoft, GitHub)
+  - [ ] Sign in with each provider (Microsoft, GitHub)
   - [ ] Input calculator data and verify auto-save
   - [ ] Log out and log back in (data persists)
   - [ ] Open calculator on different device (data syncs)
@@ -969,7 +968,7 @@ cd /workspaces/CCS-Calculator
   - [ ] Send email to existing users (if applicable)
 
 **Acceptance Criteria:**
-- ✅ Users can sign in with Google, Microsoft, or GitHub
+- ✅ Users can sign in with Microsoft or GitHub (⚠️ Azure SWA limitation)
 - ✅ Scenarios automatically save every 3 seconds after changes
 - ✅ Scenarios sync across devices
 - ✅ App works offline (localStorage fallback)
