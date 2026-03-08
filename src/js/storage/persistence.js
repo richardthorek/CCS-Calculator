@@ -1,10 +1,10 @@
 /**
  * Local Storage Persistence Module
  * Handles saving and loading user data to/from browser localStorage
- * 
+ *
  * Privacy: All data is stored locally on the user's device only.
  * Nothing is sent to external servers (except for calculation processing).
- * 
+ *
  * Schema Version: v1
  */
 
@@ -22,20 +22,20 @@ export function loadState() {
       console.warn('localStorage is not available');
       return null;
     }
-    
+
     const savedData = localStorage.getItem(STORAGE_KEY);
-    
+
     if (!savedData) {
       return null;
     }
-    
+
     const parsedData = JSON.parse(savedData);
-    
+
     // Check if migration is needed
     if (parsedData.version !== SCHEMA_VERSION) {
       return migrateState(parsedData);
     }
-    
+
     return parsedData.state;
   } catch (error) {
     console.error('Error loading state from localStorage:', error);
@@ -55,16 +55,16 @@ export function saveState(state) {
       console.warn('localStorage is not available');
       return false;
     }
-    
+
     const dataToSave = {
       version: SCHEMA_VERSION,
       timestamp: new Date().toISOString(),
       state: state
     };
-    
+
     const serialized = JSON.stringify(dataToSave);
     localStorage.setItem(STORAGE_KEY, serialized);
-    
+
     return true;
   } catch (error) {
     // Handle quota exceeded error
@@ -73,7 +73,7 @@ export function saveState(state) {
       // Optionally notify user
       return false;
     }
-    
+
     console.error('Error saving state to localStorage:', error);
     return false;
   }
@@ -88,7 +88,7 @@ export function clearState() {
     if (!isLocalStorageAvailable()) {
       return false;
     }
-    
+
     localStorage.removeItem(STORAGE_KEY);
     return true;
   } catch (error) {
@@ -105,8 +105,8 @@ export function clearState() {
 export function migrateState(oldData) {
   try {
     const oldVersion = oldData.version || 0;
-    let migratedState = oldData.state;
-    
+    const migratedState = oldData.state;
+
     // Future migrations would go here
     // For example:
     // if (oldVersion < 2) {
@@ -115,12 +115,12 @@ export function migrateState(oldData) {
     // if (oldVersion < 3) {
     //   migratedState = migrateV2toV3(migratedState);
     // }
-    
+
     console.log(`Migrated state from version ${oldVersion} to ${SCHEMA_VERSION}`);
-    
+
     // Save the migrated state
     saveState(migratedState);
-    
+
     return migratedState;
   } catch (error) {
     console.error('Error migrating state:', error);
@@ -152,7 +152,7 @@ export function getStorageSize() {
     if (!isLocalStorageAvailable()) {
       return 0;
     }
-    
+
     const savedData = localStorage.getItem(STORAGE_KEY);
     return savedData ? new Blob([savedData]).size : 0;
   } catch (error) {
@@ -170,7 +170,7 @@ export function hasState() {
     if (!isLocalStorageAvailable()) {
       return false;
     }
-    
+
     return localStorage.getItem(STORAGE_KEY) !== null;
   } catch (error) {
     return false;

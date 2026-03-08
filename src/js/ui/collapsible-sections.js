@@ -31,7 +31,7 @@ function createCollapseButton(sectionId, labelCollapsed = 'Edit', labelExpanded 
   button.dataset.labelExpanded = labelExpanded;
   // Chevron SVG icon that rotates
   button.innerHTML = `<svg class="collapse-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-  
+
   return button;
 }
 
@@ -45,7 +45,7 @@ function createSummaryElement(summaryHtml) {
   summary.className = 'section-summary hidden';
   summary.setAttribute('aria-live', 'polite');
   summary.innerHTML = summaryHtml;
-  
+
   return summary;
 }
 
@@ -59,11 +59,11 @@ function createSummaryElement(summaryHtml) {
 function toggleSection(section, button, content, summary) {
   const isExpanded = button.getAttribute('aria-expanded') === 'true';
   const newState = !isExpanded;
-  
+
   // Update button
   button.setAttribute('aria-expanded', newState.toString());
   button.setAttribute('aria-label', newState ? 'Collapse section' : 'Expand section');
-  
+
   if (newState) {
     // Expanding
     content.classList.remove('hidden');
@@ -75,7 +75,7 @@ function toggleSection(section, button, content, summary) {
     summary.classList.remove('hidden');
     section.classList.add('collapsed');
   }
-  
+
   // Announce to screen readers
   const announcement = newState ? 'Section expanded' : 'Section collapsed';
   announceToScreenReader(announcement);
@@ -88,7 +88,7 @@ function toggleSection(section, button, content, summary) {
 function announceToScreenReader(message) {
   const announcer = document.getElementById('sr-announcer') || createScreenReaderAnnouncer();
   announcer.textContent = message;
-  
+
   // Clear after announcement
   setTimeout(() => {
     announcer.textContent = '';
@@ -106,7 +106,7 @@ function createScreenReaderAnnouncer() {
   announcer.setAttribute('aria-live', 'polite');
   announcer.setAttribute('aria-atomic', 'true');
   document.body.appendChild(announcer);
-  
+
   return announcer;
 }
 
@@ -129,15 +129,15 @@ function isParentSectionComplete(parentNumber) {
   const incomeInput = document.getElementById(`parent${parentNumber}-income`);
   const daysInput = document.getElementById(`parent${parentNumber}-days`);
   const hoursInput = document.getElementById(`parent${parentNumber}-hours`);
-  
+
   // Check that all required inputs exist
   if (!incomeInput || !daysInput || !hoursInput) return false;
-  
+
   // Parse values
   const income = parseNumericValue(incomeInput);
   const days = parseFloat(daysInput.value) || 0;
   const hours = parseFloat(hoursInput.value) || 0;
-  
+
   // All fields must be filled with valid values
   // Income must be > 0, days can be 0-5, hours must be > 0
   return income > 0 && days >= 0 && days <= 5 && hours > 0;
@@ -153,20 +153,20 @@ function isChildCardComplete(childIndex) {
   const careTypeSelect = document.getElementById(`child-${childIndex}-care-type`);
   const feeTypeRadios = document.querySelectorAll(`input[name="child-${childIndex}-fee-type"]`);
   const daysOfCareInput = document.getElementById(`child-${childIndex}-days-of-care`);
-  
+
   // Check that all required inputs exist
   if (!ageInput || !careTypeSelect || !daysOfCareInput) return false;
-  
+
   // Parse basic values
   const age = parseInt(ageInput.value) || 0;
   const careType = careTypeSelect.value;
   const daysOfCare = parseFloat(daysOfCareInput.value) || 0;
-  
+
   // Age must be > 0, care type must be selected, days must be 0-5
   if (age <= 0 || !careType || daysOfCare < 0 || daysOfCare > 5) {
     return false;
   }
-  
+
   // Determine which fee type is selected
   let feeType = 'daily';
   feeTypeRadios.forEach(radio => {
@@ -174,29 +174,29 @@ function isChildCardComplete(childIndex) {
       feeType = radio.value;
     }
   });
-  
+
   // Check fee-specific fields based on fee type
   if (feeType === 'daily') {
     const dailyFeeInput = document.getElementById(`child-${childIndex}-daily-fee`);
     const hoursPerDayInput = document.getElementById(`child-${childIndex}-hours-per-day`);
-    
+
     if (!dailyFeeInput || !hoursPerDayInput) return false;
-    
+
     const dailyFee = parseNumericValue(dailyFeeInput);
     const hoursPerDay = parseFloat(hoursPerDayInput.value) || 0;
-    
+
     // Daily fee must be > 0, hours per day must be > 0
     return dailyFee > 0 && hoursPerDay > 0;
   } else {
     // Hourly fee type
     const hourlyFeeInput = document.getElementById(`child-${childIndex}-hourly-fee`);
     const hoursPerWeekInput = document.getElementById(`child-${childIndex}-hours-per-week`);
-    
+
     if (!hourlyFeeInput || !hoursPerWeekInput) return false;
-    
+
     const hourlyFee = parseNumericValue(hourlyFeeInput);
     const hoursPerWeek = parseFloat(hoursPerWeekInput.value) || 0;
-    
+
     // Hourly fee must be > 0, hours per week must be > 0
     return hourlyFee > 0 && hoursPerWeek > 0;
   }
@@ -211,24 +211,24 @@ function getParentSummary(parentNumber) {
   const incomeInput = document.getElementById(`parent${parentNumber}-income`);
   const daysInput = document.getElementById(`parent${parentNumber}-days`);
   const hoursInput = document.getElementById(`parent${parentNumber}-hours`);
-  
+
   const income = parseNumericValue(incomeInput);
   const days = daysInput ? parseFloat(daysInput.value) || 0 : 0;
   const hours = hoursInput ? parseFloat(hoursInput.value) || 0 : 0;
-  
+
   if (income === 0 && days === 0 && hours === 0) {
     return '<span class="summary-empty">No data entered</span>';
   }
-  
-  const formattedIncome = income > 0 
-    ? new Intl.NumberFormat('en-AU', { 
-        style: 'currency', 
-        currency: 'AUD', 
-        minimumFractionDigits: 0, 
-        maximumFractionDigits: 0 
+
+  const formattedIncome = income > 0
+    ? new Intl.NumberFormat('en-AU', {
+        style: 'currency',
+        currency: 'AUD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
       }).format(income)
     : '—';
-  
+
   return `
     <div class="summary-grid">
       <div class="summary-item">
@@ -254,33 +254,33 @@ function getChildSummary(childIndex) {
   const feeTypeRadios = document.querySelectorAll(`input[name="child-${childIndex}-fee-type"]`);
   const dailyFeeInput = document.getElementById(`child-${childIndex}-daily-fee`);
   const daysOfCareInput = document.getElementById(`child-${childIndex}-days-of-care`);
-  
+
   const age = ageInput ? parseInt(ageInput.value) || 0 : 0;
   const careType = careTypeSelect ? careTypeSelect.options[careTypeSelect.selectedIndex].text : '';
-  
+
   let feeType = 'daily';
   feeTypeRadios.forEach(radio => {
     if (radio.checked) {
       feeType = radio.value;
     }
   });
-  
+
   const dailyFee = parseNumericValue(dailyFeeInput);
   const daysOfCare = daysOfCareInput ? parseFloat(daysOfCareInput.value) || 0 : 0;
-  
+
   if (age === 0 && dailyFee === 0) {
     return '<span class="summary-empty">No data entered</span>';
   }
-  
-  const formattedFee = dailyFee > 0 
-    ? new Intl.NumberFormat('en-AU', { 
-        style: 'currency', 
-        currency: 'AUD', 
-        minimumFractionDigits: 0, 
-        maximumFractionDigits: 0 
+
+  const formattedFee = dailyFee > 0
+    ? new Intl.NumberFormat('en-AU', {
+        style: 'currency',
+        currency: 'AUD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
       }).format(dailyFee)
     : '—';
-  
+
   return `
     <div class="summary-grid">
       <div class="summary-item">
@@ -310,45 +310,45 @@ function getChildSummary(childIndex) {
 export function initializeParentCollapse(parentNumber) {
   const section = document.getElementById(`parent${parentNumber}-section`);
   if (!section) return;
-  
+
   // Skip if already initialized
   if (section.dataset.collapseInitialized === 'true') return;
   section.dataset.collapseInitialized = 'true';
-  
+
   const sectionId = `parent${parentNumber}-content`;
-  
+
   // Find or create content wrapper
   let content = section.querySelector('.section-content');
   if (!content) {
     content = document.createElement('div');
     content.className = 'section-content';
     content.id = sectionId;
-    
+
     // Move all section children (except title) into content wrapper
     const title = section.querySelector('.section-title');
     const childrenToMove = Array.from(section.children).filter(child => child !== title);
     childrenToMove.forEach(child => content.appendChild(child));
     section.appendChild(content);
   }
-  
+
   // Create summary element
   const summary = createSummaryElement(getParentSummary(parentNumber));
   section.appendChild(summary);
-  
+
   // Create toggle button
   const button = createCollapseButton(sectionId, 'Edit', 'Collapse');
-  
+
   // Insert button in title
   const title = section.querySelector('.section-title');
   if (title) {
     title.appendChild(button);
   }
-  
+
   // Add click handler
   button.addEventListener('click', () => {
     toggleSection(section, button, content, summary);
   });
-  
+
   // Add keyboard handler
   button.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -356,7 +356,7 @@ export function initializeParentCollapse(parentNumber) {
       button.click();
     }
   });
-  
+
   // Listen for input changes to update summary and handle auto-collapse
   const allInputs = section.querySelectorAll('input, select');
   allInputs.forEach(input => {
@@ -364,7 +364,7 @@ export function initializeParentCollapse(parentNumber) {
     input.addEventListener('change', () => {
       summary.innerHTML = getParentSummary(parentNumber);
     });
-    
+
     // Auto-collapse on mobile/tablet after all required data is entered
     input.addEventListener('blur', () => {
       // Only auto-collapse if section is complete and on mobile/tablet
@@ -387,35 +387,35 @@ export function initializeParentCollapse(parentNumber) {
  */
 export function initializeChildCollapse(childCard) {
   if (!childCard) return;
-  
+
   // Skip if already initialized
   if (childCard.dataset.collapseInitialized === 'true') return;
   childCard.dataset.collapseInitialized = 'true';
-  
+
   const childIndex = childCard.dataset.childIndex;
   const sectionId = `child-${childIndex}-content`;
-  
+
   // Find or create content wrapper
   let content = childCard.querySelector('.child-card-content');
   if (!content) {
     content = document.createElement('div');
     content.className = 'child-card-content';
     content.id = sectionId;
-    
+
     // Move all card children (except header) into content wrapper
     const header = childCard.querySelector('.child-card-header');
     const childrenToMove = Array.from(childCard.children).filter(child => child !== header);
     childrenToMove.forEach(child => content.appendChild(child));
     childCard.appendChild(content);
   }
-  
+
   // Create summary element
   const summary = createSummaryElement(getChildSummary(childIndex));
   childCard.appendChild(summary);
-  
+
   // Create toggle button
   const button = createCollapseButton(sectionId, 'Edit', 'Collapse');
-  
+
   // Insert button in header
   const header = childCard.querySelector('.child-card-header');
   if (header) {
@@ -427,12 +427,12 @@ export function initializeChildCollapse(childCard) {
       header.appendChild(button);
     }
   }
-  
+
   // Add click handler
   button.addEventListener('click', () => {
     toggleSection(childCard, button, content, summary);
   });
-  
+
   // Add keyboard handler
   button.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -440,7 +440,7 @@ export function initializeChildCollapse(childCard) {
       button.click();
     }
   });
-  
+
   // Listen for input changes to update summary and handle auto-collapse
   const allInputs = childCard.querySelectorAll('input, select');
   allInputs.forEach(input => {
@@ -448,7 +448,7 @@ export function initializeChildCollapse(childCard) {
     input.addEventListener('change', () => {
       summary.innerHTML = getChildSummary(childIndex);
     });
-    
+
     // Auto-collapse on mobile/tablet after all required data is entered
     input.addEventListener('blur', () => {
       // Only auto-collapse if card is complete and on mobile/tablet
@@ -472,11 +472,11 @@ export function initializeAllCollapses() {
   // Initialize parent sections
   initializeParentCollapse(1);
   initializeParentCollapse(2);
-  
+
   // Initialize existing child cards
   const childCards = document.querySelectorAll('.child-card');
   childCards.forEach(card => initializeChildCollapse(card));
-  
+
   // Observe for new child cards being added
   const childrenContainer = document.getElementById('children-container');
   if (childrenContainer) {
@@ -489,7 +489,7 @@ export function initializeAllCollapses() {
         });
       });
     });
-    
+
     observer.observe(childrenContainer, { childList: true });
   }
 }

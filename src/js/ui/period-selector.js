@@ -41,19 +41,19 @@ export function setCurrentPeriod(period) {
     console.error('Invalid period:', period);
     return;
   }
-  
+
   currentPeriod = period;
-  
+
   // Save to localStorage
   try {
     localStorage.setItem('ccs-display-period', period);
   } catch (e) {
     console.warn('Could not save period preference:', e);
   }
-  
+
   // Notify all callbacks
   periodChangeCallbacks.forEach(callback => callback(period));
-  
+
   // Update all period-aware elements on the page
   updateAllPeriodDisplays();
 }
@@ -102,21 +102,21 @@ export function createPeriodSelector(options = {}) {
     showLabel = true,
     compact = false
   } = options;
-  
+
   const container = document.createElement('div');
   container.className = className;
   container.id = id;
-  
+
   if (showLabel && !compact) {
     const label = document.createElement('label');
     label.textContent = 'Show figures:';
     label.className = 'period-selector-label';
     container.appendChild(label);
   }
-  
+
   const buttonGroup = document.createElement('div');
   buttonGroup.className = `period-selector-buttons ${compact ? 'compact' : ''}`;
-  
+
   Object.keys(PERIOD_MULTIPLIERS).forEach(period => {
     const button = document.createElement('button');
     button.type = 'button';
@@ -125,20 +125,20 @@ export function createPeriodSelector(options = {}) {
     button.textContent = compact ? period.charAt(0).toUpperCase() : PERIOD_LABELS[period];
     button.title = PERIOD_LABELS[period];
     button.setAttribute('aria-pressed', period === currentPeriod);
-    
+
     button.addEventListener('click', () => {
       setCurrentPeriod(period);
-      
+
       // Update button states
       buttonGroup.querySelectorAll('.period-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.period === period);
         btn.setAttribute('aria-pressed', btn.dataset.period === period);
       });
     });
-    
+
     buttonGroup.appendChild(button);
   });
-  
+
   container.appendChild(buttonGroup);
   return container;
 }
@@ -155,17 +155,17 @@ function updateAllPeriodDisplays() {
       el.textContent = formatCurrency(periodValue);
     }
   });
-  
+
   // Update period labels
   document.querySelectorAll('[data-period-label]').forEach(el => {
     el.textContent = PERIOD_LABELS[currentPeriod];
   });
-  
+
   // Update period suffixes
   document.querySelectorAll('[data-period-suffix]').forEach(el => {
     el.textContent = getPeriodSuffix();
   });
-  
+
   // Dispatch custom event for components that need custom handling
   document.dispatchEvent(new CustomEvent('periodChange', { detail: { period: currentPeriod } }));
 }
