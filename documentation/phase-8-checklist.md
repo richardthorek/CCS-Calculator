@@ -23,15 +23,17 @@
 ## 8.1 Azure Infrastructure Setup (CLI)
 
 **Goal:** Provision all Azure resources needed for authentication and storage  
-**Duration:** 30 minutes
+**Duration:** 30 minutes  
+**Manual Guide:** `documentation/phase-8-1-azure-setup-guide.md`
 
 ### Prerequisites
-- [ ] Azure CLI installed and working (`az --version`)
-- [ ] Azure subscription with appropriate permissions
-- [ ] OpenSSL available (for random string generation)
+- [x] Azure CLI installed and working (`az --version`)
+- [x] Azure subscription with appropriate permissions
+- [x] OpenSSL available (for random string generation)
 
 ### Tasks
-- [ ] Run setup script: `./scripts/setup-azure-auth-storage.sh`
+- [x] Create detailed setup guide with subscription/resource group details
+- [ ] Run setup commands to create storage account
 - [ ] Save connection string to secure location
 - [ ] Verify storage account created
 - [ ] Verify tables created (userscenarios, userprofiles)
