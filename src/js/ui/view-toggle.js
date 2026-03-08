@@ -15,30 +15,30 @@ export function initializeViewToggle() {
     console.warn('Annual toggle not found');
     return;
   }
-  
+
   // Load saved preference from localStorage
   const savedView = localStorage.getItem('ccs-view-preference');
   if (savedView === 'annual') {
     toggle.checked = true;
     currentView = 'annual';
   }
-  
+
   // Listen for toggle changes
   toggle.addEventListener('change', (e) => {
     currentView = e.target.checked ? 'annual' : 'weekly';
-    
+
     // Save preference
     localStorage.setItem('ccs-view-preference', currentView);
-    
+
     // Update all displays
     updateAllDisplays();
-    
+
     // Dispatch event for other components
     document.dispatchEvent(new CustomEvent('viewToggleChanged', {
       detail: { view: currentView }
     }));
   });
-  
+
   // Apply initial view if needed
   if (currentView === 'annual') {
     updateAllDisplays();
@@ -59,10 +59,10 @@ export function getCurrentView() {
 function updateAllDisplays() {
   // Update result cards
   updateResultCards();
-  
+
   // Update comparison table if visible
   updateComparisonTable();
-  
+
   // Update child results
   updateChildResults();
 }
@@ -77,7 +77,7 @@ function updateResultCards() {
     const label = weeklySubsidyCard.querySelector('.card-label');
     const sublabel = weeklySubsidyCard.querySelector('.card-sublabel');
     const value = weeklySubsidyCard.querySelector('#result-weekly-subsidy');
-    
+
     if (currentView === 'annual') {
       label.textContent = 'Annual Subsidy';
       sublabel.textContent = 'Government contribution';
@@ -93,14 +93,14 @@ function updateResultCards() {
       }
     }
   }
-  
+
   // Weekly Out-of-Pocket card
   const weeklyGapCard = document.querySelector('.summary-card:has(#result-weekly-gap)');
   if (weeklyGapCard) {
     const label = weeklyGapCard.querySelector('.card-label');
     const sublabel = weeklyGapCard.querySelector('.card-sublabel');
     const value = weeklyGapCard.querySelector('#result-weekly-gap');
-    
+
     if (currentView === 'annual') {
       label.textContent = 'Annual Out-of-Pocket';
       sublabel.textContent = 'Your cost';
@@ -124,7 +124,7 @@ function updateResultCards() {
 function updateComparisonTable() {
   const table = document.querySelector('.comparison-table');
   if (!table) return;
-  
+
   // Update header if needed
   const headers = table.querySelectorAll('th');
   headers.forEach(th => {
@@ -134,7 +134,7 @@ function updateComparisonTable() {
       th.textContent = th.textContent.replace('Annual', 'Weekly');
     }
   });
-  
+
   // Update table cells with data-weekly-value attributes
   const cells = table.querySelectorAll('td[data-weekly-value]');
   cells.forEach(cell => {
@@ -164,12 +164,12 @@ function updateChildResults() {
         if (label) {
           label.textContent = currentView === 'annual' ? 'Annual Subsidy:' : 'Weekly Subsidy:';
         }
-        subsidyValue.textContent = currentView === 'annual' 
-          ? formatCurrency(weeklyValue * 52) 
+        subsidyValue.textContent = currentView === 'annual'
+          ? formatCurrency(weeklyValue * 52)
           : formatCurrency(weeklyValue);
       }
     }
-    
+
     // Update out-of-pocket
     const outOfPocketValue = card.querySelector('[data-weekly-value][data-field="outOfPocket"]');
     if (outOfPocketValue) {
@@ -179,12 +179,12 @@ function updateChildResults() {
         if (label) {
           label.textContent = currentView === 'annual' ? 'Annual Out-of-Pocket:' : 'Weekly Out-of-Pocket:';
         }
-        outOfPocketValue.textContent = currentView === 'annual' 
-          ? formatCurrency(weeklyValue * 52) 
+        outOfPocketValue.textContent = currentView === 'annual'
+          ? formatCurrency(weeklyValue * 52)
           : formatCurrency(weeklyValue);
       }
     }
-    
+
     // Update total cost
     const costValue = card.querySelector('[data-weekly-value][data-field="cost"]');
     if (costValue) {
@@ -194,8 +194,8 @@ function updateChildResults() {
         if (label) {
           label.textContent = currentView === 'annual' ? 'Annual Cost:' : 'Weekly Cost:';
         }
-        costValue.textContent = currentView === 'annual' 
-          ? formatCurrency(weeklyValue * 52) 
+        costValue.textContent = currentView === 'annual'
+          ? formatCurrency(weeklyValue * 52)
           : formatCurrency(weeklyValue);
       }
     }

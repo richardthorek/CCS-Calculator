@@ -1,9 +1,9 @@
 /**
  * CCS Configuration - 2025-26 Financial Year
- * 
+ *
  * This file contains all the rates, thresholds, and constants used in CCS calculations.
  * Update this file when new financial year rates are published.
- * 
+ *
  * Last updated: 2025-26 Financial Year
  * Source: Australian Government Department of Education
  */
@@ -14,16 +14,16 @@
 export const STANDARD_RATE_THRESHOLDS = {
   // Maximum income for 90% subsidy
   MAX_90_PERCENT: 85279,
-  
+
   // Taper range start (income above which subsidy starts decreasing)
   TAPER_START: 85280,
-  
+
   // Taper range end (last income level with subsidy)
   TAPER_END: 535278,
-  
+
   // Minimum income for 0% subsidy
   MIN_ZERO_PERCENT: 535279,
-  
+
   // Rate decrease parameters
   TAPER_RATE_INCOME_INCREMENT: 5000,  // Subsidy decreases for each $5,000 of income
   TAPER_RATE_PERCENTAGE_DECREASE: 1   // Decreases by 1% per increment
@@ -37,22 +37,22 @@ export const HIGHER_RATE_THRESHOLDS = {
   MAX_95_PERCENT: 143273,
   BAND1_START: 143274,
   BAND1_END: 188272,
-  
+
   // Band 2: 80% flat subsidy
   BAND2_START: 188273,
   BAND2_END: 267562,
-  
+
   // Band 3: Taper from 80% to 50%
   BAND3_START: 267563,
   BAND3_END: 357562,
-  
+
   // Band 4: 50% flat subsidy
   BAND4_START: 357563,
   BAND4_END: 367562,
-  
+
   // Revert to standard rate threshold
   REVERT_TO_STANDARD: 367563,
-  
+
   // Rate decrease parameters
   TAPER_RATE_INCOME_INCREMENT: 3000,  // Subsidy decreases for each $3,000 of income
   TAPER_RATE_PERCENTAGE_DECREASE: 1   // Decreases by 1% per increment
@@ -65,11 +65,11 @@ export const ACTIVITY_TEST = {
   // Base subsidy hours (minimum for all families)
   BASE_HOURS_PER_FORTNIGHT: 72,
   BASE_HOURS_PER_WEEK: 36,
-  
+
   // Higher subsidy hours (for higher activity families)
   HIGHER_HOURS_PER_FORTNIGHT: 100,
   HIGHER_HOURS_PER_WEEK: 50,
-  
+
   // Threshold for higher hours (lower-activity parent must work more than this)
   HIGHER_ACTIVITY_THRESHOLD: 48  // hours per fortnight
 };
@@ -84,19 +84,19 @@ export const HOURLY_RATE_CAPS = {
     SCHOOL_AGE: 12.81,      // Children of school age
     NON_SCHOOL_AGE: 14.63   // Children not yet school age
   },
-  
+
   // Outside School Hours Care (OSHC)
   OSHC: {
     SCHOOL_AGE: 12.81,
     NON_SCHOOL_AGE: 14.63
   },
-  
+
   // Family Day Care
   FAMILY_DAY_CARE: {
     SCHOOL_AGE: 13.56,
     NON_SCHOOL_AGE: 13.56
   },
-  
+
   // In-Home Care (per family, not per child)
   IN_HOME_CARE: {
     SCHOOL_AGE: 39.80,
@@ -185,18 +185,18 @@ export const VALIDATION_LIMITS = {
  * CCS Withholding configuration
  * The government withholds a percentage of CCS to create a buffer for income fluctuations
  * This reduces the risk of overpayment debts at year-end reconciliation
- * 
+ *
  * Source: Services Australia
  * See: https://www.servicesaustralia.gov.au/your-income-can-affect-child-care-subsidy
  */
 export const WITHHOLDING = {
   // Default withholding percentage (can be adjusted by families via myGov)
   DEFAULT_RATE: 5,
-  
+
   // Allowable withholding range
   MIN_RATE: 0,
   MAX_RATE: 100,
-  
+
   // Policy information
   POLICY: {
     description: 'CCS withholding reduces overpayment risk when income fluctuates',
@@ -218,7 +218,7 @@ export const FINANCIAL_YEAR = {
 
 /**
  * Helper function to get hourly rate cap for a specific care type and age
- * 
+ *
  * @param {string} careType - Type of care (use CARE_TYPES constants)
  * @param {number} childAge - Age of the child in years
  * @returns {number} Hourly rate cap in AUD
@@ -226,7 +226,7 @@ export const FINANCIAL_YEAR = {
 export function getHourlyRateCap(careType, childAge) {
   const isSchoolAge = childAge >= AGE_CATEGORIES.SCHOOL_AGE_THRESHOLD;
   const ageCategory = isSchoolAge ? 'SCHOOL_AGE' : 'NON_SCHOOL_AGE';
-  
+
   switch (careType) {
     case CARE_TYPES.CENTRE_BASED:
       return HOURLY_RATE_CAPS.CENTRE_BASED[ageCategory];
@@ -244,7 +244,7 @@ export function getHourlyRateCap(careType, childAge) {
 /**
  * Helper function to get daily rate cap for a specific care type and age
  * Daily rate cap = Hourly rate cap × Hours per day charged
- * 
+ *
  * @param {string} careType - Type of care (use CARE_TYPES constants)
  * @param {number} childAge - Age of the child in years
  * @param {number} hoursPerDay - Hours charged per day (default: 10)

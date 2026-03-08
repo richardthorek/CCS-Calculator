@@ -669,8 +669,8 @@ select.valid:focus {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border-radius: var(--radius-md);
     background: var(--color-bg-tertiary);
     border: 2px solid var(--color-border);
@@ -678,6 +678,11 @@ select.valid:focus {
     font-weight: 600;
     color: var(--color-text-secondary);
     transition: all var(--transition-fast);
+}
+
+.day-checkbox input:focus-visible + span {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 .day-checkbox:hover span {
@@ -933,6 +938,17 @@ select.valid:focus {
     font-weight: 800;
     color: var(--color-text-primary);
     line-height: var(--line-height-tight);
+    transition: color var(--transition-fast);
+}
+
+.figure-value.value-updated {
+    animation: value-flash 0.4s ease-out;
+}
+
+@keyframes value-flash {
+    0% { opacity: 1; }
+    30% { opacity: 0.5; }
+    100% { opacity: 1; }
 }
 
 .key-figure.primary .figure-value {
@@ -1039,6 +1055,10 @@ select.valid:focus {
 
 .breakdown-value.negative {
     color: #dc2626; /* Red for withholding amount */
+}
+
+.dark-mode .breakdown-value.negative {
+    color: #f87171; /* Lighter red for dark mode contrast */
 }
 
 .breakdown-value.highlight {
@@ -2003,7 +2023,30 @@ footer {
 
 /* ===== Loading State ===== */
 .calculating .live-results-section {
-    opacity: 0.7;
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.calculating .live-results-section::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(var(--color-primary-rgb, 8 145 178) / 0.08) 50%,
+        transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-lg);
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
 }
 
 /* ===== Apply All Control ===== */
@@ -2684,7 +2727,7 @@ footer {
     /* Text Colors - Light variants for dark mode */
     --color-text-primary: #f1f5f9;
     --color-text-secondary: #cbd5e1;
-    --color-text-muted: #64748b;
+    --color-text-muted: #94a3b8;
     --color-text-inverse: #0f172a;
     
     /* Border Colors - Lighter for dark mode */

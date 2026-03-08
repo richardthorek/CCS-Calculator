@@ -17,9 +17,9 @@ import { calculateEffectiveHourlyRate, calculateSubsidyPerHour, calculateWeeklyC
  */
 export function generateAllScenarios(baseData) {
   const { parent1BaseIncome, parent2BaseIncome = 0, parent1HoursPerDay, parent2HoursPerDay = 0, children } = baseData;
-  
+
   const scenarios = [];
-  
+
   // Generate all combinations: each parent working 0-5 days
   for (let p1Days = 0; p1Days <= 5; p1Days++) {
     for (let p2Days = 0; p2Days <= 5; p2Days++) {
@@ -27,22 +27,22 @@ export function generateAllScenarios(baseData) {
       if (p1Days === 0 && p2Days === 0) {
         continue;
       }
-      
+
       const scenarioName = generateScenarioName(p1Days, p2Days, parent2BaseIncome > 0);
-      
+
       const scenario = createScenario({
         ...baseData,
         parent1Days: p1Days,
         parent2Days: p2Days,
         scenarioName,
       });
-      
+
       if (scenario) {
         scenarios.push(scenario);
       }
     }
   }
-  
+
   return scenarios;
 }
 
@@ -53,19 +53,19 @@ export function generateAllScenarios(baseData) {
  * @returns {Array} Array of scenario objects
  */
 export function generateSimplifiedScenarios(baseData) {
-  const { 
-    parent1BaseIncome, 
-    parent2BaseIncome = 0, 
-    parent1Days, 
+  const {
+    parent1BaseIncome,
+    parent2BaseIncome = 0,
+    parent1Days,
     parent2Days = 0,
-    parent1HoursPerDay, 
-    parent2HoursPerDay = 0, 
-    children 
+    parent1HoursPerDay,
+    parent2HoursPerDay = 0,
+    children
   } = baseData;
-  
+
   const scenarios = [];
   const scenariosToCreate = [];
-  
+
   // 1. User's current settings
   scenariosToCreate.push({
     parent1Days,
@@ -73,7 +73,7 @@ export function generateSimplifiedScenarios(baseData) {
     name: 'Your Current Settings',
     description: `Parent 1: ${parent1Days} days, Parent 2: ${parent2Days} days`
   });
-  
+
   // 2. Swap scenario (only if parents have different days and both have income)
   if (parent2BaseIncome > 0 && parent1Days !== parent2Days) {
     scenariosToCreate.push({
@@ -83,7 +83,7 @@ export function generateSimplifiedScenarios(baseData) {
       description: `Parent 1: ${parent2Days} days, Parent 2: ${parent1Days} days`
     });
   }
-  
+
   // 3. Both parents full-time (only if different from current and both parents have income)
   if (parent2BaseIncome > 0) {
     const alreadyFullTime = parent1Days === 5 && parent2Days === 5;
@@ -96,11 +96,11 @@ export function generateSimplifiedScenarios(baseData) {
       });
     }
   }
-  
+
   // 4. Lower earner at 0 days (only if both parents have income)
   if (parent2BaseIncome > 0) {
     const lowerEarnerIsParent2 = parent2BaseIncome <= parent1BaseIncome;
-    
+
     if (lowerEarnerIsParent2) {
       // Parent 2 is lower earner - set to 0 days
       const alreadyAtZero = parent2Days === 0;
@@ -125,7 +125,7 @@ export function generateSimplifiedScenarios(baseData) {
       }
     }
   }
-  
+
   // Create scenarios from the combinations
   scenariosToCreate.forEach(combo => {
     const scenario = createScenario({
@@ -134,12 +134,12 @@ export function generateSimplifiedScenarios(baseData) {
       parent2Days: combo.parent2Days,
       scenarioName: combo.name,
     });
-    
+
     if (scenario) {
       scenarios.push(scenario);
     }
   });
-  
+
   return scenarios;
 }
 
@@ -150,7 +150,7 @@ export function generateSimplifiedScenarios(baseData) {
  */
 export function generateCommonScenarios(baseData) {
   const { parent1BaseIncome, parent2BaseIncome, parent1HoursPerDay, parent2HoursPerDay, children } = baseData;
-  
+
   // Common work day combinations for two parents
   const commonCombinations = [
     { parent1Days: 5, parent2Days: 5, name: '5+5 days (Both full-time)' },
@@ -164,12 +164,12 @@ export function generateCommonScenarios(baseData) {
     { parent1Days: 2, parent2Days: 2, name: '2+2 days' },
     { parent1Days: 2, parent2Days: 0, name: '2+0 days' },
   ];
-  
+
   // If parent 2 has no income, only generate single-parent scenarios
   if (!parent2BaseIncome || parent2BaseIncome === 0) {
     return generateSingleParentScenarios(baseData);
   }
-  
+
   // Generate scenarios for each combination
   const scenarios = commonCombinations.map(combo => {
     return createScenario({
@@ -179,7 +179,7 @@ export function generateCommonScenarios(baseData) {
       scenarioName: combo.name,
     });
   });
-  
+
   // Remove duplicates and invalid scenarios
   return scenarios.filter(scenario => scenario !== null);
 }
@@ -199,12 +199,12 @@ function generateScenarioName(p1Days, p2Days, isTwoParent = true) {
     if (p1Days === 5) return '5 days (Full-time)';
     return `${p1Days} days`;
   }
-  
+
   // Two parent scenario names
   if (p1Days === 5 && p2Days === 5) return '5+5 days (Both full-time)';
   if (p1Days === 0 && p2Days > 0) return `0+${p2Days} days (One parent home)`;
   if (p2Days === 0 && p1Days > 0) return `${p1Days}+0 days (One parent home)`;
-  
+
   return `${p1Days}+${p2Days} days`;
 }
 
@@ -215,7 +215,7 @@ function generateScenarioName(p1Days, p2Days, isTwoParent = true) {
  */
 export function generateSingleParentScenarios(baseData) {
   const { parent1BaseIncome, parent1HoursPerDay } = baseData;
-  
+
   const singleParentCombinations = [
     { days: 5, name: '5 days (Full-time)' },
     { days: 4, name: '4 days' },
@@ -223,7 +223,7 @@ export function generateSingleParentScenarios(baseData) {
     { days: 2, name: '2 days' },
     { days: 1, name: '1 day' },
   ];
-  
+
   return singleParentCombinations.map(combo => {
     return createScenario({
       ...baseData,
@@ -258,7 +258,7 @@ function calculateChildcareHoursNeeded(p1Days, p2Days, p1Hours, p2Hours, childHo
   if (p1Days === 0 && p2Days === 0) {
     return 0;
   }
-  
+
   // If one parent isn't working, they're home for childcare
   if (p1Days === 0 || p2Days === 0) {
     // Only need childcare when the working parent is at work
@@ -266,16 +266,16 @@ function calculateChildcareHoursNeeded(p1Days, p2Days, p1Hours, p2Hours, childHo
     const workingHours = p1Days > 0 ? p1Hours : p2Hours;
     return workingDays * workingHours;
   }
-  
+
   // Both parents working - need childcare during overlapping work hours
   // This is a simplified model - assumes they work same days
   const overlappingDays = Math.min(p1Days, p2Days);
   const maxHoursPerDay = Math.max(p1Hours, p2Hours);
-  
+
   // For non-overlapping days, still might need some childcare
   const nonOverlappingDays = Math.abs(p1Days - p2Days);
   const minHours = Math.min(p1Hours, p2Hours);
-  
+
   return (overlappingDays * maxHoursPerDay) + (nonOverlappingDays * minHours);
 }
 
@@ -296,22 +296,22 @@ function createScenario(data) {
       children,
       scenarioName = generateScenarioName(parent1Days, parent2Days, parent2BaseIncome > 0),
     } = data;
-    
+
     // Calculate adjusted incomes (0 if not working)
     const parent1Income = parent1Days > 0 ? calculateAdjustedIncome(
       parent1BaseIncome,
       parent1Days,
       parent1HoursPerDay
     ) : 0;
-    
+
     const parent2Income = (parent2BaseIncome > 0 && parent2Days > 0) ? calculateAdjustedIncome(
       parent2BaseIncome,
       parent2Days,
       parent2HoursPerDay
     ) : 0;
-    
+
     const householdIncome = calculateHouseholdIncome(parent1Income, parent2Income);
-    
+
     // Calculate subsidised hours
     const parent1FortnightHours = parent1Days * parent1HoursPerDay * 2;
     const parent2FortnightHours = parent2Days * parent2HoursPerDay * 2;
@@ -320,11 +320,11 @@ function createScenario(data) {
       parent2FortnightHours
     );
     const subsidisedHours = subsidisedHoursResult.hoursPerWeek;
-    
+
     // Calculate costs for each child
     const childResults = children.map((child, index) => {
       const { age, careType } = child;
-      
+
       // Normalize child data - convert daily fees to hourly if needed
       let providerFee, hoursPerWeek;
       if (child.feeType === 'daily') {
@@ -339,12 +339,12 @@ function createScenario(data) {
         providerFee = child.providerFee;
         hoursPerWeek = child.hoursPerWeek;
       }
-      
+
       // Skip if we don't have valid fee data
       if (typeof providerFee !== 'number' || isNaN(providerFee) || providerFee <= 0) {
         return null;
       }
-      
+
       // Calculate actual childcare hours needed based on parent availability
       const actualHoursNeeded = calculateChildcareHoursNeeded(
         parent1Days,
@@ -353,7 +353,7 @@ function createScenario(data) {
         parent2HoursPerDay,
         hoursPerWeek
       );
-      
+
       // If no childcare needed, return zero costs
       if (actualHoursNeeded === 0) {
         return {
@@ -368,13 +368,13 @@ function createScenario(data) {
           hoursWithoutSubsidy: 0,
         };
       }
-      
+
       // Determine if this is the eldest child aged ≤5
       const childrenUnder6 = children.filter(c => c.age <= 5);
-      const isEldestUnder6 = childrenUnder6.length > 0 && 
-                             age <= 5 && 
+      const isEldestUnder6 = childrenUnder6.length > 0 &&
+                             age <= 5 &&
                              age === Math.max(...childrenUnder6.map(c => c.age));
-      
+
       // Calculate subsidy rate
       let subsidyRate;
       if (isEldestUnder6) {
@@ -384,11 +384,11 @@ function createScenario(data) {
       } else {
         subsidyRate = calculateStandardRate(householdIncome);
       }
-      
+
       // Calculate effective hourly rate and costs
       const effectiveRate = calculateEffectiveHourlyRate(providerFee, careType, age);
       const subsidyPerHour = calculateSubsidyPerHour(subsidyRate, effectiveRate);
-      
+
       const maxSubsidisedHours = Math.min(actualHoursNeeded, subsidisedHours);
       const weeklyCosts = calculateWeeklyCosts({
         subsidyPerHour,
@@ -396,7 +396,7 @@ function createScenario(data) {
         subsidisedHours: maxSubsidisedHours,
         actualHours: actualHoursNeeded
       });
-      
+
       return {
         age,
         careType,
@@ -405,27 +405,27 @@ function createScenario(data) {
         ...weeklyCosts,
       };
     }).filter(result => result !== null);
-    
+
     // If no valid children data, return null scenario
     if (childResults.length === 0) {
       return null;
     }
-    
+
     // Aggregate total costs
     const totalWeeklySubsidy = childResults.reduce((sum, child) => sum + child.weeklySubsidy, 0);
     const totalWeeklyCost = childResults.reduce((sum, child) => sum + child.weeklyFullCost, 0);
     const totalWeeklyOutOfPocket = childResults.reduce((sum, child) => sum + child.weeklyOutOfPocket, 0);
-    
+
     const annualSubsidy = totalWeeklySubsidy * 52;
     const annualCost = totalWeeklyCost * 52;
     const annualOutOfPocket = totalWeeklyOutOfPocket * 52;
-    
+
     // Calculate net income after childcare
     const netIncomeAfterChildcare = householdIncome - annualOutOfPocket;
-    const childcareCostPercentage = householdIncome > 0 
-      ? (annualOutOfPocket / householdIncome) * 100 
+    const childcareCostPercentage = householdIncome > 0
+      ? (annualOutOfPocket / householdIncome) * 100
       : 0;
-    
+
     return {
       id: generateScenarioId(scenarioName, parent1Days, parent2Days),
       name: scenarioName,
@@ -476,7 +476,7 @@ function generateScenarioId(name, p1Days, p2Days) {
  */
 export function compareScenarios(scenario1, scenario2, metric = 'netIncomeAfterChildcare', order = 'desc') {
   let value1, value2;
-  
+
   switch (metric) {
     case 'netIncome':
     case 'netIncomeAfterChildcare':
@@ -506,7 +506,7 @@ export function compareScenarios(scenario1, scenario2, metric = 'netIncomeAfterC
       value1 = scenario1.netIncomeAfterChildcare;
       value2 = scenario2.netIncomeAfterChildcare;
   }
-  
+
   if (order === 'asc') {
     return value1 - value2;
   } else {
@@ -526,12 +526,12 @@ export function filterScenarios(scenarios, criteria = {}) {
     if (criteria.minNetIncome && scenario.netIncomeAfterChildcare < criteria.minNetIncome) {
       return false;
     }
-    
+
     // Filter by maximum out of pocket
     if (criteria.maxOutOfPocket && scenario.annualOutOfPocket > criteria.maxOutOfPocket) {
       return false;
     }
-    
+
     // Filter by work days
     if (criteria.minWorkDays) {
       const totalDays = scenario.parent1Days + scenario.parent2Days;
@@ -539,19 +539,19 @@ export function filterScenarios(scenarios, criteria = {}) {
         return false;
       }
     }
-    
+
     if (criteria.maxWorkDays) {
       const totalDays = scenario.parent1Days + scenario.parent2Days;
       if (totalDays > criteria.maxWorkDays) {
         return false;
       }
     }
-    
+
     // Filter favorites
     if (criteria.favoritesOnly && !scenario.isFavorite) {
       return false;
     }
-    
+
     return true;
   });
 }
@@ -566,7 +566,7 @@ export function findBestScenario(scenarios, metric = 'netIncomeAfterChildcare') 
   if (!scenarios || scenarios.length === 0) {
     return null;
   }
-  
+
   const sorted = [...scenarios].sort((a, b) => compareScenarios(a, b, metric, 'desc'));
   return sorted[0];
 }

@@ -10,7 +10,7 @@ import { DAYS_OF_WEEK, DAYS_OF_WEEK_LABELS } from '../config/ccs-config.js';
  * Calculate minimum childcare days needed based on parent work schedules
  * Key insight: Childcare is only needed on days when BOTH parents are working.
  * If either parent is home on a given day, they can care for the children.
- * 
+ *
  * @param {Array<string>} parent1Days - Array of days parent 1 works (e.g., ['monday', 'tuesday', 'wednesday'])
  * @param {Array<string>} parent2Days - Array of days parent 2 works (empty array if single parent)
  * @returns {Object} Result with childcareDays array and breakdown
@@ -20,11 +20,11 @@ export function calculateMinimumChildcareDays(parent1Days = [], parent2Days = []
   if (!Array.isArray(parent1Days)) {
     throw new Error('Parent 1 days must be an array');
   }
-  
+
   if (!Array.isArray(parent2Days)) {
     throw new Error('Parent 2 days must be an array');
   }
-  
+
   // Single parent or parent 2 not working - need care on all parent 1 work days
   if (parent2Days.length === 0) {
     return {
@@ -39,26 +39,26 @@ export function calculateMinimumChildcareDays(parent1Days = [], parent2Days = []
       explanation: generateExplanation(parent1Days, [], parent1Days)
     };
   }
-  
+
   // Two parents: childcare needed only when BOTH parents are working
   // Intersection of both parents' work days (days when neither parent is home)
   const childcareDays = parent1Days.filter(day => parent2Days.includes(day)).sort((a, b) => {
     const order = Object.values(DAYS_OF_WEEK);
     return order.indexOf(a) - order.indexOf(b);
   });
-  
+
   // Calculate overlapping days (both parents working) - same as childcare days
   const overlappingDays = [...childcareDays];
-  
+
   // Calculate days only one parent works (a parent is home, so no childcare needed)
   const parent1OnlyDays = parent1Days.filter(day => !parent2Days.includes(day));
   const parent2OnlyDays = parent2Days.filter(day => !parent1Days.includes(day));
-  
+
   // Days without care: days where at least one parent is home (not working)
   // This includes: days neither parent works + days only one parent works
   const allWorkDays = [...new Set([...parent1Days, ...parent2Days])];
   const daysWithoutCare = getDaysWithoutCare(childcareDays, []); // All non-childcare days
-  
+
   return {
     childcareDays,
     daysCount: childcareDays.length,
@@ -94,15 +94,15 @@ function getDaysWithoutCare(childcareDays, _unused = []) {
  */
 function generateExplanation(parent1Days, parent2Days, childcareDays) {
   const formatDays = (days) => days.map(d => DAYS_OF_WEEK_LABELS[d]).join(', ');
-  
+
   if (parent2Days.length === 0) {
     return `Single parent working ${formatDays(parent1Days)}. Childcare needed on all work days.`;
   }
-  
+
   const p1DaysStr = formatDays(parent1Days);
   const p2DaysStr = formatDays(parent2Days);
   const careDaysStr = formatDays(childcareDays);
-  
+
   return `Parent 1: ${p1DaysStr}. Parent 2: ${p2DaysStr}. Childcare needed: ${careDaysStr}.`;
 }
 
@@ -116,7 +116,7 @@ export function convertDaysCountToDayArray(daysCount) {
   if (typeof daysCount !== 'number' || daysCount < 0 || daysCount > 5) {
     throw new Error('Days count must be between 0 and 5');
   }
-  
+
   const allDays = Object.values(DAYS_OF_WEEK);
   return allDays.slice(0, daysCount);
 }
@@ -132,19 +132,19 @@ export function calculateCostSavings(totalDays, childcareDays, dailyRate) {
   if (typeof totalDays !== 'number' || totalDays < 0) {
     throw new Error('Total days must be a non-negative number');
   }
-  
+
   if (typeof childcareDays !== 'number' || childcareDays < 0) {
     throw new Error('Childcare days must be a non-negative number');
   }
-  
+
   if (typeof dailyRate !== 'number' || dailyRate < 0) {
     throw new Error('Daily rate must be a non-negative number');
   }
-  
+
   const daysWithoutCare = totalDays - childcareDays;
   const weeklySavings = daysWithoutCare * dailyRate;
   const annualSavings = weeklySavings * 52;
-  
+
   return {
     daysWithoutCare,
     weeklySavings: Math.round(weeklySavings * 100) / 100,
@@ -163,7 +163,7 @@ export function formatScheduleBreakdown(scheduleResult) {
     if (days.length === 0) return 'None';
     return days.map(d => DAYS_OF_WEEK_LABELS[d]).join(', ');
   };
-  
+
   return {
     parent1Days: formatDayList(scheduleResult.parent1WorkDays),
     parent2Days: formatDayList(scheduleResult.parent2WorkDays),
