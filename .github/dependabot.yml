@@ -1,16 +1,41 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
+# Dependabot version updates configuration
 # https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
-
 
 version: 2
 updates:
+  # Root npm dependencies (frontend + dev tooling: chart.js, jest, playwright, etc.)
   - package-ecosystem: "npm"
     directory: "/"
+    target-branch: "main"
     schedule:
       interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "npm"
+
+  # Azure Functions API npm dependencies (@azure/functions, @azure/data-tables, etc.)
+  - package-ecosystem: "npm"
+    directory: "/api"
+    target-branch: "main"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "npm"
+      - "api"
+
+  # GitHub Actions workflow dependencies
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directory: "/.github/workflows"
+    target-branch: "main"
     schedule:
       interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
