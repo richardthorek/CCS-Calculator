@@ -6,6 +6,9 @@ Date: 2026-03-08
 
 Implemented and validated in:
 - `tests/integration/auth-storage.integration.test.js`
+- `tests/calculations/known-calculation-scenario.test.js`
+- `tests/ui/known-calculation-scenario.spec.js`
+- `tests/fixtures/known-calculation-scenario.js`
 - `tests/storage/storage-manager.test.js`
 - `api/tests/utils/auth.test.js`
 - `api/tests/services/scenarios.test.js`
@@ -18,6 +21,9 @@ Coverage includes:
 - Conflict handling (409 server-wins strategy)
 - Error handling (network/API failures)
 - localStorage fallback behavior
+- Known-input deterministic calculation parity:
+  - Unit path validates exact expected outputs from calculation modules
+  - Playwright UI path validates the same input produces matching displayed outputs
 
 ## Manual Testing
 
