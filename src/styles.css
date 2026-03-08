@@ -314,44 +314,6 @@ main {
     }
 }
 
-/* ===== Trust Banner ===== */
-.trust-banner {
-    background: linear-gradient(135deg, var(--color-success-50) 0%, #d1fae5 100%);
-    border: 1px solid var(--color-success);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-sm) var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
-.trust-banner-icon {
-    width: 32px;
-    height: 32px;
-    background: var(--color-success);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 16px;
-    flex-shrink: 0;
-}
-
-.trust-banner-content h3 {
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    color: var(--color-success);
-    margin-bottom: 0;
-}
-
-.trust-banner-content p {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-secondary);
-    margin: 0;
-}
-
 /* ===== Inputs Column ===== */
 .inputs-column {
     display: flex;
@@ -2812,15 +2774,9 @@ footer {
 .dark-mode .form-section,
 .dark-mode .results-card,
 .dark-mode .scenario-card,
-.dark-mode .trust-banner,
 .dark-mode .chart-container {
     background: var(--color-bg-primary);
     border-color: var(--color-border);
-}
-
-/* Trust banner in dark mode */
-.dark-mode .trust-banner {
-    background: linear-gradient(135deg, var(--color-success-50) 0%, #065f46 100%);
 }
 
 /* Results cards in dark mode */
