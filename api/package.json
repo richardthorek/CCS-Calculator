@@ -20,6 +20,6 @@
     "@azure/functions": "^4.11.2"
   },
   "devDependencies": {
-    "jest": "^30.2.0"
+    "jest": "^30.3.0"
   }
 }
