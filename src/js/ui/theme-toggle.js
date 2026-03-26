@@ -1,7 +1,7 @@
 /**
  * Theme Toggle Module
  * Handles dark mode toggle with system preference detection and manual override
- * 
+ *
  * Supports three states:
  * - 'auto': Follow system preference (default)
  * - 'light': Force light mode
@@ -47,12 +47,12 @@ function getEffectiveTheme(preference) {
   if (preference === 'light' || preference === 'dark') {
     return preference;
   }
-  
+
   // Auto mode - use system preference
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     return 'dark';
   }
-  
+
   return 'light';
 }
 
@@ -62,19 +62,19 @@ function getEffectiveTheme(preference) {
  */
 function applyTheme(theme) {
   const html = document.documentElement;
-  
+
   if (theme === 'dark') {
     html.classList.add('dark-mode');
   } else {
     html.classList.remove('dark-mode');
   }
-  
+
   // Update meta theme-color for browser chrome
   updateMetaThemeColor(theme);
-  
+
   // Dispatch event for other components that might need to react
-  document.dispatchEvent(new CustomEvent('themeChanged', { 
-    detail: { theme } 
+  document.dispatchEvent(new CustomEvent('themeChanged', {
+    detail: { theme }
   }));
 }
 
@@ -98,7 +98,7 @@ function updateMetaThemeColor(theme) {
 function updateToggleUI(preference, effectiveTheme) {
   const toggle = document.getElementById('theme-toggle');
   if (!toggle) return;
-  
+
   // Update icon
   const icon = toggle.querySelector('.theme-toggle-icon');
   if (icon) {
@@ -110,7 +110,7 @@ function updateToggleUI(preference, effectiveTheme) {
       icon.textContent = '☀️';
     }
   }
-  
+
   // Update label
   const label = toggle.querySelector('.theme-toggle-label');
   if (label) {
@@ -122,9 +122,9 @@ function updateToggleUI(preference, effectiveTheme) {
       label.textContent = 'Light';
     }
   }
-  
+
   // Update aria-label for accessibility
-  toggle.setAttribute('aria-label', 
+  toggle.setAttribute('aria-label',
     `Theme: ${preference === 'auto' ? `Auto (currently ${effectiveTheme})` : preference}. Click to change.`
   );
 }
@@ -148,13 +148,13 @@ export function initializeTheme() {
   // Get saved preference
   const preference = getThemePreference();
   const effectiveTheme = getEffectiveTheme(preference);
-  
+
   // Apply theme immediately (before page renders)
   applyTheme(effectiveTheme);
-  
+
   // Update toggle UI if it exists
   updateToggleUI(preference, effectiveTheme);
-  
+
   // Listen for system preference changes (when in auto mode)
   if (window.matchMedia) {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -167,7 +167,7 @@ export function initializeTheme() {
       }
     });
   }
-  
+
   console.log(`Theme initialized: preference=${preference}, effective=${effectiveTheme}`);
 }
 
@@ -180,32 +180,32 @@ export function initializeThemeToggle() {
     console.warn('Theme toggle button not found');
     return;
   }
-  
+
   // Get current state
   let preference = getThemePreference();
   let effectiveTheme = getEffectiveTheme(preference);
-  
+
   // Update UI
   updateToggleUI(preference, effectiveTheme);
-  
+
   // Handle click
   toggle.addEventListener('click', () => {
     // Cycle to next theme
     preference = getNextTheme(preference);
     effectiveTheme = getEffectiveTheme(preference);
-    
+
     // Save preference
     saveThemePreference(preference);
-    
+
     // Apply theme
     applyTheme(effectiveTheme);
-    
+
     // Update UI
     updateToggleUI(preference, effectiveTheme);
-    
+
     console.log(`Theme changed: preference=${preference}, effective=${effectiveTheme}`);
   });
-  
+
   console.log('Theme toggle initialized');
 }
 
@@ -219,18 +219,18 @@ export function createThemeToggle() {
   button.className = 'theme-toggle';
   button.type = 'button';
   button.setAttribute('aria-label', 'Toggle theme');
-  
+
   const icon = document.createElement('span');
   icon.className = 'theme-toggle-icon';
   icon.textContent = '☀️';
   icon.setAttribute('aria-hidden', 'true');
-  
+
   const label = document.createElement('span');
   label.className = 'theme-toggle-label';
   label.textContent = 'Auto';
-  
+
   button.appendChild(icon);
   button.appendChild(label);
-  
+
   return button;
 }

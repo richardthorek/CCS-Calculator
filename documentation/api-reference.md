@@ -68,16 +68,50 @@ All error responses use a consistent shape:
 
 #### `GET /api/health`
 
-Returns the service health status. **No authentication required.**
+Returns a structured diagnostic report of all back-end sub-systems.
+**No authentication required.**
 
-**Response – 200 OK**
+The endpoint runs the following checks on every request:
+
+| Check name | What it verifies |
+|---|---|
+| `storage_connection_string` | `AZURE_STORAGE_CONNECTION_STRING` env var is set |
+| `table_storage` | Live connectivity to Azure Table Storage (lists first page of tables) |
+| `scenarios_table` | `TABLE_NAME_SCENARIOS` config value is present (uses `userscenarios` default) |
+| `profiles_table` | `TABLE_NAME_PROFILES` config value is present (uses `userprofiles` default) |
+
+**Response – 200 OK** (all checks pass)
 ```json
 {
-  "status": "healthy",
+  "status": "ok",
   "timestamp": "2026-03-08T00:00:00.000Z",
-  "service": "CCS Calculator API"
+  "service": "CCS Calculator API",
+  "checks": [
+    { "name": "storage_connection_string", "status": "ok" },
+    { "name": "table_storage",             "status": "ok" },
+    { "name": "scenarios_table",           "status": "ok", "detail": "userscenarios" },
+    { "name": "profiles_table",            "status": "ok", "detail": "userprofiles"  }
+  ]
 }
 ```
+
+**Response – 503 Service Unavailable** (one or more checks fail)
+```json
+{
+  "status": "error",
+  "timestamp": "2026-03-08T00:00:00.000Z",
+  "service": "CCS Calculator API",
+  "checks": [
+    { "name": "storage_connection_string", "status": "error", "error": "AZURE_STORAGE_CONNECTION_STRING environment variable is not set" },
+    { "name": "table_storage",             "status": "error", "error": "Skipped – AZURE_STORAGE_CONNECTION_STRING is not set" },
+    { "name": "scenarios_table",           "status": "ok",    "detail": "userscenarios" },
+    { "name": "profiles_table",            "status": "ok",    "detail": "userprofiles"  }
+  ]
+}
+```
+
+> **Extensibility:** add additional checks to `api/src/services/health-checks.js` and
+> include them in the `runAllChecks()` function.
 
 **cURL example**
 ```bash

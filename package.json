@@ -17,7 +17,7 @@
     "start:frontend": "npx serve src -p 3000",
     "start:api": "cd api && func start --port 7071",
     "install:all": "npm install && cd api && npm install",
-    "lint": "echo \"No linting configured yet\" && exit 0"
+    "lint": "eslint src/js"
   },
   "jest": {
     "testEnvironment": "node",
@@ -39,9 +39,11 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.58.2",
     "@types/jest": "^30.0.0",
     "concurrently": "^9.2.1",
+    "eslint": "^10.0.3",
     "jest": "^30.2.0",
     "serve": "^14.2.6"
   },

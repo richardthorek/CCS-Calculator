@@ -27,7 +27,7 @@ const PRESETS = {
       }
     ]
   },
-  
+
   'full-time-one': {
     name: 'Full-time One Parent',
     description: 'One parent working, one at home',
@@ -50,7 +50,7 @@ const PRESETS = {
       }
     ]
   },
-  
+
   'part-time-both': {
     name: 'Part-time Both Parents',
     description: '3 days per week each',
@@ -73,7 +73,7 @@ const PRESETS = {
       }
     ]
   },
-  
+
   'full-part': {
     name: 'Full-time + Part-time',
     description: 'One full-time (5 days), one part-time (3 days)',
@@ -96,7 +96,7 @@ const PRESETS = {
       }
     ]
   },
-  
+
   'four-four': {
     name: 'Four Days Each',
     description: 'Both parents working 4 days per week',
@@ -119,7 +119,7 @@ const PRESETS = {
       }
     ]
   },
-  
+
   'compressed': {
     name: 'Compressed Week',
     description: 'One parent working 4 long days, other at home',
@@ -153,7 +153,7 @@ export function initializePresets() {
     console.warn('Preset selector not found');
     return;
   }
-  
+
   presetSelector.addEventListener('change', (e) => {
     const presetId = e.target.value;
     if (presetId && PRESETS[presetId]) {
@@ -172,33 +172,33 @@ function loadPreset(presetId) {
     console.error('Preset not found:', presetId);
     return;
   }
-  
+
   console.log('Loading preset:', preset.name);
-  
+
   // Clear any existing children first
   clearChildren();
-  
+
   // Wait a bit for UI to update
   setTimeout(() => {
     // Load Parent 1 data
     fillParentData(1, preset.parent1);
-    
+
     // Load Parent 2 data
     fillParentData(2, preset.parent2);
-    
+
     // Load children
     preset.children.forEach((childData, index) => {
       // Add child if needed
       if (index > 0) {
         addChild();
       }
-      
+
       // Fill child data
       setTimeout(() => {
         fillChildData(index, childData);
       }, 100 * (index + 1));
     });
-    
+
     // Show notification
     showPresetNotification(preset.name);
   }, 100);
@@ -216,18 +216,18 @@ function fillParentData(parentNum, data) {
     incomeInput.value = data.income;
     incomeInput.dispatchEvent(new Event('input', { bubbles: true }));
   }
-  
+
   // Hours per day
   const hoursInput = document.getElementById(`parent${parentNum}-hours`);
   if (hoursInput) {
     hoursInput.value = data.hoursPerDay;
     hoursInput.dispatchEvent(new Event('input', { bubbles: true }));
   }
-  
+
   // Work days - check appropriate checkboxes
   const workDayCheckboxes = document.querySelectorAll(`input[name="parent${parentNum}-workday"]`);
   const daysToCheck = data.workDays;
-  
+
   workDayCheckboxes.forEach((checkbox, index) => {
     checkbox.checked = index < daysToCheck;
     checkbox.dispatchEvent(new Event('change', { bubbles: true }));
@@ -245,30 +245,30 @@ function fillChildData(childIndex, data) {
     console.warn('Child card not found for index:', childIndex);
     return;
   }
-  
+
   const card = childCards[childIndex];
-  
+
   // Age
   const ageInput = card.querySelector('input[name$="-age"]');
   if (ageInput) {
     ageInput.value = data.age;
     ageInput.dispatchEvent(new Event('input', { bubbles: true }));
   }
-  
+
   // Care type
   const careTypeSelect = card.querySelector('select[name$="-care-type"]');
   if (careTypeSelect) {
     careTypeSelect.value = data.careType;
     careTypeSelect.dispatchEvent(new Event('change', { bubbles: true }));
   }
-  
+
   // Hourly fee
   const feeInput = card.querySelector('input[name$="-hourly-fee"]');
   if (feeInput) {
     feeInput.value = data.hourlyFee;
     feeInput.dispatchEvent(new Event('input', { bubbles: true }));
   }
-  
+
   // Sessions per week
   const sessionsInput = card.querySelector('input[name$="-sessions"]');
   if (sessionsInput) {
@@ -308,9 +308,9 @@ function showPresetNotification(presetName) {
   notification.textContent = `✓ Loaded preset: ${presetName}`;
   notification.setAttribute('role', 'status');
   notification.setAttribute('aria-live', 'polite');
-  
+
   document.body.appendChild(notification);
-  
+
   // Remove after 3 seconds
   setTimeout(() => {
     notification.classList.remove('show');

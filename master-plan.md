@@ -1083,3 +1083,78 @@ cd /workspaces/CCS-Calculator
 ### Phase 9.6.5 – Documentation ✅
 - [x] Updated master-plan.md with Phase 9.6 tasks and status
 - [x] 337 tests passing, no regressions
+
+---
+
+## Phase 10: `/health` Endpoint – Integrated Smoke Tests & Monitoring ✅ COMPLETE
+
+**Goal:** Provide a single `/api/health` endpoint for post-deployment smoke testing, automated
+monitoring, and infrastructure health checks.
+
+**Date:** March 2026
+
+### Phase 10.1 – Health Checks Service ✅
+- [x] Create `api/src/services/health-checks.js` with four individual check functions:
+  - `checkStorageConnectionString` – verifies `AZURE_STORAGE_CONNECTION_STRING` is set
+  - `checkTableStorageConnectivity` – live connectivity probe via `TableServiceClient.listTables()`
+  - `checkScenariosTable` – verifies `TABLE_NAME_SCENARIOS` config (default: `userscenarios`)
+  - `checkProfilesTable` – verifies `TABLE_NAME_PROFILES` config (default: `userprofiles`)
+- [x] `runAllChecks(options)` aggregates all checks; accepts an injectable `tableClientFactory`
+  for testability without real Azure infrastructure
+- [x] Returns `{ status, timestamp, service, checks[] }` standardised format
+
+### Phase 10.2 – Health Endpoint ✅
+- [x] Update `api/src/functions/health.js` to call `runAllChecks()` on every request
+- [x] HTTP 200 when all checks pass; HTTP 503 when any check fails
+- [x] Full JSDoc comments documenting all included checks and response format
+
+### Phase 10.3 – Testing ✅
+- [x] Create `api/tests/services/health-checks.test.js` with 16 unit tests covering:
+  - All four individual check functions
+  - `runAllChecks` aggregation and pass/fail scenarios
+  - Dependency injection for mock `TableServiceClient`
+- [x] All 52 API tests passing (36 existing + 16 new)
+
+### Phase 10.4 – Documentation ✅
+- [x] Update `documentation/api-reference.md` with full health endpoint spec including:
+  - Check table, response examples (200 and 503), extensibility note
+- [x] Update `master-plan.md` with Phase 10 tasks and status
+
+---
+
+## Phase 11: Code Quality & UX Improvements ✅ COMPLETE
+
+**Goal:** Conduct a thorough code review and implement improvements across code quality and user experience/interface dimensions (GitHub Issue: Quality Improvements).
+
+**Date:** March 2026
+
+### Phase 11.1 – Code Quality Fixes ✅
+- [x] Fix all ESLint warnings (0 errors, 0 warnings after cleanup):
+  - `persistence.js`: Use optional catch binding where error variable was unused
+  - `collapsible-sections.js`: Use `feeType` variable to show correct fee unit (day/hr) in section summary
+  - `comparison-table.js`: Remove unused imports, fix unused callback parameters
+  - `form-handler.js`: Remove unused imports (`saveState`, `getCurrentPeriod`), remove dead `saveCurrentState` function, fix unused index params
+  - `tooltips.js`: Remove unused `iconRect` variable assignment
+  - `generator.js`: Remove unnecessary destructuring of unused variables
+  - `parent-schedule.js`: Remove unused `allWorkDays` variable
+- [x] Add "Full Cost" metric to scenario comparison cards (used previously computed but unused `periodFullCost`)
+
+### Phase 11.2 – Accessibility (A11y) Improvements ✅
+- [x] Replace `<div>` wrapper for work-day checkboxes with semantic `<fieldset>/<legend>` elements for both Parent 1 and Parent 2, improving screen reader navigation
+- [x] Add `aria-label` to each day-of-week checkbox with the full day name (Monday–Friday)
+- [x] Add `aria-hidden="true"` to required field star indicators (`*`) to avoid redundant screen reader announcements
+- [x] Add `aria-describedby` on withholding-rate input linking to its help text
+- [x] Add `aria-busy` attribute to results section during calculation (set/removed by `showCalculatingIndicator`/`hideCalculatingIndicator`)
+- [x] Add `autocomplete="off"` to income number inputs
+
+### Phase 11.3 – UX Improvements ✅
+- [x] Replace blocking `alert()` in `showGlobalError` with a non-blocking inline notification (`#global-notification` element with `role="alert"` and `aria-live="assertive"`)
+- [x] Auto-dismiss global notification after 5 seconds
+- [x] Add slide-down animation for notification appearance
+
+### Phase 11.4 – CSS ✅
+- [x] Add CSS reset for `fieldset.work-days-compact` (remove default border/padding/margin)
+- [x] Add `.work-days-legend` styling matching previous label appearance
+- [x] Add `.global-notification` styles with slide-down animation
+- [x] Add `.global-notification[hidden] { display: none }` to ensure hidden attribute works
+- [x] 379 tests passing, 0 lint warnings, no regressions

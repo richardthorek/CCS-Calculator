@@ -62,7 +62,11 @@ export function setupFormattedInput(input) {
 }
 
 /**
- * Initialize formatted inputs for all income fields
+ * Initialize formatted inputs for all income fields.
+ * Converts the parent income fields (parent1-income, parent2-income) from
+ * number inputs to text inputs with comma-formatted display while keeping
+ * the underlying value numeric-friendly.
+ * @returns {void}
  */
 export function initFormattedIncomeInputs() {
   const incomeInputs = [

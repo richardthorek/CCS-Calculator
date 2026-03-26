@@ -10,8 +10,27 @@ import {
 } from '../config/ccs-config.js';
 
 /**
+ * Calculate the subsidy percentage reduction for an income taper band.
+ * Shared helper used by both standard and higher rate calculations.
+ *
+ * @param {number} income - Household income
+ * @param {number} bandStart - Start of taper band (income where reduction begins)
+ * @param {number} increment - Income increment per taper bracket (e.g. $5,000)
+ * @param {number} percentDecrease - Percentage reduction per bracket (e.g. 1%)
+ * @param {number} baseRate - Starting subsidy rate at band start (e.g. 90 or 80)
+ * @param {number} floor - Minimum rate the taper can reduce to
+ * @returns {number} Subsidy rate after applying taper
+ */
+function applyTaperBand(income, bandStart, increment, percentDecrease, baseRate, floor) {
+  const incomeAboveStart = income - bandStart;
+  const bracketNumber = Math.floor(incomeAboveStart / increment);
+  const reduction = (bracketNumber + 1) * percentDecrease;
+  return Math.max(floor, baseRate - reduction);
+}
+
+/**
  * Calculate standard CCS rate for eldest child aged ≤5
- * 
+ *
  * @param {number} householdIncome - Adjusted household income
  * @returns {number} CCS percentage (0-90)
  */
@@ -34,19 +53,19 @@ export function calculateStandardRate(householdIncome) {
   // Rate drops by 1% for each complete $5,000 bracket
   // $85,280-$90,279 = 89% (bracket 0)
   // $90,280-$95,279 = 88% (bracket 1)
-  const incomeAboveStart = householdIncome - STANDARD_RATE_THRESHOLDS.TAPER_START;
-  const bracketNumber = Math.floor(incomeAboveStart / STANDARD_RATE_THRESHOLDS.TAPER_RATE_INCOME_INCREMENT);
-  const percentageDecrease = (bracketNumber + 1) * STANDARD_RATE_THRESHOLDS.TAPER_RATE_PERCENTAGE_DECREASE;
-  
-  const subsidyRate = 90 - percentageDecrease;
-  
-  // Ensure rate doesn't go below 0
-  return Math.max(0, subsidyRate);
+  return applyTaperBand(
+    householdIncome,
+    STANDARD_RATE_THRESHOLDS.TAPER_START,
+    STANDARD_RATE_THRESHOLDS.TAPER_RATE_INCOME_INCREMENT,
+    STANDARD_RATE_THRESHOLDS.TAPER_RATE_PERCENTAGE_DECREASE,
+    90,
+    0
+  );
 }
 
 /**
  * Calculate higher CCS rate for second and younger children aged ≤5
- * 
+ *
  * @param {number} householdIncome - Adjusted household income
  * @returns {number} CCS percentage (0-95)
  */
@@ -62,10 +81,14 @@ export function calculateHigherRate(householdIncome) {
 
   // $143,274–$188,272 → Decreases by 1% per $3,000 from 95%
   if (householdIncome <= HIGHER_RATE_THRESHOLDS.BAND1_END) {
-    const incomeAboveStart = householdIncome - HIGHER_RATE_THRESHOLDS.BAND1_START;
-    const bracketNumber = Math.floor(incomeAboveStart / HIGHER_RATE_THRESHOLDS.TAPER_RATE_INCOME_INCREMENT);
-    const percentageDecrease = (bracketNumber + 1) * HIGHER_RATE_THRESHOLDS.TAPER_RATE_PERCENTAGE_DECREASE;
-    return Math.max(80, 95 - percentageDecrease);
+    return applyTaperBand(
+      householdIncome,
+      HIGHER_RATE_THRESHOLDS.BAND1_START,
+      HIGHER_RATE_THRESHOLDS.TAPER_RATE_INCOME_INCREMENT,
+      HIGHER_RATE_THRESHOLDS.TAPER_RATE_PERCENTAGE_DECREASE,
+      95,
+      80
+    );
   }
 
   // $188,273–$267,562 → 80%
@@ -75,10 +98,14 @@ export function calculateHigherRate(householdIncome) {
 
   // $267,563–$357,562 → Decreases by 1% per $3,000 from 80%
   if (householdIncome <= HIGHER_RATE_THRESHOLDS.BAND3_END) {
-    const incomeAboveStart = householdIncome - HIGHER_RATE_THRESHOLDS.BAND3_START;
-    const bracketNumber = Math.floor(incomeAboveStart / HIGHER_RATE_THRESHOLDS.TAPER_RATE_INCOME_INCREMENT);
-    const percentageDecrease = (bracketNumber + 1) * HIGHER_RATE_THRESHOLDS.TAPER_RATE_PERCENTAGE_DECREASE;
-    return Math.max(50, 80 - percentageDecrease);
+    return applyTaperBand(
+      householdIncome,
+      HIGHER_RATE_THRESHOLDS.BAND3_START,
+      HIGHER_RATE_THRESHOLDS.TAPER_RATE_INCOME_INCREMENT,
+      HIGHER_RATE_THRESHOLDS.TAPER_RATE_PERCENTAGE_DECREASE,
+      80,
+      50
+    );
   }
 
   // $357,563–$367,562 → 50%
@@ -92,7 +119,7 @@ export function calculateHigherRate(householdIncome) {
 
 /**
  * Calculate CCS rate for a specific child based on household income and child position
- * 
+ *
  * @param {number} householdIncome - Adjusted household income
  * @param {number} childAge - Age of the child in years
  * @param {number} childPosition - Position of child (1 for eldest, 2+ for younger siblings)
@@ -127,7 +154,7 @@ export function calculateChildSubsidyRate(householdIncome, childAge, childPositi
 
 /**
  * Calculate subsidy rates for multiple children
- * 
+ *
  * @param {number} householdIncome - Adjusted household income
  * @param {Array<Object>} children - Array of child objects with {age, position} or just {age}
  * @returns {Array<Object>} Array of subsidy rates with child details
@@ -147,7 +174,7 @@ export function calculateMultipleChildrenRates(householdIncome, children) {
   return sortedChildren.map((child, index) => {
     const position = child.position !== undefined ? child.position : index + 1;
     const subsidyRate = calculateChildSubsidyRate(householdIncome, child.age, position);
-    
+
     return {
       age: child.age,
       position,

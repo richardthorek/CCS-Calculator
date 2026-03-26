@@ -16,16 +16,16 @@ let pieChartInstance = null;
 export function initializeCharts() {
   const toggleBtn = document.getElementById('toggle-chart-btn');
   const chartsContainer = document.getElementById('charts-container');
-  
+
   if (!toggleBtn || !chartsContainer) {
     console.warn('Chart elements not found in DOM');
     return;
   }
-  
+
   // Set up toggle button
   toggleBtn.addEventListener('click', () => {
     const isVisible = !chartsContainer.classList.contains('hidden');
-    
+
     if (isVisible) {
       chartsContainer.classList.add('hidden');
       toggleBtn.textContent = 'Show Charts';
@@ -36,7 +36,7 @@ export function initializeCharts() {
       toggleBtn.setAttribute('aria-expanded', 'true');
     }
   });
-  
+
   // Set initial ARIA attribute
   toggleBtn.setAttribute('aria-expanded', 'false');
   toggleBtn.setAttribute('aria-controls', 'charts-container');
@@ -52,13 +52,13 @@ export function updateCharts(scenarios, selectedScenario = null) {
     hideCharts();
     return;
   }
-  
+
   // Show charts section
   showCharts();
-  
+
   // Update bar chart
   updateBarChart(scenarios);
-  
+
   // Update pie chart with selected scenario or best scenario
   const scenarioForPie = selectedScenario || scenarios[0];
   updatePieChart(scenarioForPie);
@@ -82,12 +82,12 @@ function hideCharts() {
   if (chartsSection) {
     chartsSection.classList.add('hidden');
   }
-  
+
   const chartsContainer = document.getElementById('charts-container');
   if (chartsContainer) {
     chartsContainer.classList.add('hidden');
   }
-  
+
   const toggleBtn = document.getElementById('toggle-chart-btn');
   if (toggleBtn) {
     toggleBtn.textContent = 'Show Charts';
@@ -101,46 +101,46 @@ function hideCharts() {
  */
 function updateBarChart(scenarios) {
   const container = document.getElementById('bar-chart-container');
-  
+
   if (!container) {
     console.warn('Bar chart container not found');
     return;
   }
-  
+
   // Clear existing content
   container.innerHTML = '';
-  
+
   // Limit scenarios for better visibility
   const maxScenarios = window.innerWidth < 768 ? 10 : 15;
   const displayScenarios = scenarios.slice(0, maxScenarios);
-  
+
   // Create canvas for Chart.js
   const canvas = document.createElement('canvas');
   canvas.id = 'bar-chart';
   canvas.setAttribute('role', 'img');
   canvas.setAttribute('aria-label', 'Bar chart comparing net income across different work scenarios');
   container.appendChild(canvas);
-  
+
   // Prepare data
   const labels = displayScenarios.map(s => s.name);
   const data = displayScenarios.map(s => s.netIncomeAfterChildcare);
-  
+
   // Find best scenario (highest net income)
   const maxValue = Math.max(...data);
-  
+
   // Create gradient colors (highlight best scenario)
-  const backgroundColors = data.map(value => 
+  const backgroundColors = data.map(value =>
     value === maxValue ? 'rgba(16, 185, 129, 0.8)' : 'rgba(37, 99, 235, 0.7)'
   );
-  const borderColors = data.map(value => 
+  const borderColors = data.map(value =>
     value === maxValue ? 'rgb(16, 185, 129)' : 'rgb(37, 99, 235)'
   );
-  
+
   // Destroy existing chart if it exists
   if (barChartInstance) {
     barChartInstance.destroy();
   }
-  
+
   // Create new chart
   barChartInstance = new window.Chart(canvas, {
     type: 'bar',
@@ -243,7 +243,7 @@ function updateBarChart(scenarios) {
       }
     }
   });
-  
+
   // Add note if scenarios were limited
   if (scenarios.length > maxScenarios) {
     const note = document.createElement('p');
@@ -259,38 +259,38 @@ function updateBarChart(scenarios) {
  */
 function updatePieChart(scenario) {
   const container = document.getElementById('pie-chart-container');
-  
+
   if (!container) {
     console.warn('Pie chart container not found');
     return;
   }
-  
+
   // Clear existing content
   container.innerHTML = '';
-  
+
   // Add scenario title
   const title = document.createElement('h4');
   title.className = 'chart-title';
   title.textContent = `Cost Breakdown: ${scenario.name}`;
   container.appendChild(title);
-  
+
   // Create canvas for Chart.js
   const canvas = document.createElement('canvas');
   canvas.id = 'pie-chart';
   canvas.setAttribute('role', 'img');
   canvas.setAttribute('aria-label', `Pie chart showing cost breakdown for ${scenario.name} scenario`);
   container.appendChild(canvas);
-  
+
   // Prepare data
   const subsidy = scenario.annualSubsidy || 0;
   const outOfPocket = scenario.annualOutOfPocket || 0;
   const totalCost = subsidy + outOfPocket;
-  
+
   // Destroy existing chart if it exists
   if (pieChartInstance) {
     pieChartInstance.destroy();
   }
-  
+
   // Create new chart
   pieChartInstance = new window.Chart(canvas, {
     type: 'doughnut',
@@ -365,7 +365,7 @@ function updatePieChart(scenario) {
       cutout: '60%'
     }
   });
-  
+
   // Add summary text
   const summary = document.createElement('p');
   summary.className = 'chart-summary';
@@ -382,22 +382,22 @@ export function clearCharts() {
     barChartInstance.destroy();
     barChartInstance = null;
   }
-  
+
   if (pieChartInstance) {
     pieChartInstance.destroy();
     pieChartInstance = null;
   }
-  
+
   const barContainer = document.getElementById('bar-chart-container');
   const pieContainer = document.getElementById('pie-chart-container');
-  
+
   if (barContainer) {
     barContainer.innerHTML = '';
   }
-  
+
   if (pieContainer) {
     pieContainer.innerHTML = '';
   }
-  
+
   hideCharts();
 }
