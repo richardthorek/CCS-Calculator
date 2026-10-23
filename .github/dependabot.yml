@@ -1,41 +1,41 @@
-# Dependabot version updates configuration
-# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+# Dependabot: one grouped PR per ecosystem and directory, weekly. Limit 1 keeps
+# a single open version PR that Dependabot updates in place until it is merged.
+# Security advisories still open separately, by GitHub design.
 
 version: 2
 updates:
-  # Root npm dependencies (frontend + dev tooling: chart.js, jest, playwright, etc.)
   - package-ecosystem: "npm"
     directory: "/"
     target-branch: "main"
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
-      - "npm"
+    open-pull-requests-limit: 1
+    labels: ["dependencies", "npm"]
+    groups:
+      all-npm:
+        patterns: ["*"]
 
-  # Azure Functions API npm dependencies (@azure/functions, @azure/data-tables, etc.)
   - package-ecosystem: "npm"
     directory: "/api"
     target-branch: "main"
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "npm"
-      - "api"
+    open-pull-requests-limit: 1
+    labels: ["dependencies", "npm", "api"]
+    groups:
+      all-api:
+        patterns: ["*"]
 
-  # GitHub Actions workflow dependencies
   - package-ecosystem: "github-actions"
     directory: "/.github/workflows"
     target-branch: "main"
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "github-actions"
+    open-pull-requests-limit: 1
+    labels: ["dependencies", "github-actions"]
+    groups:
+      all-actions:
+        patterns: ["*"]
